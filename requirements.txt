@@ -1,0 +1,8 @@
+colorama
+discord
+git+https://github.com/gomashio1596/fortnitepy
+jaconv
+jinja2
+git+https://github.com/miurahr/pykakasi
+sanic
+tzlocal

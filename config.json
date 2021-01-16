@@ -1,0 +1,283 @@
+{
+    "clients": [
+        {
+            "fortnite": {
+                "email": "",
+                "nickname": "",
+                "owner": [],
+                "outfit": "<Item name='サイドワインダー' id='CID_348_Athena_Commando_F_Medusa'>",
+                "outfit_style": [],
+                "ng_outfits": null,
+                "ng_outfit_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_outfit_operation": [
+                    "kick"
+                ],
+                "join_outfit": "",
+                "join_outfit_style": null,
+                "join_outfit_on": "me",
+                "leave_outfit": "",
+                "leave_outfit_style": null,
+                "leave_outfit_on": "me",
+                "outfit_mimic_for": [],
+                "outfit_lock_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "backpack": "",
+                "backpack_style": null,
+                "ng_backpacks": null,
+                "ng_backpack_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_backpack_operation": [
+                    "kick"
+                ],
+                "join_backpack": "",
+                "join_backpack_style": null,
+                "join_backpack_on": "me",
+                "leave_backpack": "",
+                "leave_backpack_style": null,
+                "leave_backpack_on": "me",
+                "backpack_mimic_for": [],
+                "backpack_lock_for": null,
+                "pickaxe": "",
+                "pickaxe_style": null,
+                "ng_pickaxes": null,
+                "ng_pickaxe_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_pickaxe_operation": [
+                    "kick"
+                ],
+                "join_pickaxe": "",
+                "join_pickaxe_style": null,
+                "join_pickaxe_on": "me",
+                "leave_pickaxe": "",
+                "leave_pickaxe_style": null,
+                "leave_pickaxe_on": "me",
+                "pickaxe_mimic_for": [],
+                "pickaxe_lock_for": null,
+                "emote": "",
+                "emote_section": null,
+                "repeat_emote_when_join": true,
+                "ng_emotes": null,
+                "ng_emote_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_emote_operation": [
+                    "kick"
+                ],
+                "join_emote": "",
+                "join_emote_section": null,
+                "join_emote_on": "user",
+                "leave_emote": "",
+                "leave_emote_section": null,
+                "leave_emote_on": "me",
+                "emote_mimic_for": [],
+                "emote_lock_for": null,
+                "leave_delay_for": 1.0,
+                "refresh_on_reload": false,
+                "party": {
+                    "privacy": "PUBLIC",
+                    "max_size": 16,
+                    "allow_swap": true,
+                    "playlist": "<Playlist name='Squads but with no Henchmen' id='Playlist_NoMang_Squads'>",
+                    "disable_voice_chat": false
+                },
+                "avatar_id": "",
+                "avatar_color": "RED",
+                "banner_id": "",
+                "banner_color": "",
+                "level": 9999,
+                "platform": "WIN",
+                "ng_platforms": null,
+                "ng_platform_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_platform_operation": [
+                    "kick"
+                ],
+                "ng_names": [],
+                "ng_name_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "ng_name_operation": [
+                    "kick"
+                ],
+                "status": "Fortnite-LobbyBot-v2",
+                "accept_invite_for": [
+                    "owner"
+                ],
+                "decline_invite_when": [
+                    "owner",
+                    "whitelist"
+                ],
+                "invite_interval": 0,
+                "invite_interval_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "accept_friend_for": [
+                    "owner"
+                ],
+                "send_friend_request": false,
+                "whisper_enable_for": [
+                    "owner"
+                ],
+                "party_chat_enable_for": [
+                    "owner"
+                ],
+                "permission_command_operation": [
+                    "kick"
+                ],
+                "accept_join_for": [
+                    "owner"
+                ],
+                "join_message": [],
+                "join_message_whisper": null,
+                "random_message": [],
+                "random_message_whisper": null,
+                "chat_max": 1000,
+                "chat_max_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "chat_max_operation": [
+                    "kick"
+                ],
+                "kick_disconnect": false,
+                "kick_in_match": false,
+                "hide_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "blacklist": [],
+                "blacklist_operation": [
+                    "kick"
+                ],
+                "whitelist": [],
+                "invitelist": [],
+                "botlist": [],
+                "botlist_operation": null,
+                "prefix": null,
+                "exec": {
+                    "ready": null,
+                    "party_invite": null,
+                    "friend_request": null,
+                    "friend_add": null,
+                    "friend_remove": null,
+                    "party_member_join": null,
+                    "party_member_leave": null,
+                    "party_member_confirm": null,
+                    "party_member_kick": null,
+                    "party_member_promote": null,
+                    "party_update": null,
+                    "party_member_update": null,
+                    "party_member_disconnect": null
+                }
+            },
+            "discord": {
+                "enabled": false,
+                "token": "",
+                "owner": [],
+                "channels": [
+                    "{name}-command-channel"
+                ],
+                "status": "",
+                "status_type": "playing",
+                "chat_max": 1000,
+                "chat_max_for": [
+                    "user",
+                    "blacklist"
+                ],
+                "command_enable_for": [
+                    "owner",
+                    "whitelist"
+                ],
+                "blacklist": [],
+                "whitelist": [],
+                "prefix": null,
+                "exec": {
+                    "ready": null
+                }
+            },
+            "ng_words": [],
+            "ng_word_for": [
+                "user",
+                "blacklist"
+            ],
+            "ng_word_operation": [
+                "chatban"
+            ],
+            "relogin_in": 0,
+            "search_max": 60,
+            "no_logs": false,
+            "loglevel": "normal",
+            "discord_log": "",
+            "omit_over2000": true,
+            "skip_if_overflow": true,
+            "case_insensitive": true,
+            "convert_kanji": true
+        }
+    ],
+    "discord": {
+        "enabled": false,
+        "token": "",
+        "owner": null,
+        "channels": [
+            "bot-command-channel"
+        ],
+        "status": "",
+        "status_type": "playing",
+        "chat_max": 1000,
+        "chat_max_for": [
+            "user",
+            "blacklist"
+        ],
+        "command_enable_for": [
+            "owner",
+            "whitelist"
+        ],
+        "blacklist": [],
+        "whitelist": [],
+        "prefix": null,
+        "exec": {
+            "ready": null
+        }
+    },
+    "web": {
+        "enabled": true,
+        "ip": "{ip}",
+        "port": 8000,
+        "password": "",
+        "login_required": false,
+        "command_web": true,
+        "access_log": false,
+        "prefix": null
+    },
+    "check_update_on_startup": true,
+    "restart_in": 0,
+    "lang": "en",
+    "search_lang": "en",
+    "sub_search_lang": "en",
+    "api": "BenBot",
+    "api_key": "",
+    "discord_log": "",
+    "omit_over2000": false,
+    "skip_if_overflow": true,
+    "hide_email": true,
+    "hide_password": true,
+    "hide_token": true,
+    "hide_webhook": true,
+    "no_logs": false,
+    "loglevel": "normal",
+    "debug": false
+}

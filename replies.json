@@ -1,0 +1,5 @@
+{
+    "run_when": "before_command",
+    "prefix_to_replies": false,
+    "replies": []
+}

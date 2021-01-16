@@ -1,0 +1,10 @@
+#content a {
+    display: block;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: #B9BBBE;
+}
+#content a:hover {
+    color: white;
+}

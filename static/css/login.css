@@ -1,0 +1,47 @@
+input {
+    color: #DCDDDE;
+    background-color: #303339;
+    border: 1px solid #222428;
+    border-radius: 3px;
+    outline: 0;
+    resize: vertical;
+}
+
+input:hover {
+    border-color: #040405;
+}
+
+input:focus {
+    border-color: #7289DA;
+}
+
+.auth {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+#password_label {
+    display: block;
+    -webkit-transition: 200ms;
+    transition: 200ms;
+}
+
+#password_input {
+    display: block;
+}
+
+#password_submit {
+    color: white;
+    background-color: #7289DA;
+    cursor: pointer;
+    width: 60px;
+    height: 32px;
+    font-size: 14px;
+    border-radius: 3px;
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.error #password_label {
+    color: #F04747;
+}

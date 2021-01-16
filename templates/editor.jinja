@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{client.l('config_editor')}}</title>
+    <script>
+        window.onbeforeunload = function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+
+        let texts = {
+            'invalid_json': "{{client.l('invalid_json')}}",
+            'remove': "{{client.l('remove')}}",
+            '/': "{{client.l('home')}}",
+            '/config-editor': "{{client.l('config_editor')}}",
+            '/commands-editor': "{{client.l('commands_editor')}}",
+            '/custom-commands-editor': "{{client.l('custom_commands_editor')}}",
+            '/replies-editor': "{{client.l('replies_editor')}}",
+            '/boot-switch': "{{client.l('boot_switch')}}",
+            '/clients-viewer': "{{client.l('clients_viewer')}}"
+        };
+        let tags_ = {{client.bot.dumps(tags)}};
+        let data = {{client.bot.dumps(data)}};
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/header.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/editor.css')}}">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
+    <script type="text/javascript" src="{{client.url_for('static', filename='js/main.js')}}"></script>
+    <script type="text/javascript" src="{{client.url_for('static', filename='js/editor.js')}}"></script>
+</head>
+<body id="main" ontouchstart="">
+    <input id="visual_save" type="button" value="{{client.l('save')}}" onclick="saveVisual()">
+    <input id="raw_save" style="display: none;" type="button" value="{{client.l('save')}}" onclick="saveRaw()">
+    <div id="shake">
+        <div id="header">
+            <nav id="header-global">
+                <a id="pc-logo" href="https://github.com/gomashio1596/Fortnite-LobbyBot-v2" target="_blank" rel="noopener noreferrer">Fortnite-LobbyBot</a>
+                <img id="phone-logo" src="{{client.url_for('static', filename='images/logo.png')}}" alt="F" width="50">
+                <ul id="header-list">
+                </ul>
+            </nav>
+            <div id="header-button">
+                <span style="top: 0px;"></span>
+                <span style="top: 10px;"></span>
+                <span style="top: 20px;"></span>
+            </div>
+        </div>
+        <div id="switch">
+            <input id="visual" type="radio" name="switch" value="Visual" onclick="visualEnable()" checked>
+            <label id="switch-on" for="visual">{{client.l('visual')}}</label>
+            <input id="raw" type="radio" name="switch" value="Raw" onclick="rawEnable()">
+            <label id="switch-off" for="raw">{{client.l('raw')}}</label>
+        </div>
+        <div id="res"></div>
+        <div id="visual_editor">
+            <form id="visual_form">
+                <div id="config">
+                    {% macro construct_part(data, prefix, tag_data) %}
+                        {% set prefix_keys = str_key_to_list(prefix) %}
+
+                        {% for raw_key, tags in tag_data.items() %}
+                            {% set keys = str_key_to_list(raw_key) %}
+                            {% set value = client.bot.get_dict_key_default(data, keys, '') %}
+                            {% set select_tag = client.bot.get_select_tag(tags) %}
+                            {% set multiple_select_tag = client.bot.get_multiple_select_tag(tags) %}
+                            {% set config_tag = client.bot.get_config_tag(tags) %}
+
+                            {% if tags[0] == dict %}
+                                <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
+                            {% elif config_tag != None %}
+                                <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
+                                {% if config_tag in ['ng_names_config', 'ng_words_config'] %}
+                                    <div id="{{keys[-1]}}" client_num="{{prefix_keys[1]}}">
+                                {% else %}
+                                    <div id="{{keys[-1]}}">
+                                {% endif %}
+                                    {% for num, config in enumerate(value) %}
+                                        <input type="hidden" name="{{prefix + raw_key}}[{{num}}]">
+                                        <div id="{{keys[-1]}}_{{num}}" class="openable" style="left: {{15 * len(keys)}}px;">
+                                            <span>{{client.l(keys[-1][:-1], num + 1)}}</span>
+                                            <div class="content">
+                                                {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.bot, config_tag + '_tags'))}}
+                                            </div>
+                                            <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, '{{keys[-1]}}')">
+                                        </div>
+                                        <br>
+                                    {% endfor %}
+                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addElement(this, '{{keys[-1]}}')">
+                                </div>
+                            {% else %}
+                                <div class="key_value" style="left: {{15 * (len(keys) - 1)}}px;">
+                                    <label class="key" for="{{prefix + raw_key}}">{{client.l('editor_' + key_prefix + '_'.join(keys))}}</label>
+                                    {% if select_tag != None %}
+                                        <select id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}">
+                                            {% for v in getattr(client.bot, select_tag) %}
+                                                {% if v['real_value'] == value %}
+                                                    <option value="{{v['value']}}" selected>{{str(v['display_value'])}}</option>
+                                                {% else %}
+                                                    <option value="{{v['value']}}">{{str(v['display_value'])}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    {% elif multiple_select_tag != None %}
+                                        <select id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" multiple>
+                                            {% for v in getattr(client.bot, multiple_select_tag) %}
+                                                {% if value != None and v['real_value'] in value %}
+                                                    <option value="{{v['value']}}" selected>{{str(v['display_value'])}}</option>
+                                                {% else %}
+                                                    <option value="{{v['value']}}">{{str(v['display_value'])}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        {% if tags[0] == list %}
+                                            {% if tags[1] == list %}
+                                                <div id="{{keys[-1]}}" class="list_list">
+                                                    {% if value != None %}
+                                                        {% for num, val in enumerate(value) %}
+                                                            <div>
+                                                                {% if val != None %}
+                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]">{{'\n'.join(map(str, val))}}</textarea>
+                                                                {% else %}
+                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]"></textarea>
+                                                                {% endif %}
+                                                                <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeListList(this, `{{prefix + raw_key}}`)">
+                                                            </div>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                        <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addListList(this, `{{prefix + raw_key}}`)">
+                                                </div>
+                                            {% else %}
+                                                {% if value != None %}
+                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}">{{'\n'.join(map(str, value))}}</textarea>
+                                                {% else %}
+                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}"></textarea>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if value != None %}
+                                                <input id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" value="{{value}}">
+                                            {% else %}
+                                                <input id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" value="">
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endmacro %}
+                    {{construct_part(data, '', tags)}}
+                </div>
+            </form>
+        </div>
+        <div id="raw_editor" style="visibility: hidden; opacity: 0;">
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="{{client.url_for('static', filename='js/header.js')}}"></script>
+<script>
+    const clients = document.getElementsByClassName('openable');
+    for (let client of clients) {
+        client.firstElementChild.onclick = function () {
+            const css = `#${client.id}::before {transform: rotate(90deg);}`
+            if (hasCSS(client.id, css)) {
+                pseudo(client.id, '')
+            } else {
+                pseudo(client.id, css)
+            }
+            client.classList.toggle('open');
+        }
+        client.firstElementChild.onanimationend = function () {
+            const css = `#${client.id}::before {transform: rotate(90deg);}`
+            if (hasCSS(client.id, css)) {
+                pseudo(client.id, '')
+            }
+        }
+    }
+
+    const headerHeight = document.getElementById('header').clientHeight;
+    const visual_editor = document.getElementById('visual_editor');
+    visual_editor.style.height = (document.documentElement.clientHeight - headerHeight) + 'px';
+    const raw_editor = document.getElementById('raw_editor');
+    raw_editor.style.width = '100%';
+    raw_editor.style.height = (document.documentElement.clientHeight - headerHeight) + 'px';
+    raw_editor.style.fontSize = '12px';
+
+    const editor = ace.edit("raw_editor");
+    editor.$blockScrolling = Infinity;
+    editor.setOptions({
+        fontFamily: "monospace",
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+    editor.setShowPrintMargin(false);
+    editor.setTheme("ace/theme/monokai");
+    editor.getSession().setMode("ace/mode/json");
+    editor.setFontSize(12);
+    try {
+        editor.session.setValue(JSON.stringify(data, null, 4));
+    } catch {
+        editor.session.setValue("{}");
+    }
+</script>
+</html>

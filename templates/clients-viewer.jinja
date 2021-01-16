@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{client.l('clients_viewer')}}</title>
+    <script>
+        let texts = {
+            'start': "{{client.l('start')}}",
+            'close': "{{client.l('close')}}",
+            'ready': "{{client.l('ready')}}",
+            'booting': "{{client.l('booting')}}",
+            'closed': "{{client.l('closed')}}",
+            '/': "{{client.l('home')}}",
+            '/config-editor': "{{client.l('config_editor')}}",
+            '/commands-editor': "{{client.l('commands_editor')}}",
+            '/custom-commands-editor': "{{client.l('custom_commands_editor')}}",
+            '/replies-editor': "{{client.l('replies_editor')}}",
+            '/boot-switch': "{{client.l('boot_switch')}}",
+            '/clients-viewer': "{{client.l('clients_viewer')}}"
+        }
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/main.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/header.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/clients-viewer.css')}}">
+    <script type="text/javascript" src="{{client.url_for('static', filename='js/ws.js')}}"></script>
+</head>
+<body id="main" ontouchstart="">
+    <div id="header">
+        <nav id="header-global">
+            <a id="pc-logo" href="https://github.com/gomashio1596/Fortnite-LobbyBot-v2" target="_blank" rel="noopener noreferrer">Fortnite-LobbyBot</a>
+            <img id="phone-logo" src="{{client.url_for('static', filename='images/logo.png')}}" alt="F" width="50">
+            <ul id="header-list">
+            </ul>
+        </nav>
+        <div id="header-button">
+            <span style="top: 0px;"></span>
+            <span style="top: 10px;"></span>
+            <span style="top: 20px;"></span>
+        </div>
+    </div>
+    <div id="content">
+        {{client.l('loading')}}
+    </div>
+</body>
+<script type="text/javascript" src="{{client.url_for('static', filename='js/header.js')}}"></script>
+<script type="text/javascript" src="{{client.url_for('static', filename='js/clients-viewer.js')}}"></script>
+</html>

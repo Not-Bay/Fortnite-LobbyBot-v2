@@ -1,0 +1,27 @@
+.client {
+    margin-bottom: 20px;
+}
+
+#content .info {
+    background-color: #2F3136;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #E0E0E0;
+    border-radius: 5px;
+    padding: 2px;
+}
+
+
+#content input {
+    position: relative;
+    background-color: #2F3136;
+    border-left-width: 5px;
+    border-radius: 4px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#content .state {
+    display: inline-block;
+    margin-left: 10px;
+}

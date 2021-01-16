@@ -1,0 +1,527 @@
+{
+    "whitelist_commands": [],
+    "user_commands": [],
+    "prefix_to_item_search": false,
+    "command": [
+        "command"
+    ],
+    "ng_word": [
+        "ng_word"
+    ],
+    "most": [
+        "most"
+    ],
+    "user": [
+        "user"
+    ],
+    "whitelist": [
+        "whitelist"
+    ],
+    "blacklist": [
+        "blacklist"
+    ],
+    "owner": [
+        "owner"
+    ],
+    "bot": [
+        "bot"
+    ],
+    "null": [
+        "null"
+    ],
+    "operation_kick": [
+        "kick"
+    ],
+    "operation_chatban": [
+        "chatban"
+    ],
+    "operation_remove": [
+        "remove"
+    ],
+    "operation_block": [
+        "block"
+    ],
+    "operation_blacklist": [
+        "blacklist"
+    ],
+    "true": [
+        "true"
+    ],
+    "false": [
+        "false"
+    ],
+    "accept": [
+        "accept"
+    ],
+    "decline": [
+        "decline"
+    ],
+    "me": [
+        "me"
+    ],
+    "public": [
+        "public"
+    ],
+    "friends_allow_friends_of_friends": [
+        "friends_allow_friends_of_friends"
+    ],
+    "friends": [
+        "friends"
+    ],
+    "private_allow_friends_of_friends": [
+        "private_allow_friends_of_friends"
+    ],
+    "private": [
+        "private"
+    ],
+    "outfit": [
+        "outfit"
+    ],
+    "backpack": [
+        "backpack"
+    ],
+    "pickaxe": [
+        "pickaxe"
+    ],
+    "save": [
+        "save"
+    ],
+    "load": [
+        "load"
+    ],
+    "commands": {
+        "exec": [
+            "exec"
+        ],
+        "clear": [
+            "clear"
+        ],
+        "help": [
+            "help"
+        ],
+        "check_update": [
+            "check_update"
+        ],
+        "stat": [
+            "stat"
+        ],
+        "ping": [
+            "ping"
+        ],
+        "prev": [
+            "prev"
+        ],
+        "send_all": [
+            "send_all"
+        ],
+        "restart": [
+            "restart"
+        ],
+        "relogin": [
+            "relogin"
+        ],
+        "reload": [
+            "reload"
+        ],
+        "reload_all": [
+            "reload_all"
+        ],
+        "add_blacklist": [
+            "add_blacklist"
+        ],
+        "remove_blacklist": [
+            "remove_blacklist"
+        ],
+        "add_whitelist": [
+            "add_whitelist"
+        ],
+        "remove_whitelist": [
+            "remove_whitelist"
+        ],
+        "discord_add_blacklist": [
+            "discord_add_blacklist"
+        ],
+        "discord_remove_blacklist": [
+            "discord_remove_blacklist"
+        ],
+        "discord_add_whitelist": [
+            "discord_add_whitelist"
+        ],
+        "discord_remove_whitelist": [
+            "discord_remove_whitelist"
+        ],
+        "add_invitelist": [
+            "add_invitelist"
+        ],
+        "remove_invitelist": [
+            "remove_invitelist"
+        ],
+        "ng_outfit_for": [
+            "ng_outfit_for"
+        ],
+        "ng_outfit_operation": [
+            "ng_outfit_operation"
+        ],
+        "outfit_mimic_for": [
+            "outfit_mimic_for"
+        ],
+        "ng_backpack_for": [
+            "ng_backpack_for"
+        ],
+        "ng_backpack_operation": [
+            "ng_backpack_operation"
+        ],
+        "backpack_mimic_for": [
+            "backpack_mimic_for"
+        ],
+        "ng_pickaxe_for": [
+            "ng_pickaxe_for"
+        ],
+        "ng_pickaxe_operation": [
+            "ng_pickaxe_operation"
+        ],
+        "pickaxe_mimic_for": [
+            "pickaxe_mimic_for"
+        ],
+        "ng_emote_for": [
+            "ng_emote_for"
+        ],
+        "ng_emote_operation": [
+            "ng_emote_operation"
+        ],
+        "emote_mimic_for": [
+            "emote_mimic_for"
+        ],
+        "ng_platform_for": [
+            "ng_platform_for"
+        ],
+        "ng_platform_operation": [
+            "ng_platform_operation"
+        ],
+        "ng_name_for": [
+            "ng_name_for"
+        ],
+        "ng_name_operation": [
+            "ng_name_operation"
+        ],
+        "accept_invite_for": [
+            "accept_invite_for"
+        ],
+        "decline_invite_when": [
+            "decline_invite_when"
+        ],
+        "invite_interval_for": [
+            "invite_interval_for"
+        ],
+        "accept_friend_for": [
+            "accept_friend_for"
+        ],
+        "whisper_enable_for": [
+            "whisper_enable_for"
+        ],
+        "party_chat_enable_for": [
+            "party_chat_enable_for"
+        ],
+        "permission_command_operation": [
+            "permission_command_operation"
+        ],
+        "accept_join_for": [
+            "accept_join_for"
+        ],
+        "chat_max_for": [
+            "chat_max_for"
+        ],
+        "chat_max_operation": [
+            "chat_max_operation"
+        ],
+        "hide_for": [
+            "hide_for"
+        ],
+        "blacklist_operation": [
+            "blacklist_operation"
+        ],
+        "botlist_operation": [
+            "botlist_operation"
+        ],
+        "discord_chat_max_for": [
+            "discord_chat_max_for"
+        ],
+        "discord_command_enable_for": [
+            "discord_command_enable_for"
+        ],
+        "ng_word_for": [
+            "ng_word_for"
+        ],
+        "ng_word_operation": [
+            "ng_word_operation"
+        ],
+        "get_user": [
+            "get_user"
+        ],
+        "get_friend": [
+            "get_friend"
+        ],
+        "get_pending": [
+            "get_pending"
+        ],
+        "get_block": [
+            "get_block"
+        ],
+        "get_member": [
+            "get_member"
+        ],
+        "party_info": [
+            "party_info"
+        ],
+        "friend_count": [
+            "friend_count"
+        ],
+        "pending_count": [
+            "pending_count"
+        ],
+        "block_count": [
+            "block_count"
+        ],
+        "friend_list": [
+            "friend_list"
+        ],
+        "pending_list": [
+            "pending_list"
+        ],
+        "block_list": [
+            "block_list"
+        ],
+        "add_friend": [
+            "add_friend"
+        ],
+        "remove_friend": [
+            "remove_friend"
+        ],
+        "remove_friends": [
+            "remove_friends"
+        ],
+        "remove_all_friend": [
+            "remove_all_friend"
+        ],
+        "remove_offline_for": [
+            "remove_offline_for"
+        ],
+        "accept_pending": [
+            "accept_pending"
+        ],
+        "decline_pending": [
+            "decline_pending"
+        ],
+        "incoming_pending": [
+            "incoming_pending"
+        ],
+        "cancel_outgoing_pending": [
+            "cancel_outgoing_pending"
+        ],
+        "block_user": [
+            "block_user"
+        ],
+        "unblock_user": [
+            "unblock_user"
+        ],
+        "unblock_all_user": [
+            "unblock_all_user"
+        ],
+        "join": [
+            "join"
+        ],
+        "join_id": [
+            "join_id"
+        ],
+        "leave": [
+            "leave"
+        ],
+        "invite": [
+            "invite"
+        ],
+        "invite_list_users": [
+            "invite_list_users"
+        ],
+        "message": [
+            "message"
+        ],
+        "party_message": [
+            "party_message"
+        ],
+        "avatar": [
+            "avatar"
+        ],
+        "status": [
+            "status"
+        ],
+        "banner": [
+            "banner"
+        ],
+        "level": [
+            "level"
+        ],
+        "privacy": [
+            "privacy"
+        ],
+        "voice_chat": [
+            "voice_chat"
+        ],
+        "promote": [
+            "promote"
+        ],
+        "kick": [
+            "kick"
+        ],
+        "chatban": [
+            "chatban"
+        ],
+        "hide": [
+            "hide"
+        ],
+        "show": [
+            "show"
+        ],
+        "ready": [
+            "ready"
+        ],
+        "unready": [
+            "unready"
+        ],
+        "sitout": [
+            "sitout"
+        ],
+        "match": [
+            "match"
+        ],
+        "unmatch": [
+            "unmatch"
+        ],
+        "swap": [
+            "swap"
+        ],
+        "stop": [
+            "stop"
+        ],
+        "new_items": [
+            "new_items"
+        ],
+        "shop_items": [
+            "shop_items"
+        ],
+        "enlightenment": [
+            "enlightenment"
+        ],
+        "corruption": [
+            "corruption"
+        ],
+        "all_outfit": [
+            "all_outfit"
+        ],
+        "all_backpack": [
+            "all_backpack"
+        ],
+        "all_pet": [
+            "all_pet"
+        ],
+        "all_pickaxe": [
+            "all_pickaxe"
+        ],
+        "all_emote": [
+            "all_emote"
+        ],
+        "all_emoji": [
+            "all_emoji"
+        ],
+        "all_toy": [
+            "all_toy"
+        ],
+        "cid": [
+            "cid"
+        ],
+        "bid": [
+            "bid"
+        ],
+        "petcarrier": [
+            "petcarrier"
+        ],
+        "pickaxe_id": [
+            "pickaxe_id"
+        ],
+        "eid": [
+            "eid"
+        ],
+        "emoji_id": [
+            "emoji_id"
+        ],
+        "toy_id": [
+            "toy_id"
+        ],
+        "id": [
+            "id"
+        ],
+        "outfit": [
+            "outfit"
+        ],
+        "clear_outfit": [
+            "clear_outfit"
+        ],
+        "backpack": [
+            "backpack"
+        ],
+        "pet": [
+            "pet"
+        ],
+        "clear_backpack": [
+            "clear_backpack",
+            "clear_pet"
+        ],
+        "pickaxe": [
+            "pickaxe"
+        ],
+        "clear_pickaxe": [
+            "clear_pickaxe"
+        ],
+        "emote": [
+            "emote"
+        ],
+        "emoji": [
+            "emoji"
+        ],
+        "toy": [
+            "toy"
+        ],
+        "clear_emote": [
+            "clear_emote",
+            "clear_emoji",
+            "clear_toy"
+        ],
+        "item": [
+            "item"
+        ],
+        "playlist_id": [
+            "playlist_id"
+        ],
+        "playlist": [
+            "playlist"
+        ],
+        "set": [
+            "set"
+        ],
+        "set_style": [
+            "set_style"
+        ],
+        "add_style": [
+            "add_style"
+        ],
+        "set_variant": [
+            "set_variant"
+        ],
+        "add_variant": [
+            "add_variant"
+        ],
+        "cosmetic_preset": [
+            "cosmetic_preset"
+        ]
+    },
+    "status": 1
+}
