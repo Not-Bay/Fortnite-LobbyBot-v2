@@ -2203,6 +2203,7 @@ class Client(fortnitepy.Client):
 
         # Platform
         if (self.is_ng_platform_for(member.id)
+                and self.config['fortnite']['ng_platforms'] is not None
                 and member.platform in self.config['fortnite']['ng_platforms']):
             functions = await self.get_ng_platform_operation(user_id=member.id)
             for func in functions:

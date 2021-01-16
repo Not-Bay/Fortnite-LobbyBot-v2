@@ -197,6 +197,7 @@
         "failed_to_load_config_index": "コンフィグの読み込みに失敗しました。このクライアントの設定が見つかりません",
         "failed_to_load_config_init": "コンフィグを適用中にエラーが発生しました",
         "failed_to_load_commands": "コマンドの読み込みに失敗しました",
+        "failed_to_load_custom_commands": "カスタムコマンドの読み込みに失敗しました",
         "load_config_success": "コンフィグの読み込みが完了しました",
         "load_commands_success": "コマンドの読み込みが完了しました",
         "not_a_party_leader": "パーティリーダーではありません",
