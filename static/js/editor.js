@@ -338,20 +338,23 @@ function addElement(element, id_prefix) {
             const items = Array.from(newElement.children[1].children).slice(1);
             items.forEach(item => {
                 if (Array.from(item.children).length == 2) {
-                    console.log('match')
-                    console.log(item)
                     const label = item.children[0];
                     const input = item.children[1];
-                    label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
-                    input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
-                    input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
-                    if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
-                        console.log('set value');
-                        input.value = '';
+                    if (input.tagName == 'DIV') {
+                        while (input.firstChild) {
+                            input.removeChild(input.firstChild);
+                        }
                     } else {
-                        Array.from(input.children).forEach(select => {
-                            select.selected = false;
-                        });   
+                        label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
+                        input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
+                        input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
+                        if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
+                            input.value = '';
+                        } else {
+                            Array.from(input.children).forEach(select => {
+                                select.selected = false;
+                            });   
+                        }
                     }
                 }
             });

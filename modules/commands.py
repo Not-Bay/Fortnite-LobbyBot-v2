@@ -1042,6 +1042,32 @@ class DefaultCommands:
         client.commands = commands
         client.error_commands = error_commands
 
+        custom_commands, error_custom_commands = client.bot.load_custom_commands()
+        if custom_commands is None and error_custom_commands is None:
+            await message.reply(
+                client.l('failed_to_load_custom_commands')
+            )
+            return
+        if error_custom_commands:
+            client.send(
+                client.bot.l(
+                    'error_keys',
+                    '\n'.join(error_custom_commands),
+                    default=(
+                        "以下のキーに問題がありました\n{0}\n"
+                        "There was an error on keys\n{0}\n"
+                    )
+                ),
+                file=sys.stderr
+            )
+            await message.reply(
+                client.l('failed_to_load_config')
+            )
+            return
+
+        client.custom_commands = custom_commands
+        client.error_custom_commands = error_custom_commands
+
         await message.reply(
             client.l('load_commands_success')
         )
@@ -1151,6 +1177,34 @@ class DefaultCommands:
         client.bot.error_commands = error_commands
         for client in client.bot.clients:
             client.commands = commands
+
+        custom_commands, error_custom_commands = client.bot.load_custom_commands()
+        if custom_commands is None and error_custom_commands is None:
+            await message.reply(
+                client.l('failed_to_load_custom_commands')
+            )
+            return
+        if error_custom_commands:
+            client.send(
+                client.bot.l(
+                    'error_keys',
+                    '\n'.join(error_custom_commands),
+                    default=(
+                        "以下のキーに問題がありました\n{0}\n"
+                        "There was an error on keys\n{0}\n"
+                    )
+                ),
+                file=sys.stderr
+            )
+            await message.reply(
+                client.l('failed_to_load_config')
+            )
+            return
+
+        client.bot.custom_commands = custom_commands
+        client.bot.error_custom_commands = error_custom_commands
+        for client in client.bot.clients:
+            client.custom_commands = custom_commands
 
         await message.reply(
             client.l('load_commands_success')

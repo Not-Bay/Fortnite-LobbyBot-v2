@@ -197,6 +197,7 @@
         "failed_to_load_config_index": "Failed to load config. This client's config is missing",
         "failed_to_load_config_init": "There was an error while applying config",
         "failed_to_load_commands": "Failed to load commands",
+        "failed_to_load_custom_commands": "Failed to load custom commands",
         "load_config_success": "Config successfully loaded",
         "load_commands_success": "Commands successfully loaded",
         "not_a_party_leader": "I'm not a party leader",

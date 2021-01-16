@@ -197,6 +197,7 @@
         "failed_to_load_config_index": "Error al cargar configuración. No se encuentra la configuración para este cliente",
         "failed_to_load_config_init": "Hubo un error aplicando la configuración",
         "failed_to_load_commands": "Error al cargar comandos",
+        "failed_to_load_custom_commands": "Error al cargar comandos personalizados",
         "load_config_success": "Configuración cargada correctamente",
         "load_commands_success": "Comandos cargados correctamente",
         "not_a_party_leader": "No soy el líder del grupo",
