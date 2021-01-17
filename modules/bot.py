@@ -2547,7 +2547,14 @@ class Bot:
                         MyClientParty.disable_voice_chat
                     ))
 
-                member_meta = []
+                member_meta = [
+                    partial(
+                        MyClientPartyMember.set_banner,
+                        config['fortnite']['banner_id'],
+                        config['fortnite']['banner_color'],
+                        config['fortnite']['level']
+                    )
+                ]
                 items = [
                     'AthenaCharacter',
                     'AthenaBackpack',
@@ -2556,19 +2563,26 @@ class Bot:
                 ]
                 for item in items:
                     conf = self.convert_backend_type(item)
-                    if config['fortnite'][conf]:
-                        variants = []
-                        if item != 'AthenaDance' and config['fortnite'][f'{conf}_style'] is not None:
-                            for style in config['fortnite'][f'{conf}_style']:
-                                variant = self.get_config_variant(style)
-                                if variant is not None:
-                                    variants.extend(variant['variants'])
-                        member_meta.append(partial(
-                            MyClientPartyMember.set_outfit,
-                            asset=(self.get_config_item_id(config['fortnite'][conf])
-                                   or config['fortnite'][conf]),
-                            variants=variants
-                        ))
+                    variants = []
+                    if item != 'AthenaDance' and config['fortnite'][f'{conf}_style'] is not None:
+                        for style in config['fortnite'][f'{conf}_style']:
+                            variant = self.get_config_variant(style)
+                            if variant is not None:
+                                variants.extend(variant['variants'])
+                    section = 0
+                    if item == 'AthenaDance':
+                        section = config['fortnite'][f'{conf}_section']
+                    coro = partial(
+                        MyClientPartyMember.change_asset,
+                        item,
+                        (self.get_config_item_id(config['fortnite'][conf])
+                        or config['fortnite'][conf]),
+                        variants=variants,
+                        section=section,
+                        keep=False
+                    )
+                    coro.func.__qualname__ = f'ClientPartyMember.set_{conf}'
+                    member_meta.append(coro)
 
                 avatar = fortnitepy.kairos.get_random_default_avatar()
                 background_colors = (

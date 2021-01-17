@@ -243,7 +243,7 @@ async def remove_from_list(attr: str, message: MyMessage, user: fortnitepy.User)
             )
         )
         return
-    getattr(client, f'_{attr}').pop[user.id]
+    getattr(client, f'_{attr}').pop(user.id)
     client.config['fortnite'][attr].append(client.get_user_str(user))
     client.bot.save_json('config', client.bot.config)
     await message.reply(
@@ -268,7 +268,7 @@ async def list_operation(func: Callable, attr: str, command: Command,
         method=FindUserMatchMethod.CONTAINS,
         me=message.author
     )
-    user = await client.fetch_user(' '.join(message.args[1:]))
+    user = await client.fetch_user(' '.join(message.args[1:]), cache=True)
     if user is not None and user not in users:
         users.append(user)
 
@@ -1538,7 +1538,7 @@ class DefaultCommands:
             method=FindUserMatchMethod.CONTAINS,
             me=message.author
         )
-        user = await client.fetch_user(' '.join(message.args[1:]))
+        user = await client.fetch_user(' '.join(message.args[1:]), cache=True)
         if user is not None:
             users.append(user)
 
@@ -1887,7 +1887,7 @@ class DefaultCommands:
             method=FindUserMatchMethod.CONTAINS,
             me=message.author
         )
-        user = await client.fetch_user(' '.join(message.args[1:]))
+        user = await client.fetch_user(' '.join(message.args[1:]), cache=True)
         if user is not None and user not in users:
             users.append(user)
 
