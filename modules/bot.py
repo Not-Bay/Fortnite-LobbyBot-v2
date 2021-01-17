@@ -20,6 +20,7 @@ from typing import Any, Callable, List, Optional, Tuple, Union
 
 import aiohttp
 from aiofiles import open as aopen
+from aiofiles.os import remove as aremove
 from tzlocal import get_localzone
 
 from .auto_updater import Updater
@@ -29,7 +30,7 @@ from .commands import Command, DefaultCommands, MyMessage, PartyPrivacy
 from .cosmetics import CaseInsensitiveDict, Searcher
 from .device_code import Auth, HTTPClient
 from .discord_client import DiscordClient
-from .encoder import MyJSONEncoder, adump
+from .encoder import MyJSONEncoder
 from .localize import LocalizedText
 from .web import Web, WebMessage, WebUser
 from .webhook import WebhookClient
@@ -593,7 +594,7 @@ class Bot:
     async def store_cosmetic_presets(self, account_id: str, details: dict) -> None:
         existing = self.get_cosmetic_presets()
         existing[account_id] = details
-        await self.asave_json('cosmetic_presets', existing)
+        self.save_json('cosmetic_presets', existing)
 
     def get_command_stats(self) -> None:
         if self.isfile('command_stats'):
@@ -627,6 +628,15 @@ class Bot:
                 raise FileNotFoundError from e
         else:
             os.remove(f'{key}.json')
+
+    async def aremove(self, key: str, force_file: Optional[bool] = False) -> None:
+        if self.mode == 'repl' and not force_file:
+            try:
+                del db[key]
+            except KeyError as e:
+                raise FileNotFoundError from e
+        else:
+            await aremove(f'{key}.json')
 
     def rename(self, key_src: str, key_dst: str, force_file: Optional[bool] = False) -> None:
         if self.mode == 'repl' and not force_file:
@@ -699,34 +709,6 @@ class Bot:
                     )
                 else:
                     json.dump(
-                        value,
-                        f,
-                        indent=4,
-                        ensure_ascii=False,
-                        cls=MyJSONEncoder
-                    )
-
-    async def asave_json(self, key: str, value: Union[dict, list],
-                         force_file: Optional[bool] = False,
-                         compact: Optional[bool] = False) -> None:
-        if self.mode == 'repl' and not force_file:
-            db[key] = {
-                'last_edited': self.utcnow(),
-                'value': self.dumps(
-                    value
-                )
-            }
-        else:
-            async with aopen(f'{key}.json', 'w', encoding='utf-8') as f:
-                if compact:
-                    await adump(
-                        value,
-                        f,
-                        ensure_ascii=False,
-                        cls=MyJSONEncoder
-                    )
-                else:
-                    await adump(
                         value,
                         f,
                         indent=4,
@@ -1811,7 +1793,7 @@ class Bot:
             for item in data:
                 items['items'][item['id']] = item
         items['api'] = self.config['api']
-        await self.asave_json(
+        self.save_json(
             f'{self.item_dir}/items_{lang}',
             items,
             force_file=True,
@@ -1851,7 +1833,7 @@ class Bot:
                 if item['variants'] is not None:
                     data[item['id']]['variants'] = item['variants']
         items['api'] = self.config['api']
-        await self.asave_json(
+        self.save_json(
             f'{self.item_dir}/new_items_{lang}',
             {'api': self.config['api'], 'items': data},
             force_file=True,
@@ -1906,7 +1888,7 @@ class Bot:
         for playlist in data:
             playlists['playlists'][playlist['id']] = playlist
         playlists['api'] = self.config['api']
-        await self.asave_json(
+        self.save_json(
             f'{self.item_dir}/playlists_{lang}',
             playlists,
             force_file=True,
@@ -1947,7 +1929,7 @@ class Bot:
         for id, image in data.items():
             banners['banners'][id] = image
         banners['api'] = self.config['api']
-        await self.asave_json(
+        self.save_json(
             f'{self.item_dir}/banners',
             banners,
             force_file=True,
@@ -1972,7 +1954,7 @@ class Bot:
                 )
                 details = self.get_device_auth_details()
                 details.pop(client.config['fortnite']['email'])
-                await self.asave_json('device_auths', details)
+                self.save_json('device_auths', details)
             else:
                 self.print_exception(e)
                 self.send(
@@ -2009,30 +1991,42 @@ class Bot:
         # Cosmetics
         tasks = []
         if self.isfile(f"{self.item_dir}/items_{self.config['search_lang']}", force_file=True):
-            items = await self.aload_json(f"{self.item_dir}/items_{self.config['search_lang']}", force_file=True)
-            if items['api'] != self.config['api']:
+            try:
+                items = await self.aload_json(f"{self.item_dir}/items_{self.config['search_lang']}", force_file=True)
+            except json.decoder.JSONDecodeError as e:
+                self.debug_print_exception(e)
+                await self.aremove(f"{self.item_dir}/items_{self.config['search_lang']}")
                 flag = True
             else:
-                flag = self.is_not_edited_for(
-                    f"{self.item_dir}/items_{self.config['search_lang']}",
-                    datetime.timedelta(hours=2),
-                    force_file=True
-                )
+                if items['api'] != self.config['api']:
+                    flag = True
+                else:
+                    flag = self.is_not_edited_for(
+                        f"{self.item_dir}/items_{self.config['search_lang']}",
+                        datetime.timedelta(hours=2),
+                        force_file=True
+                    )
         else:
             flag = True
         if flag:
             tasks.append(self.loop.create_task(self.store_item_data(self.config['search_lang'])))
 
         if self.isfile(f"{self.item_dir}/items_{self.config['sub_search_lang']}", force_file=True):
-            items = await self.aload_json(f"{self.item_dir}/items_{self.config['sub_search_lang']}", force_file=True)
-            if items['api'] != self.config['api']:
+            try:
+                items = await self.aload_json(f"{self.item_dir}/items_{self.config['sub_search_lang']}", force_file=True)
+            except json.decoder.JSONDecodeError as e:
+                self.debug_print_exception(e)
+                await self.aremove(f"{self.item_dir}/items_{self.config['sub_search_lang']}")
                 flag = True
             else:
-                flag = self.is_not_edited_for(
-                    f"{self.item_dir}/items_{self.config['sub_search_lang']}",
-                    datetime.timedelta(hours=2),
-                    force_file=True
-                )
+                if items['api'] != self.config['api']:
+                    flag = True
+                else:
+                    flag = self.is_not_edited_for(
+                        f"{self.item_dir}/items_{self.config['sub_search_lang']}",
+                        datetime.timedelta(hours=2),
+                        force_file=True
+                    )
         else:
             flag = True
         if flag:
@@ -2062,15 +2056,21 @@ class Bot:
         # New cosmetics
         tasks = []
         if self.isfile(f"{self.item_dir}/new_items_{self.config['search_lang']}", force_file=True):
-            items = await self.aload_json(f"{self.item_dir}/new_items_{self.config['search_lang']}", force_file=True)
-            if items['api'] != self.config['api']:
+            try:
+                items = await self.aload_json(f"{self.item_dir}/new_items_{self.config['search_lang']}", force_file=True)
+            except json.decoder.JSONDecodeError as e:
+                self.debug_print_exception(e)
+                await self.aremove(f"{self.item_dir}/new_items_{self.config['search_lang']}")
                 flag = True
             else:
-                flag = self.is_not_edited_for(
-                    f"{self.item_dir}/new_items_{self.config['search_lang']}",
-                    datetime.timedelta(hours=2),
-                    force_file=True
-                )
+                if items['api'] != self.config['api']:
+                    flag = True
+                else:
+                    flag = self.is_not_edited_for(
+                        f"{self.item_dir}/new_items_{self.config['search_lang']}",
+                        datetime.timedelta(hours=2),
+                        force_file=True
+                    )
         else:
             flag = True
         if flag:
@@ -2088,30 +2088,42 @@ class Bot:
         # Playlists
         tasks = []
         if self.isfile(f"{self.item_dir}/playlists_{self.config['search_lang']}", force_file=True):
-            playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['search_lang']}", force_file=True)
-            if playlists['api'] != self.config['api']:
+            try:
+                playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['search_lang']}", force_file=True)
+            except json.decoder.JSONDecodeError as e:
+                self.debug_print_exception(e)
+                await self.aremove(f"{self.item_dir}/playlists_{self.config['search_lang']}")
                 flag = True
             else:
-                flag = self.is_not_edited_for(
-                    f"{self.item_dir}/playlists_{self.config['search_lang']}",
-                    datetime.timedelta(hours=2),
-                    force_file=True
-                )
+                if playlists['api'] != self.config['api']:
+                    flag = True
+                else:
+                    flag = self.is_not_edited_for(
+                        f"{self.item_dir}/playlists_{self.config['search_lang']}",
+                        datetime.timedelta(hours=2),
+                        force_file=True
+                    )
         else:
             flag = True
         if flag:
             tasks.append(self.loop.create_task(self.store_playlists_data(self.config['search_lang'])))
 
         if self.isfile(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}", force_file=True):
-            playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}", force_file=True)
-            if playlists['api'] != self.config['api']:
+            try:
+                playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}", force_file=True)
+            except json.decoder.JSONDecodeError as e:
+                self.debug_print_exception(e)
+                await self.aremove(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}")
                 flag = True
             else:
-                flag = self.is_not_edited_for(
-                    f"{self.item_dir}/playlists_{self.config['sub_search_lang']}",
-                    datetime.timedelta(hours=2),
-                    force_file=True
-                )
+                if playlists['api'] != self.config['api']:
+                    flag = True
+                else:
+                    flag = self.is_not_edited_for(
+                        f"{self.item_dir}/playlists_{self.config['sub_search_lang']}",
+                        datetime.timedelta(hours=2),
+                        force_file=True
+                    )
         else:
             flag = True
         if flag:
@@ -2141,15 +2153,21 @@ class Bot:
         # Banner
         if not exception:
             if self.isfile(f'{self.item_dir}/banners', force_file=True):
-                banners = await self.aload_json(f"{self.item_dir}/banners", force_file=True)
-                if banners['api'] != self.config['api']:
+                try:
+                    banners = await self.aload_json(f"{self.item_dir}/banners", force_file=True)
+                except json.decoder.JSONDecodeError as e:
+                    self.debug_print_exception(e)
+                    await self.aremove(f"{self.item_dir}/banners")
                     flag = True
                 else:
-                    flag = self.is_not_edited_for(
-                        f'{self.item_dir}/banners',
-                        datetime.timedelta(hours=2),
-                        force_file=True
-                    )
+                    if banners['api'] != self.config['api']:
+                        flag = True
+                    else:
+                        flag = self.is_not_edited_for(
+                            f'{self.item_dir}/banners',
+                            datetime.timedelta(hours=2),
+                            force_file=True
+                        )
             else:
                 flag = True
             if flag:
@@ -2498,7 +2516,7 @@ class Bot:
 
         if not self.is_error() and self.config['status'] == 1:
             self.fix_config_all()
-            await self.asave_json('config', self.config)
+            self.save_json('config', self.config)
             try:
                 device_auths = self.get_device_auth_details()
             except (json.decoder.JSONDecodeError, UnicodeDecodeError) as e:

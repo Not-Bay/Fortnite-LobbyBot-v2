@@ -1551,7 +1551,7 @@ class Client(fortnitepy.Client):
         return 'user'
 
     def is_for(self, config_key: str, user_id: str, fortnite: Optional[bool] = True) -> bool:
-        user_type = self.get_user_type(user_id)
+        user_type = self.get_user_type(user_id) if isinstance(user_id, str) else self.discord_client.get_user_type(user_id)
         if fortnite:
             config = self.config['fortnite'][config_key]
         else:
@@ -1734,7 +1734,7 @@ class Client(fortnitepy.Client):
             **globals(),
             'self': self,
             'client': self,
-            'discord_bot': self.bot,
+            'discord_bot': self.discord_client,
             'party': party,
             'party_id': getattr(party, 'id', None),
             'party_size': getattr(party, 'member_count', None),
@@ -2407,7 +2407,7 @@ class Client(fortnitepy.Client):
                  )),
                 file=sys.stderr
             )
-        await self.bot.asave_json('config', self.bot.config)
+        self.bot.save_json('config', self.bot.config)
 
         for pending in self.incoming_pending_friends:
             if self.is_accept_friend_for(pending.id):

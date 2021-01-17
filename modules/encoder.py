@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import importlib
-from json import _default_encoder
 from json.encoder import (_make_iterencode, JSONEncoder,
                           encode_basestring_ascii, INFINITY,
                           encode_basestring)
@@ -65,25 +64,3 @@ class MyJSONEncoder(JSONEncoder):
             return obj.__name__
         else:
             return None
-
-
-async def adump(obj, fp, *, skipkeys=False, ensure_ascii=True, check_circular=True,
-        allow_nan=True, cls=None, indent=None, separators=None,
-        default=None, sort_keys=False, **kw):
-    # cached encoder
-    if (not skipkeys and ensure_ascii and
-        check_circular and allow_nan and
-        cls is None and indent is None and separators is None and
-        default is None and not sort_keys and not kw):
-        iterable = _default_encoder.iterencode(obj)
-    else:
-        if cls is None:
-            cls = JSONEncoder
-        iterable = cls(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
-            check_circular=check_circular, allow_nan=allow_nan, indent=indent,
-            separators=separators,
-            default=default, sort_keys=sort_keys, **kw).iterencode(obj)
-    # could accelerate with writelines in some versions of Python, at
-    # a debuggability cost
-    for chunk in iterable:
-        await fp.write(chunk)

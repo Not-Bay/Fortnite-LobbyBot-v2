@@ -8,14 +8,13 @@ from aiofiles import open as aopen
 from aiofiles.os import remove as aremove
 from aiofiles.os import rename as arename
 
-from .encoder import MyJSONEncoder, adump
 from .localize import LocalizedText
 
 if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 
 class Updater:
@@ -247,19 +246,12 @@ class Updater:
                             add_p=self.bot.time
                         )
                         if 'db' in tags:
-                            await self.bot.asave_json(key, new)
+                            self.bot.save_json(key, new)
                         else:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            async with aopen(path, 'w', encoding='utf-8') as f:
-                                await adump(
-                                    new,
-                                    f,
-                                    indent=4,
-                                    ensure_ascii=False,
-                                    cls=MyJSONEncoder
-                                )
+                            self.bot.save_json(key, new, force_file=True)
                         return True, new
                 else:
                     if existing != latest:
@@ -275,19 +267,12 @@ class Updater:
                             add_p=self.bot.time
                         )
                         if 'db' in tags:
-                            await self.bot.asave_json(key, latest)
+                            self.bot.save_json(key, latest)
                         else:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            async with aopen(path, 'w', encoding='utf-8') as f:
-                                await adump(
-                                    latest,
-                                    f,
-                                    indent=4,
-                                    ensure_ascii=False,
-                                    cls=MyJSONEncoder
-                                )
+                            self.bot.save_json(key, latest, force_file=True)
                         return True, latest
             else:
                 if 'raw' in tags:
