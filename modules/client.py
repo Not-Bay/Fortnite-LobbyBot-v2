@@ -1632,32 +1632,33 @@ class Client(fortnitepy.Client):
         is_leader = getattr(getattr(getattr(self, 'party', None), 'me', None), 'leader', False)
 
         functions = []
-        for operation in config:
-            if operation == 'kick':
-                if getattr(self, 'party', None) is None or not is_leader:
-                    continue
-                member = self.party.get_member(user.id)
-                if member is None:
-                    continue
-                functions.append(member.kick)
-            elif operation == 'chatban':
-                if getattr(self, 'party', None) is None or not is_leader:
-                    continue
-                member = self.party.get_member(user.id)
-                if member is None:
-                    continue
-                functions.append(member.chatban)
-            elif operation == 'remove':
-                friend = self.get_friend(user.id)
-                if friend is None:
-                    continue
-                functions.append(friend.remove)
-            elif operation == 'block':
-                if user is None:
-                    continue
-                functions.append(user.block)
-            elif operation == 'blacklist':
-                functions.append(partial(self.add_to_blacklist, user=user))
+        if config:
+            for operation in config:
+                if operation == 'kick':
+                    if getattr(self, 'party', None) is None or not is_leader:
+                        continue
+                    member = self.party.get_member(user.id)
+                    if member is None:
+                        continue
+                    functions.append(member.kick)
+                elif operation == 'chatban':
+                    if getattr(self, 'party', None) is None or not is_leader:
+                        continue
+                    member = self.party.get_member(user.id)
+                    if member is None:
+                        continue
+                    functions.append(member.chatban)
+                elif operation == 'remove':
+                    friend = self.get_friend(user.id)
+                    if friend is None:
+                        continue
+                    functions.append(friend.remove)
+                elif operation == 'block':
+                    if user is None:
+                        continue
+                    functions.append(user.block)
+                elif operation == 'blacklist':
+                    functions.append(partial(self.add_to_blacklist, user=user))
 
         return functions
 
@@ -2764,12 +2765,14 @@ class Client(fortnitepy.Client):
 
         async def add_members():
             for member in self.party.members:
+                if member.id == self.user.id or self.has_friend(member.id):
+                    continue
                 pending = self.get_incoming_pending_friend(member.id)
                 if pending is not None:
-                    await pending.accept()
+                    await self.accept_request(pending)
                 elif (not self.has_friend(member.id)
                       and not self.is_outgoing_pending(member.id)):
-                    await member.add()
+                    await self.send_friend_request(member)
 
         if (getattr(self, 'party', None) is not None
                 and self.config['fortnite']['send_friend_request']):
@@ -3632,7 +3635,7 @@ class Client(fortnitepy.Client):
                             or f'{prefix}_' in self.user_commands):
                         key = self.bot.convert_backend_to_key(item)
                         attr = f'is_{key}_lock_for'
-                        if getattr(self, attr)(self.get_user_type(message.author.id)):
+                        if getattr(self, attr)(message.user_type):
                             await message.reply(
                                 self.l('cosmetic_locked')
                             )
@@ -3711,7 +3714,7 @@ class Client(fortnitepy.Client):
                 async def set_cosmetic(cosmetic):
                     item = cosmetic["type"]["backendValue"]
                     attr = f'is_{self.bot.convert_backend_to_key(item)}_lock_for'
-                    if getattr(self, attr)(self.get_user_type(message.author.id)):
+                    if getattr(self, attr)(message.user_type):
                         await message.reply(
                             self.l('cosmetic_locked')
                         )
@@ -3727,7 +3730,7 @@ class Client(fortnitepy.Client):
 
                 cosmetics = self.searcher.search_item_name_id(content)
 
-                if len(cosmetics) > self.config['search_max']:
+                if self.config['search_max'] and len(cosmetics) > self.config['search_max']:
                     await message.reply(
                         self.l('too_many', self.l('item'), len(cosmetics))
                     )

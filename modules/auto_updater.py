@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.0.3'
+__version__ = '1.0.4'
 
 
 class Updater:
@@ -251,7 +251,7 @@ class Updater:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            self.bot.save_json(key, new, force_file=True)
+                            self.bot.save_json(f'{dirs}/{key}', new, force_file=True)
                         return True, new
                 else:
                     if existing != latest:
@@ -272,7 +272,7 @@ class Updater:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            self.bot.save_json(key, latest, force_file=True)
+                            self.bot.save_json(f'{dirs}/{key}', latest, force_file=True)
                         return True, latest
             else:
                 if 'raw' in tags:

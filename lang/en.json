@@ -203,6 +203,7 @@
         "not_a_party_leader": "I'm not a party leader",
         "already_in_list": "'{1}' is already added to {0}",
         "add_to_list": "'{1}' added to {0}",
+        "not_in_list": "'{1}' not in {0}",
         "remove_from_list": "'{1}' removed from {0}",
         "user_type": "User type",
         "operation": "Operation",
