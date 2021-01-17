@@ -287,9 +287,9 @@ class DiscordClient(discord.Client):
 
     async def ng_word_check(self, text: str, user: Type[discord.user.BaseUser]) -> bool:
         if user.id == self.user.id:
-            return False
+            return True
         if not self.is_ng_word_for(user.id):
-            return False
+            return True
         command_stats = getattr(self.bot, 'command_stats', self.bot.bot.command_stats)
 
         match = None
@@ -329,7 +329,7 @@ class DiscordClient(discord.Client):
                 if match not in stats['ngs'][user.id]:
                     stats['ngs'][user.id][match] = 0
                 stats['ngs'][user.id][match] += 1
-                return
+                return False
 
         return True
 
@@ -393,6 +393,8 @@ class DiscordClient(discord.Client):
                 mapping = {
                     'name': self.bot.user.display_name,
                     'id': self.bot.user.id,
+                    'discord_name': self.user.name,
+                    'discord_id': self.user.id,
                     'num': self.bot.num
                 }
                 if not any([message.channel.name == self.bot.cleanup_channel_name(c.format_map(mapping))

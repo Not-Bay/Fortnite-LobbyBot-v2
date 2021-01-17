@@ -302,5 +302,7 @@ Channel name in Discord will be `example-bot01-command-channel`
 | --- | --- |
 |  name  |  Display name of bot  |
 |  id  |  Account ID of bot
+|  discord_name  |  Display name of Discord bot  |
+|  discord_id  |  Account ID of Discord bot  |
 |  num  |  Number of bot (Order in config)  |
 |  all  |  Set all channels as command channel  |

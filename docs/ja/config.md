@@ -229,7 +229,7 @@
 | --- | --- |
 |  self  |  クライアントのインスタンス  |
 |  client  |  クライアントのインスタンス  |
-|  discord_bot  |  クライアントのDiscord Bot  |
+|  discord_bot  |  クライアントのDiscordボット  |
 |  party  |  クライアントのパーティー  |
 |  party_id  |  クライアントのパーティーのID  |
 |  party_size  |  クライアントのパーティーのサイズ  |
@@ -299,5 +299,7 @@ Discord内でのコマンドチャンネルは`example-bot01-command-channel`に
 | --- | --- |
 |  name  |  ボットのディスプレイネーム  |
 |  id  |  ボットのID  |
+|  discord_name  |  Discordボットのディスプレイネーム  |
+|  discord_id  |  DiscordボットのID  |
 |  num  |  ボットの番号(コンフィグでの順番)  |
 |  all  |  全てのチャンネルをコマンドチャンネルにする  |

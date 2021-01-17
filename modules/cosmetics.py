@@ -110,7 +110,7 @@ class Searcher:
                 if self.case_insensitive:
                     name = jaconv.kata2hira(name.casefold())
                 if self.convert_kanji:
-                    name = self.converter.do(name)
+                    name = self.bot.converter.do(name)
                 if text in name:
                     result.append(cosmetic)
 
@@ -140,7 +140,7 @@ class Searcher:
         if self.case_insensitive:
             text = jaconv.kata2hira(text.casefold())
         if self.convert_kanji:
-            text = self.converter.do(text)
+            text = self.bot.converter.do(text)
 
         styles = self.get_style(id)
 
@@ -151,7 +151,7 @@ class Searcher:
             if self.case_insensitive:
                 name = jaconv.kata2hira(name.casefold())
             if self.convert_kanji:
-                name = self.converter.do(name)
+                name = self.bot.converter.do(name)
             if text in name:
                 result.append(style)
 
@@ -165,7 +165,7 @@ class Searcher:
         if self.case_insensitive:
             text = jaconv.kata2hira(text.casefold())
         if self.convert_kanji:
-            text = self.converter.do(text)
+            text = self.bot.converter.do(text)
 
         result = []
 
@@ -176,7 +176,7 @@ class Searcher:
                 else:
                     name = playlist['name']
                 if self.convert_kanji:
-                    name = self.converter.do(name)
+                    name = self.bot.converter.do(name)
                 if text in name:
                     result.append(playlist)
             elif mode == 'id':

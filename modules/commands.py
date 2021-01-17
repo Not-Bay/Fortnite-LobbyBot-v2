@@ -213,7 +213,7 @@ async def add_to_list(attr: str, message: MyMessage, user: fortnitepy.User):
         return
     getattr(client, f'_{attr}')[user.id] = user
     client.config['fortnite'][attr].append(client.get_user_str(user))
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'add_to_list',
@@ -237,7 +237,7 @@ async def remove_from_list(attr: str, message: MyMessage, user: fortnitepy.User)
         return
     getattr(client, f'_{attr}').pop[user.id]
     client.config['fortnite'][attr].append(client.get_user_str(user))
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'remove_from_list',
@@ -310,7 +310,7 @@ async def discord_add_to_list(attr: str, message: MyMessage, user: discord.User)
         return
     getattr(client.discord_client, f'_{attr}')[user.id] = user
     client.config['discord'][attr].append(user.id)
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'add_to_list',
@@ -334,7 +334,7 @@ async def discord_remove_from_list(attr: str, message: MyMessage, user: discord.
         return
     getattr(client.discord_client, f'_{attr}').pop[user.id]
     client.config['discord'][attr].append(user.id)
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'remove_from_list',
@@ -566,7 +566,7 @@ async def set_config_for(keys: List[str], command: Command,
         keys,
         [i['real_value'] for i in final]
     )
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'set_to',
@@ -610,7 +610,7 @@ async def set_config_operation(keys: List[str], command: Command,
         keys,
         [i['real_value'] for i in final]
     )
-    await client.bot.asave_json('config', client.bot.config)
+    client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'set_to',
@@ -1144,7 +1144,7 @@ class DefaultCommands:
             except IndexError as e:
                 client.debug_print_exception(e)
 
-        await client.bot.asave_json('config', config)
+        client.bot.save_json('config', config)
 
         await message.reply(
             client.l('load_config_success')
