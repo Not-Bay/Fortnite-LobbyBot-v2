@@ -116,7 +116,9 @@
 .openable span,
 .openable .content *,
 .openable .add_button,
-.openable .remove_button{
+.openable .remove_button,
+.openable .copy_button,
+.openable .paste_button{
     pointer-events: all;
 }
 

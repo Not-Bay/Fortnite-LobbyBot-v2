@@ -387,3 +387,72 @@ function addElement(element, id_prefix) {
         }
     }
 }
+
+var copied_element;
+function copy(element) {
+    copied_element = element.parentElement;
+}
+
+function paste(element, id_prefix) {
+    if (copied_element) {
+        const parent = element.parentElement.parentElement;
+        const next_element = element.parentElement.nextElementSibling.nextElementSibling;
+        const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
+        const copied_element_num = parseInt(copied_element.id.slice(id_prefix.length + 1));
+        parent.removeChild(element.parentElement.nextElementSibling);
+        parent.removeChild(element.parentElement);
+
+        const child = copied_element.cloneNode(true);
+        child.id = `${id_prefix}_${element_num}`;
+        const request = new XMLHttpRequest();
+        request.open('POST', '/l');
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify({
+            text: id_prefix.slice(0, -1),
+            args: [element_num + 1],
+            kwargs: {}
+        }));
+        request.onload = function () {
+            child.children[0].textContent = request.responseText;
+
+            child.firstElementChild.onclick = function () {
+                const css = `#${child.id}::before {transform: rotate(90deg);}`
+                if (hasCSS(child.id, css)) {
+                    pseudo(child.id, '')
+                } else {
+                    pseudo(child.id, css)
+                }
+                child.classList.toggle('open');
+            }
+            child.firstElementChild.onanimationend = function () {
+                const css = `#${child.id}::before {transform: rotate(90deg);}`
+                if (hasCSS(child.id, css)) {
+                    pseudo(child.id, '')
+                }
+            }
+
+            const items = Array.from(child.children[1].children).slice(1);
+            items.forEach(item => {
+                if (Array.from(item.children).length == 2) {
+                    const label = item.children[0];
+                    const input = item.children[1];
+                    label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                    if (input.tagName == 'DIV') {
+                        Array.from(input.children).forEach(child => {
+                            if (child.tagName == 'DIV') {
+                                child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                                child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                            }
+                        })
+                    } else {
+                        input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                        input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                    }
+                }
+            });
+
+            parent.insertBefore(child, next_element);
+            parent.insertBefore(document.createElement('br'), next_element);
+        }
+    }
+}

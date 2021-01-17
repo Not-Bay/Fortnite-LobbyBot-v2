@@ -458,7 +458,7 @@ async def config_editor_add_client(request: Request) -> HTTPResponse:
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
     if app.bot.get_dict_key_default(config, ['clients']) is None:
-        app.bot.get_dict_key(config, ['clients'], [])
+        app.bot.set_dict_key(config, ['clients'], [])
     app.bot.get_dict_key(config, ['clients']).append(data)
     app.bot.save_json('config', config)
 
@@ -474,7 +474,7 @@ async def config_editor_add_ng_name(request: Request, num: str) -> HTTPResponse:
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
     if app.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_names'], None) is None:
-        app.bot.get_dict_key(config, ['clients', int(num), 'fortnite', 'ng_names'], [])
+        app.bot.set_dict_key(config, ['clients', int(num), 'fortnite', 'ng_names'], [])
     app.bot.get_dict_key(
         config,
         ['clients', int(num), 'fortnite', 'ng_names']
@@ -492,11 +492,11 @@ async def config_editor_add_ng_word(request: Request, num: str) -> HTTPResponse:
     for raw_key, tags in app.bot.ng_words_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_words'], None) is None:
-        app.bot.get_dict_key(config, ['clients', int(num), 'fortnite', 'ng_words'], [])
+    if app.bot.get_dict_key_default(config, ['clients', int(num), 'ng_words'], None) is None:
+        app.bot.set_dict_key(config, ['clients', int(num), 'ng_words'], [])
     app.bot.get_dict_key(
         config,
-        ['clients', int(num), 'fortnite', 'ng_words']
+        ['clients', int(num), 'ng_words']
     ).append(data)
     app.bot.save_json('config', config)
 

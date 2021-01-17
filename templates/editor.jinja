@@ -88,6 +88,8 @@
                                                 {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.bot, config_tag + '_tags'))}}
                                             </div>
                                             <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, '{{keys[-1]}}')">
+                                            <input class="copy_button" type="button" value="{{client.l('copy')}}" onclick="copy(this)">
+                                            <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{keys[-1]}}`)">
                                         </div>
                                         <br>
                                     {% endfor %}

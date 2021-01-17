@@ -210,7 +210,9 @@ class DiscordClient(discord.Client):
                         'owner_not_found',
                         owner
                     ),
-                    add_p=self.time
+                    add_p=self.time,
+                    add_d=self.bot.discord_error,
+                    file=sys.stderr
                 )
             else:
                 self._owner[user.id] = user
@@ -242,7 +244,7 @@ class DiscordClient(discord.Client):
                             list_user
                         ),
                         add_p=self.time,
-                        add_d=self.discord_error,
+                        add_d=self.bot.discord_error,
                         file=sys.stderr
                     )
                 else:

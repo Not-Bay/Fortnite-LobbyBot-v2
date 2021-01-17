@@ -2308,7 +2308,7 @@ class Client(fortnitepy.Client):
             await self.ng_check(member)
 
             if self.is_blacklist(member.id):
-                functions = await self.get_blacklist_operation()
+                functions = await self.get_blacklist_operation(user_id=member.id)
                 for func in functions:
                     try:
                         if asyncio.iscoroutinefunction(func):
@@ -2321,7 +2321,7 @@ class Client(fortnitepy.Client):
                 continue
 
             if self.is_bot(member.id):
-                functions = await self.get_botlist_operation()
+                functions = await self.get_botlist_operation(user_id=member.id)
                 for func in functions:
                     try:
                         if asyncio.iscoroutinefunction(func):
