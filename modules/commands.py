@@ -131,6 +131,13 @@ class MyMessage:
 
         self.args = self.content.split(' ')
         self.author = author or message.author
+        self.user_type = (
+            self.client.discord_client.get_user_type(message.author.id)
+            if self.is_discord_message() else
+            'owner'
+            if not isinstance(self.message, (discord.Message, fortnitepy.message.MessageBase)) else
+            self.client.get_user_type(message.author.id)
+        )
         self.created_at = message.created_at
         self.prev = None
 
@@ -152,6 +159,7 @@ class MyMessage:
             texts = []
             num = 0
             for line in lines:
+                line += '\n'
                 if self.client.bot.get_list_index(texts, num) is None:
                     texts.append('')
                 if len(texts[num] + line) < 2000:
@@ -372,7 +380,7 @@ async def discord_list_operation(func: Callable, attr: str, command: Command,
 
 async def all_cosmetics(item: str, client: 'Client', message: MyMessage) -> None:
     attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-    if getattr(client, attr)(message.author.id):
+    if getattr(client, attr)(message.user_type):
         await message.reply(
             client.l('cosmetic_locked')
         )
@@ -384,7 +392,7 @@ async def all_cosmetics(item: str, client: 'Client', message: MyMessage) -> None
             if i['type']['backendValue'] == item
         ]
         for cosmetic in cosmetics:
-            if getattr(client, attr)(message.author.id):
+            if getattr(client, attr)(message.user_type):
                 await message.reply(
                     client.l('cosmetic_locked')
                 )
@@ -419,7 +427,7 @@ async def cosmetic_search(item: Optional[str], mode: str, command: Command,
     async def set_cosmetic(cosmetic):
         item = cosmetic["type"]["backendValue"]
         attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-        if getattr(client, attr)(message.author.id):
+        if getattr(client, attr)(message.user_type):
             await message.reply(
                 client.l('cosmetic_locked')
             )
@@ -685,7 +693,7 @@ class DefaultCommands:
     )
     async def check_update(command: Command, client: 'Client', message: MyMessage) -> None:
         await message.reply(client.l('checking_update'))
-        if await client.bot.updater.check_updates():
+        if await client.bot.updater.check_updates(client.bot.dev):
             await message.reply(client.l('updated'))
         else:
             await message.reply(client.l('no_update'))
@@ -3581,7 +3589,7 @@ class DefaultCommands:
         async def new_items():
             for item in client.bot.new_items.values():
                 attr = f'is_{client.bot.convert_backend_to_key(item["type"]["backendValue"])}_lock_for'
-                if not getattr(client, attr)(message.author.id):
+                if not getattr(client, attr)(message.user_type):
                     await client.party.me.change_asset(
                         item['type']['backendValue'],
                         item['id'],
@@ -3654,7 +3662,7 @@ class DefaultCommands:
                     })
             for item in items:
                 attr = f'is_{client.bot.convert_backend_to_key(item["type"]["backendValue"])}_lock_for'
-                if not getattr(client, attr)(message.author.id):
+                if not getattr(client, attr)(message.user_type):
                     await client.party.me.change_asset(
                         item['type']['backendValue'],
                         item['id'],
@@ -3698,7 +3706,7 @@ class DefaultCommands:
             )
             return
 
-        if not client.is_emote_lock_for(message.author.id):
+        if not client.is_emote_lock_for(message.user_type):
             await client.party.me.change_asset(
                 'AthenaCharacter',
                 client.party.me.outfit,
@@ -3736,7 +3744,7 @@ class DefaultCommands:
             )
             return
 
-        if not client.is_emote_lock_for(message.author.id):
+        if not client.is_emote_lock_for(message.user_type):
             await client.party.me.change_asset(
                 'AthenaCharacter',
                 client.party.me.outfit,
@@ -3873,7 +3881,7 @@ class DefaultCommands:
         usage='{name}'
     )
     async def clear_outfit(command: Command, client: 'Client', message: MyMessage) -> None:
-        if not client.is_outfit_lock_for(message.author.id):
+        if not client.is_outfit_lock_for(message.user_type):
             await client.party.me.change_asset('AthenaCharacter', '')
             await message.reply(client.l('cleared'))
         else:
@@ -3900,7 +3908,7 @@ class DefaultCommands:
         usage='{name}'
     )
     async def clear_backpack(command: Command, client: 'Client', message: MyMessage) -> None:
-        if not client.is_backpack_lock_for(message.author.id):
+        if not client.is_backpack_lock_for(message.user_type):
             await client.party.me.change_asset('AthenaBackpack', '')
             await message.reply(client.l('cleared'))
         else:
@@ -3920,7 +3928,7 @@ class DefaultCommands:
         usage='{name}'
     )
     async def clear_pickaxe(command: Command, client: 'Client', message: MyMessage) -> None:
-        if not client.is_pickaxe_lock_for(message.author.id):
+        if not client.is_pickaxe_lock_for(message.user_type):
             await client.party.me.change_asset('AthenaPickaxe', '')
             await message.reply(client.l('cleared'))
         else:
@@ -3954,7 +3962,7 @@ class DefaultCommands:
         usage='{name}'
     )
     async def clear_emote(command: Command, client: 'Client', message: MyMessage) -> None:
-        if not client.is_emote_lock_for(message.author.id):
+        if not client.is_emote_lock_for(message.user_type):
             await client.party.me.change_asset('AthenaDance', '')
             await message.reply(client.l('cleared'))
         else:
@@ -4019,7 +4027,7 @@ class DefaultCommands:
 
         async def set_style(style):
             attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-            if getattr(client, attr)(message.author.id):
+            if getattr(client, attr)(message.user_type):
                 await message.reply(
                     client.l('cosmetic_locked')
                 )
@@ -4083,7 +4091,7 @@ class DefaultCommands:
 
         async def add_style(style):
             attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-            if getattr(client, attr)(message.author.id):
+            if getattr(client, attr)(message.user_type):
                 await message.reply(
                     client.l('cosmetic_locked')
                 )
@@ -4153,7 +4161,7 @@ class DefaultCommands:
         corruption = client.party.me.corruption
 
         attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-        if getattr(client, attr)(message.author.id):
+        if getattr(client, attr)(message.user_type):
             await message.reply(
                 client.l('cosmetic_locked')
             )
@@ -4203,7 +4211,7 @@ class DefaultCommands:
         corruption = client.party.me.corruption
 
         attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
-        if getattr(client, attr)(message.author.id):
+        if getattr(client, attr)(message.user_type):
             await message.reply(
                 client.l('cosmetic_locked')
             )

@@ -119,10 +119,10 @@ class Bot:
         'AthenaConsumableEmote': 'EID',
     }
 
-    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop) -> None:
-        self.loop = loop
-
+    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False) -> None:
         self.mode = mode
+        self.loop = loop
+        self.dev = dev
 
         self.clients = []
         self.updater = Updater(self)
@@ -1587,10 +1587,11 @@ class Bot:
                 file=sys.stderr
             )
 
+        ids = [f'{prefix}_' for prefix in self.BACKEND_TO_ID_CONVERTER.values()]
         self.whitelist_commands = []
         for identifier in self.commands['whitelist_commands']:
             command = self.all_commands.get(identifier)
-            if command is None:
+            if command is None and identifier not in [*ids, 'playlist_', 'item_search']:
                 self.send(
                     self.l(
                         'command_not_found',
@@ -1604,7 +1605,7 @@ class Bot:
         self.user_commands = []
         for identifier in self.commands['user_commands']:
             command = self.all_commands.get(identifier)
-            if command is None:
+            if command is None and identifier not in [*ids, 'playlist_', 'item_search']:
                 self.send(
                     self.l(
                         'command_not_found',
@@ -2445,7 +2446,7 @@ class Bot:
                 )
             )
 
-        if await self.updater.check_updates():
+        if await self.updater.check_updates(self.dev):
             await self.reboot()
             sys.exit(0)
 

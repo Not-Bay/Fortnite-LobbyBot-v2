@@ -88,6 +88,6 @@ if __name__ == '__main__':
     ))
 
     loop = asyncio.get_event_loop()
-    bot = modules.Bot(mode, loop=loop)
+    bot = modules.Bot(mode, loop=loop, dev='-dev' in sys.argv)
     bot.setup()
     loop.run_until_complete(bot.start())

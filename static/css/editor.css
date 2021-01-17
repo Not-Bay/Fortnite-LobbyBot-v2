@@ -68,6 +68,23 @@
     font-size: 14px;
     border-radius: 3px;
     bottom: 5px;
+    right: 138px;
+    z-index: 1;
+    border: 1px solid #303339;
+    border-radius: 3px;
+}
+
+#visual_save_and_reload,
+#raw_save_and_reload {
+    position: fixed;
+    cursor: pointer;
+    color: white;
+    background-color: #43b581;
+    width: 130px;
+    height: 32px;
+    font-size: 14px;
+    border-radius: 3px;
+    bottom: 5px;
     right: 5px;
     z-index: 1;
     border: 1px solid #303339;

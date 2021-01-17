@@ -357,6 +357,7 @@
         "visual": "Visual",
         "raw": "Raw data",
         "save": "Save",
+        "save_and_reload": "Save&Reload",
         "saved": "Saved",
         "error_keys": "There was an error on some keys",
         "invalid_json": "Invalid json string",

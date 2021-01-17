@@ -254,7 +254,7 @@ async def config_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='config_',
-        data=app.bot.config,
+        data=await app.bot.aload_json('config'),
         tags=app.bot.config_tags
     )
 
@@ -266,7 +266,7 @@ async def commands_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='commands_',
-        data=app.bot.commands,
+        data=await app.bot.aload_json('commands'),
         tags=app.bot.commands_tags
     )
 
@@ -278,7 +278,7 @@ async def custom_commands_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='custom_commands_',
-        data=app.bot.custom_commands,
+        data=await app.bot.aload_json('custom_commands'),
         tags=app.bot.custom_commands_tags
     )
 
@@ -290,12 +290,12 @@ async def replies_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='replies_',
-        data=app.bot.replies,
+        data=await app.bot.aload_json('replies'),
         tags=app.bot.replies_tags
     )
 
 
-def save(request: Request, data: dict, data_tags: list, filename: str) -> HTTPResponse:
+def save(request: Request, data: dict, data_tags: list, filename: str, reload: Optional[bool] = False) -> HTTPResponse:
     app = request.app
     errors = []
 
@@ -365,7 +365,11 @@ def save(request: Request, data: dict, data_tags: list, filename: str) -> HTTPRe
     format_part(final, [], '', data_tags, False)
 
     errors = []
-    app.bot.tag_check(final, errors, '', data_tags)
+    if app.bot.config['loglevel'] == 'debug':
+        app.bot.send(
+            app.bot.dumps(final),
+            add_p=app.bot.time
+        )
 
     if len(errors) == 0:
         final['status'] = 1
@@ -375,7 +379,7 @@ def save(request: Request, data: dict, data_tags: list, filename: str) -> HTTPRe
             await asyncio.sleep(1)
             await app.bot.reboot()
 
-        if app.bot.config['status'] == 0:
+        if app.bot.config['status'] == 0 or reload:
             app.loop_.create_task(rebooter())
 
         return res.json({
@@ -395,7 +399,7 @@ def save(request: Request, data: dict, data_tags: list, filename: str) -> HTTPRe
         }, dumps=app.bot.dumps)
 
 
-def save_raw(request: Request, data: dict, data_tags: list, filename: str) -> HTTPResponse:
+def save_raw(request: Request, data: dict, data_tags: list, filename: str, reload: Optional[bool] = False) -> HTTPResponse:
     app = request.app
 
     if not auth.authenticated(request):
@@ -421,7 +425,7 @@ def save_raw(request: Request, data: dict, data_tags: list, filename: str) -> HT
             await asyncio.sleep(1)
             await app.bot.reboot()
 
-        if app.bot.config['status'] == 0:
+        if app.bot.config['status'] == 0 or reload:
             app.loop_.create_task(rebooter())
 
         return res.json({
@@ -444,13 +448,15 @@ def save_raw(request: Request, data: dict, data_tags: list, filename: str) -> HT
 @bp.route('/config-editor/add-client', methods=['POST'])
 async def config_editor_add_client(request: Request) -> HTTPResponse:
     app = request.app
+    config = await app.bot.aload_json('config')
     data = {}
     for raw_key, tags in app.bot.client_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(app.bot.config, ['clients']) is None:
-        app.bot.get_dict_key(app.bot.config, ['clients'], [])
-    app.bot.get_dict_key(app.bot.config, ['clients']).append(data)
+    if app.bot.get_dict_key_default(config, ['clients']) is None:
+        app.bot.get_dict_key(config, ['clients'], [])
+    app.bot.get_dict_key(config, ['clients']).append(data)
+    app.bot.save_json('config', config)
 
     return res.empty()
 
@@ -458,16 +464,18 @@ async def config_editor_add_client(request: Request) -> HTTPResponse:
 @bp.route('/config-editor/add-ng-name/<num>', methods=['POST'])
 async def config_editor_add_ng_name(request: Request, num: str) -> HTTPResponse:
     app = request.app
+    config = await app.bot.aload_json('config')
     data = {}
     for raw_key, tags in app.bot.ng_names_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(app.bot.config, ['clients', int(num), 'fortnite', 'ng_names'], None) is None:
-        app.bot.get_dict_key(app.bot.config, ['clients', int(num), 'fortnite', 'ng_names'], [])
+    if app.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_names'], None) is None:
+        app.bot.get_dict_key(config, ['clients', int(num), 'fortnite', 'ng_names'], [])
     app.bot.get_dict_key(
-        app.bot.config,
+        config,
         ['clients', int(num), 'fortnite', 'ng_names']
     ).append(data)
+    app.bot.save_json('config', config)
 
     return res.empty()
 
@@ -475,16 +483,18 @@ async def config_editor_add_ng_name(request: Request, num: str) -> HTTPResponse:
 @bp.route('/config-editor/add-ng-word/<num>', methods=['POST'])
 async def config_editor_add_ng_word(request: Request, num: str) -> HTTPResponse:
     app = request.app
+    config = await app.bot.aload_json('config')
     data = {}
     for raw_key, tags in app.bot.ng_words_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(app.bot.config, ['clients', int(num), 'fortnite', 'ng_words'], None) is None:
-        app.bot.get_dict_key(app.bot.config, ['clients', int(num), 'fortnite', 'ng_words'], [])
+    if app.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_words'], None) is None:
+        app.bot.get_dict_key(config, ['clients', int(num), 'fortnite', 'ng_words'], [])
     app.bot.get_dict_key(
-        app.bot.config,
+        config,
         ['clients', int(num), 'fortnite', 'ng_words']
     ).append(data)
+    app.bot.save_json('config', config)
 
     return res.empty()
 
@@ -492,40 +502,42 @@ async def config_editor_add_ng_word(request: Request, num: str) -> HTTPResponse:
 @bp.route('/config-editor/save', methods=['POST'])
 async def config_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, app.bot.config, app.bot.config_tags, 'config')
+    return save(request, await app.bot.aload_json('config'), app.bot.config_tags, 'config', request.args.get('reload') == 'true')
 
 
 @bp.route('/config-editor/save-raw', methods=['POST'])
 async def config_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, app.bot.config, app.bot.config_tags, 'config')
+    return save_raw(request, await app.bot.aload_json('config'), app.bot.config_tags, 'config', request.args.get('reload') == 'true')
 
 
 @bp.route('/commands-editor/save', methods=['POST'])
 async def commands_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, app.bot.commands, app.bot.commands_tags, 'commands')
+    return save(request, await app.bot.aload_json('commands'), app.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/commands-editor/save-raw', methods=['POST'])
 async def commands_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, app.bot.commands , app.bot.commands_tags, 'commands')
+    return save_raw(request, await app.bot.aload_json('commands') , app.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/custom-commands-editor/add-command', methods=['POST'])
 async def custom_commands_editor_add_command(request: Request) -> HTTPResponse:
     app = request.app
+    custom_commands = await app.bot.aload_json('custom_commands')
     data = {}
     for raw_key, tags in app.bot.custom_commands_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(app.bot.custom_commands, ['commands'], None) is None:
-        app.bot.get_dict_key(app.bot.custom_commands, ['commands'], [])
+    if app.bot.get_dict_key_default(custom_commands, ['commands'], None) is None:
+        app.bot.get_dict_key(custom_commands, ['commands'], [])
     app.bot.get_dict_key(
         app.bot.custom_commands,
         ['commands']
     ).append(data)
+    app.bot.save_json('custom_commands', custom_commands)
 
     return res.empty()
 
@@ -533,28 +545,30 @@ async def custom_commands_editor_add_command(request: Request) -> HTTPResponse:
 @bp.route('/custom-commands-editor/save', methods=['POST'])
 async def custom_commands_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, app.bot.custom_commands, app.bot.custom_commands_tags, 'custom_commands')
+    return save(request, await app.bot.aload_json('custom_commands'), app.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/custom-commands-editor/save-raw', methods=['POST'])
 async def custom_commands_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, app.bot.custom_commands, app.bot.custom_commands_tags, 'custom_commands')
+    return save_raw(request, await app.bot.aload_json('custom_commands'), app.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/replies-editor/add-replie', methods=['POST'])
 async def replies_editor_add_reply(request: Request) -> HTTPResponse:
     app = request.app
+    replies = await app.bot.aload_json('replies')
     data = {}
     for raw_key, tags in app.bot.replies_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(app.bot.replies, ['replies'], None) is None:
-        app.bot.get_dict_key(app.bot.replies, ['replies'], [])
+    if app.bot.get_dict_key_default(replies, ['replies'], None) is None:
+        app.bot.get_dict_key(replies, ['replies'], [])
     app.bot.get_dict_key(
         app.bot.replies,
         ['replies']
     ).append(data)
+    app.bot.save_json('replies', replies)
 
     return res.empty()
 
@@ -562,13 +576,13 @@ async def replies_editor_add_reply(request: Request) -> HTTPResponse:
 @bp.route('/replies-editor/save', methods=['POST'])
 async def replies_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, app.bot.replies, app.bot.replies_tags, 'replies')
+    return save(request, await app.bot.aload_json('replies'), app.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
 
 
 @bp.route('/replies-editor/save-raw', methods=['POST'])
 async def replies_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, app.bot.replies, app.bot.replies_tags, 'replies')
+    return save_raw(request, await app.bot.aload_json('replies'), app.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
 
 
 @bp.route('/boot-switch', methods=['GET'])
