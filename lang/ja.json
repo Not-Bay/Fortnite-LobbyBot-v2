@@ -357,6 +357,7 @@
         "visual": "ビジュアル",
         "raw": "生データ",
         "save": "保存",
+        "save_and_reload": "保存&再読み込み",
         "saved": "保存しました",
         "error_keys": "幾つかのキーに問題がありました",
         "invalid_json": "不正なJSON文字列です",

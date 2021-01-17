@@ -1,34 +1,46 @@
 function visualEnable() {
     const visualEditor = document.getElementById('visual_editor');
     const visualSave = document.getElementById('visual_save');
+    const visualSaveAndReload = document.getElementById('visual_save_and_reload');
     const rawEditor = document.getElementById('raw_editor');
     const rawSave = document.getElementById('raw_save');
+    const rawSaveAndReload = document.getElementById('raw_save_and_reload');
     visualEditor.style.visibility = 'visible';
     visualEditor.style.opacity = 1;
     visualSave.style.display = 'block';
+    visualSaveAndReload.style.display = 'block';
     rawEditor.style.visibility = 'hidden';
     rawEditor.style.opacity = 0;
     rawSave.style.display = 'none';
+    rawSaveAndReload.style.display = 'none';
 }
 
 function rawEnable() {
     const visualEditor = document.getElementById('visual_editor');
     const visualSave = document.getElementById('visual_save');
+    const visualSaveAndReload = document.getElementById('visual_save_and_reload');
     const rawEditor = document.getElementById('raw_editor');
     const rawSave = document.getElementById('raw_save');
+    const rawSaveAndReload = document.getElementById('raw_save_and_reload');
     visualEditor.style.visibility = 'hidden';
     visualEditor.style.opacity = 0;
     visualSave.style.display = 'none';
+    visualSaveAndReload.style.display = 'none';
     rawEditor.style.visibility = 'visible';
     rawEditor.style.opacity = 1;
     rawSave.style.display = 'block';
+    rawSaveAndReload.style.display = 'block';
 }
 
-function saveVisual() {
+function saveVisual(reload = false) {
     const form = document.getElementById('visual_form');
     const formData = new FormData(form);
     const request = new XMLHttpRequest();
-    request.open('POST', location.pathname + '/save');
+    if (reload) {
+        request.open('POST', location.pathname + '/save?reload=true');
+    } else {
+        request.open('POST', location.pathname + '/save');
+    }
     request.send(formData);
     request.onload = function (ev) {
         const data = JSON.parse(request.responseText);
@@ -128,10 +140,14 @@ function saveVisual() {
     }
 }
 
-function saveRaw() {
+function saveRaw(reload = false) {
     try {
         const request = new XMLHttpRequest();
-        request.open('POST', location.pathname + '/save-raw');
+        if (reload) {
+            request.open('POST', location.pathname + '/save-raw?reload=true');
+        } else {
+            request.open('POST', location.pathname + '/save-raw');
+        }
         request.setRequestHeader('Content-Type', 'application/json');
         console.log(JSON.parse(editor.getValue()));
         request.send(JSON.stringify(JSON.parse(editor.getValue())));
@@ -238,26 +254,24 @@ function addListList(element, key) {
 
 function removeElement(element, id_prefix) {
     const parent = element.parentElement.parentElement;
-    const element_count = (Array.from(parent.children).length - 1) / 2;
-    const element_num = parent.id.slice(id_prefix.length + 1);
+    const element_count = Array.from(parent.children).filter(child => child.tagName == 'DIV').length;
+    const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
     parent.removeChild(element.parentElement.nextElementSibling);
     parent.removeChild(element.parentElement);
     if (element_count != element_num) {
         let current_num = 0;
-        let dec_num = 1;
         Array.from(parent.children).forEach(child => {
             if (child.tagName == 'DIV') {
-                current_num += 1
                 if (element_count >= current_num) {
                     const num = parseInt(child.id.slice(id_prefix.length + 1));
-                    child.id = `${id_prefix}_${num - dec_num}`;
+                    child.id = `${id_prefix}_${current_num}`;
     
                     const request = new XMLHttpRequest();
                     request.open('POST', '/l');
                     request.setRequestHeader('Content-Type', 'application/json');
                     request.send(JSON.stringify({
                         text: id_prefix.slice(0, -1),
-                        args: [num - dec_num + 1],
+                        args: [current_num + 1],
                         kwargs: {}
                     }));
                     request.onload = function () {
@@ -268,12 +282,22 @@ function removeElement(element, id_prefix) {
                         if (Array.from(item.children).length == 2) {
                             const label = item.children[0];
                             const input = item.children[1];
-                            label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num - dec_num}]`));
-                            input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num - dec_num}]`));
+                            label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                            if (input.tagName == 'DIV') {
+                                Array.from(input.children).forEach(child => {
+                                    if (child.tagName == 'DIV') {
+                                        child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                                        child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                                    }
+                                })
+                            } else {
+                                input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                                input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                            }
                         }
                     });
-                    dec_num += 1;
                 }
+                current_num += 1
             }
         });
     }

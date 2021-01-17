@@ -357,6 +357,7 @@
         "visual": "Visual",
         "raw": "Raw",
         "save": "Guardar",
+        "save_and_reload": "Guardar y reiniciar",
         "saved": "Guardado",
         "error_keys": "Ha ocurrido un error con algunos valor",
         "invalid_json": "String json inválida",

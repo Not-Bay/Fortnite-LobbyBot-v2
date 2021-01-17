@@ -1550,8 +1550,7 @@ class Client(fortnitepy.Client):
             return 'owner'
         return 'user'
 
-    def is_for(self, config_key: str, user_id: str, fortnite: Optional[bool] = True) -> bool:
-        user_type = self.get_user_type(user_id) if isinstance(user_id, str) else self.discord_client.get_user_type(user_id)
+    def is_for(self, config_key: str, user_type: str, fortnite: Optional[bool] = True) -> bool:
         if fortnite:
             config = self.config['fortnite'][config_key]
         else:
@@ -1560,65 +1559,65 @@ class Client(fortnitepy.Client):
             return False
         return user_type in config
 
-    def is_outfit_mimic_for(self, user_id: str) -> bool:
-        return self.is_for('outfit_mimic_for', user_id)
+    def is_outfit_mimic_for(self, user_type: str) -> bool:
+        return self.is_for('outfit_mimic_for', user_type)
 
-    def is_outfit_lock_for(self, user_id: str) -> bool:
-        return self.is_for('outfit_lock_for', user_id)
+    def is_outfit_lock_for(self, user_type: str) -> bool:
+        return self.is_for('outfit_lock_for', user_type)
 
-    def is_backpack_mimic_for(self, user_id: str) -> bool:
-        return self.is_for('backpack_mimic_for', user_id)
+    def is_backpack_mimic_for(self, user_type: str) -> bool:
+        return self.is_for('backpack_mimic_for', user_type)
 
-    def is_backpack_lock_for(self, user_id: str) -> bool:
-        return self.is_for('backpack_lock_for', user_id)
+    def is_backpack_lock_for(self, user_type: str) -> bool:
+        return self.is_for('backpack_lock_for', user_type)
 
-    def is_pickaxe_mimic_for(self, user_id: str) -> bool:
-        return self.is_for('pickaxe_mimic_for', user_id)
+    def is_pickaxe_mimic_for(self, user_type: str) -> bool:
+        return self.is_for('pickaxe_mimic_for', user_type)
 
-    def is_pickaxe_lock_for(self, user_id: str) -> bool:
-        return self.is_for('pickaxe_lock_for', user_id)
+    def is_pickaxe_lock_for(self, user_type: str) -> bool:
+        return self.is_for('pickaxe_lock_for', user_type)
 
-    def is_emote_mimic_for(self, user_id: str) -> bool:
-        return self.is_for('emote_mimic_for', user_id)
+    def is_emote_mimic_for(self, user_type: str) -> bool:
+        return self.is_for('emote_mimic_for', user_type)
 
-    def is_emote_lock_for(self, user_id: str) -> bool:
-        return self.is_for('emote_lock_for', user_id)
+    def is_emote_lock_for(self, user_type: str) -> bool:
+        return self.is_for('emote_lock_for', user_type)
 
-    def is_ng_platform_for(self, user_id: str) -> bool:
-        return self.is_for('ng_platform_for', user_id)
+    def is_ng_platform_for(self, user_type: str) -> bool:
+        return self.is_for('ng_platform_for', user_type)
 
-    def is_ng_name_for(self, user_id: str) -> bool:
-        return self.is_for('ng_name_for', user_id)
+    def is_ng_name_for(self, user_type: str) -> bool:
+        return self.is_for('ng_name_for', user_type)
 
-    def is_accept_invite_for(self, user_id: str) -> bool:
-        return self.is_for('accept_invite_for', user_id)
+    def is_accept_invite_for(self, user_type: str) -> bool:
+        return self.is_for('accept_invite_for', user_type)
 
-    def is_decline_invite_when(self, user_id: str) -> bool:
-        return self.is_for('decline_invite_when', user_id)
+    def is_decline_invite_when(self, user_type: str) -> bool:
+        return self.is_for('decline_invite_when', user_type)
 
-    def is_invite_interval_for(self, user_id: str) -> bool:
-        return self.is_for('invite_interval_for', user_id)
+    def is_invite_interval_for(self, user_type: str) -> bool:
+        return self.is_for('invite_interval_for', user_type)
 
-    def is_accept_friend_for(self, user_id: str) -> bool:
-        return self.is_for('accept_friend_for', user_id)
+    def is_accept_friend_for(self, user_type: str) -> bool:
+        return self.is_for('accept_friend_for', user_type)
 
-    def is_whisper_enable_for(self, user_id: str) -> bool:
-        return self.is_for('whisper_enable_for', user_id)
+    def is_whisper_enable_for(self, user_type: str) -> bool:
+        return self.is_for('whisper_enable_for', user_type)
 
-    def is_party_chat_enable_for(self, user_id: str) -> bool:
-        return self.is_for('party_chat_enable_for', user_id)
+    def is_party_chat_enable_for(self, user_type: str) -> bool:
+        return self.is_for('party_chat_enable_for', user_type)
 
-    def is_accept_join_for(self, user_id: str) -> bool:
-        return self.is_for('accept_join_for', user_id)
+    def is_accept_join_for(self, user_type: str) -> bool:
+        return self.is_for('accept_join_for', user_type)
 
-    def is_chat_max_for(self, user_id: str) -> bool:
-        return self.is_for('chat_max_for', user_id)
+    def is_chat_max_for(self, user_type: str) -> bool:
+        return self.is_for('chat_max_for', user_type)
 
-    def is_hide_for(self, user_id: str) -> bool:
-        return self.is_for('hide_for', user_id)
+    def is_hide_for(self, user_type: str) -> bool:
+        return self.is_for('hide_for', user_type)
 
-    def is_ng_word_for(self, user_id: str) -> bool:
-        return self.is_for('ng_word_for', user_id, fortnite=False)
+    def is_ng_word_for(self, user_type: str) -> bool:
+        return self.is_for('ng_word_for', user_type, fortnite=False)
 
     async def get_user_operation_func(self, config_key: str, user_id: str, fortnite: Optional[bool] = True) -> List[Callable]:
         if fortnite:
@@ -2178,7 +2177,7 @@ class Client(fortnitepy.Client):
             return
 
         # Name
-        if self.is_ng_name_for(member.id):
+        if self.is_ng_name_for(self.get_user_type(member.id)):
             for ng in self.config['fortnite']['ng_names']:
                 flag = False
                 if ng['matchmethod'] == 'full' and member.display_name == ng['word']:
@@ -2202,7 +2201,7 @@ class Client(fortnitepy.Client):
                             self.print_exception(e)
 
         # Platform
-        if (self.is_ng_platform_for(member.id)
+        if (self.is_ng_platform_for(self.get_user_type(member.id))
                 and self.config['fortnite']['ng_platforms'] is not None
                 and member.platform in self.config['fortnite']['ng_platforms']):
             functions = await self.get_ng_platform_operation(user_id=member.id)
@@ -2231,7 +2230,7 @@ class Client(fortnitepy.Client):
                  or cosmetic)
                 for cosmetic in self.config['fortnite'][f'ng_{conf}s']
             ] if ng is not None]
-            if (self.is_for(f'ng_{conf}_for', member.id)
+            if (self.is_for(f'ng_{conf}_for', self.get_user_type(member.id))
                     and self.asset(item, member).lower() == ngs):
                 functions = await self.get_user_operation_func(f'ng_{conf}_operation', user_id=member.id)
                 for func in functions:
@@ -2246,7 +2245,7 @@ class Client(fortnitepy.Client):
     async def ng_word_check(self, text: str, user: Type[fortnitepy.user.UserBase]) -> bool:
         if user.id == self.user.id:
             return True
-        if not self.is_ng_word_for(user.id):
+        if not self.is_ng_word_for(self.get_user_type(user.id)):
             return True
 
         match = None
@@ -2410,7 +2409,7 @@ class Client(fortnitepy.Client):
         self.bot.save_json('config', self.bot.config)
 
         for pending in self.incoming_pending_friends:
-            if self.is_accept_friend_for(pending.id):
+            if self.is_accept_friend_for(self.get_user_type(pending.id)):
                 await self.accept_request(pending)
         return True
 
@@ -2483,7 +2482,7 @@ class Client(fortnitepy.Client):
         if getattr(self, 'party', None) is not None:
             for member in self.party.members:
                 user_type = self.get_user_type(invitation.sender.id)
-                if (self.is_decline_invite_when(member.id)
+                if (self.is_decline_invite_when(self.get_user_type(member.id))
                         and user_type not in ['whitelist', 'owner']):
                     self.send(
                         self.l(
@@ -2509,7 +2508,7 @@ class Client(fortnitepy.Client):
             self.invite_interval = False
             self.invite_interval_handle = None
 
-        if self.is_invite_interval_for(invitation.sender.id) and self.invite_interval:
+        if self.is_invite_interval_for(self.get_user_type(invitation.sender.id)) and self.invite_interval:
             self.send(
                 self.l(
                     ('invite_decline'
@@ -2528,7 +2527,7 @@ class Client(fortnitepy.Client):
             await invitation.decline()
             return
 
-        if self.is_accept_invite_for(invitation.sender.id):
+        if self.is_accept_invite_for(self.get_user_type(invitation.sender.id)):
             self.send(
                 self.l(
                     ('invite_accept'
@@ -2584,7 +2583,7 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
-        if self.is_accept_friend_for(request.id):
+        if self.is_accept_friend_for(self.get_user_type(request.id)):
             # This log will appear in friend_add
             await self.accept_request(request)
         else:
@@ -2682,7 +2681,7 @@ class Client(fortnitepy.Client):
         if self.party_hides.get(self.party.id) is None:
             self.party_hides[self.party.id] = []
         for m in self.party.members:
-            if not self.party.me.leader and self.is_hide_for(m.id):
+            if not self.party.me.leader and self.is_hide_for(self.get_user_type(m.id)):
                 self.party_hides[self.party.id].append(m.id)
         self.party.update_hide_users(self.party_hides[self.party.id])
 
@@ -2945,7 +2944,7 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
-        if self.is_accept_join_for(confirmation.user.id):
+        if self.is_accept_join_for(self.get_user_type(confirmation.user.id)):
             try:
                 await confirmation.confirm()
             except fortnitepy.HTTPException as e:
@@ -3183,12 +3182,13 @@ class Client(fortnitepy.Client):
                 add_d=partial(self.discord_party, name=name)
             )
 
-        if self.is_for(f'{self.bot.convert_backend_to_key(item)}_mimic_for', member.id):
+        attr = f'is_{self.bot.convert_backend_to_key(item)}_mimic_for'
+        if getattr(self, attr)(self.get_user_type(member.id)):
             if self.bot.convert_backend_to_key(item) == 'emote' and not asset:
                 return
 
             attr = f'is_{self.bot.convert_backend_to_key(item)}_lock_for'
-            if not getattr(self, attr)(member.id):
+            if not getattr(self, attr)(self.get_user_type(member.id)):
                 await self.party.me.change_asset(
                     item,
                     asset=asset or '',
@@ -3356,7 +3356,7 @@ class Client(fortnitepy.Client):
             return
 
         if (self.config['fortnite']['chat_max'] is not None
-                and self.is_chat_max_for(message.author.id)
+                and self.is_chat_max_for(self.get_user_type(message.author.id))
                 and len(message.content) > self.config['fortnite']['chat_max']):
             functions = await self.get_chat_max_operation(user_id=message.author.id)
             for func in functions:
@@ -3372,7 +3372,7 @@ class Client(fortnitepy.Client):
         if not await self.ng_word_check(message.content, message.author):
             return
 
-        if not self.is_party_chat_enable_for(message.author.id):
+        if not self.is_party_chat_enable_for(self.get_user_type(message.author.id)):
             return
 
         self.send(
@@ -3390,7 +3390,7 @@ class Client(fortnitepy.Client):
             await self.wait_until_ready()
 
         if (self.config['fortnite']['chat_max'] is not None
-                and self.is_chat_max_for(message.author.id)
+                and self.is_chat_max_for(self.get_user_type(message.author.id))
                 and len(message.content) > self.config['fortnite']['chat_max']):
             functions = await self.get_chat_max_operation(user_id=message.author.id)
             for func in functions:
@@ -3405,7 +3405,7 @@ class Client(fortnitepy.Client):
 
         await self.ng_word_check(message.content, message.author)
 
-        if not self.is_whisper_enable_for(message.author.id):
+        if not self.is_whisper_enable_for(self.get_user_type(message.author.id)):
             return
 
         self.send(
@@ -3458,14 +3458,6 @@ class Client(fortnitepy.Client):
                 execute = False
         content = message.content[prefix_length:]
         args = content.split(' ')
-
-        user_type = (
-            self.discord_client.get_user_type(message.author.id)
-            if message.is_discord_message() else
-            'owner'
-            if isinstance(getattr(message.message, 'message', None), WebMessage) else
-            self.get_user_type(message.author.id)
-        )
 
         async def replies():
             flag = False
@@ -3559,9 +3551,9 @@ class Client(fortnitepy.Client):
                         words = [self.bot.converter.do(word) for word in words]
                     if arg in words:
                         executed = True
-                        if (user_type == 'owner'
+                        if (message.user_type == 'owner'
                                 or (identifier in self.whitelist_commands
-                                    and user_type in ['owner', 'whitelist'])
+                                    and message.user_type in ['owner', 'whitelist'])
                                 or identifier in self.user_commands):
                             tasks.append(
                                 self.loop.create_task(self.call_command(command, message))
@@ -3634,13 +3626,13 @@ class Client(fortnitepy.Client):
 
             for item, prefix in self.bot.BACKEND_TO_ID_CONVERTER.items():
                 if args[0].lower().startswith(f'{prefix}_'.lower()):
-                    if (user_type == 'owner'
+                    if (message.user_type == 'owner'
                             or (f'{prefix}_' in self.whitelist_commands
-                                and user_type in ['owner', 'whitelist'])
+                                and message.user_type in ['owner', 'whitelist'])
                             or f'{prefix}_' in self.user_commands):
                         key = self.bot.convert_backend_to_key(item)
                         attr = f'is_{key}_lock_for'
-                        if getattr(self, attr)(message.author.id):
+                        if getattr(self, attr)(self.get_user_type(message.author.id)):
                             await message.reply(
                                 self.l('cosmetic_locked')
                             )
@@ -3673,9 +3665,9 @@ class Client(fortnitepy.Client):
                     return
 
             if args[0].lower().startswith('playlist_'):
-                if (user_type == 'owner'
+                if (message.user_type == 'owner'
                         or (f'playlist_' in self.whitelist_commands
-                            and user_type in ['owner', 'whitelist'])
+                            and message.user_type in ['owner', 'whitelist'])
                         or f'playlist_' in self.user_commands):
                     if not self.party.leader:
                         await message.reply(
@@ -3712,14 +3704,14 @@ class Client(fortnitepy.Client):
                                 self.print_exception(e)
                 return
 
-            if (user_type == 'owner'
-                    or (f'item_search' in self.whitelist_commands
-                        and user_type in ['owner', 'whitelist'])
-                    or f'item_search' in self.user_commands):
+            if (message.user_type == 'owner'
+                    or ('item_search' in self.whitelist_commands
+                        and message.user_type in ['owner', 'whitelist'])
+                    or 'item_search' in self.user_commands):
                 async def set_cosmetic(cosmetic):
                     item = cosmetic["type"]["backendValue"]
                     attr = f'is_{self.bot.convert_backend_to_key(item)}_lock_for'
-                    if getattr(self, attr)(message.author.id):
+                    if getattr(self, attr)(self.get_user_type(message.author.id)):
                         await message.reply(
                             self.l('cosmetic_locked')
                         )

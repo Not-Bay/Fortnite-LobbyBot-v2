@@ -34,7 +34,9 @@
 </head>
 <body id="main" ontouchstart="">
     <input id="visual_save" type="button" value="{{client.l('save')}}" onclick="saveVisual()">
+    <input id="visual_save_and_reload" type="button" value="{{client.l('save_and_reload')}}" onclick="saveVisual(true)">
     <input id="raw_save" style="display: none;" type="button" value="{{client.l('save')}}" onclick="saveRaw()">
+    <input id="raw_save_and_reload" style="display: none;" type="button" value="{{client.l('save_and_reload')}}" onclick="saveRaw(true)">
     <div id="shake">
         <div id="header">
             <nav id="header-global">
