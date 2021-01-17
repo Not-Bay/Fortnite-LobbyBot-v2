@@ -269,10 +269,10 @@ async def list_operation(func: Callable, attr: str, command: Command,
         me=message.author
     )
     user = await client.fetch_user(' '.join(message.args[1:]))
-    if user is not None:
+    if user is not None and user not in users:
         users.append(user)
 
-    if len(users) > client.config['search_max']:
+    if client.config['search_max'] and len(users) > client.config['search_max']:
         await message.reply(
             client.l('too_many', client.l('user'), len(users))
         )
@@ -443,7 +443,7 @@ async def cosmetic_search(item: Optional[str], mode: str, command: Command,
 
     cosmetics = client.searcher.search_item(mode, ' '.join(message.args[1:]), item)
 
-    if len(cosmetics) > client.config['search_max']:
+    if client.config['search_max'] and len(cosmetics) > client.config['search_max']:
         await message.reply(
             client.l('too_many', client.l('item'), len(cosmetics))
         )
@@ -509,7 +509,7 @@ async def playlist_search(mode: str, command: Command,
         ' '.join(message.args[1:])
     )
 
-    if len(playlists) > client.config['search_max']:
+    if client.config['search_max'] and len(playlists) > client.config['search_max']:
         await message.reply(
             client.l('too_many', client.l('playlist'), len(playlists))
         )
@@ -1542,7 +1542,7 @@ class DefaultCommands:
         if user is not None:
             users.append(user)
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1578,7 +1578,7 @@ class DefaultCommands:
             me=message.author
         )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1638,7 +1638,7 @@ class DefaultCommands:
             me=message.author
         )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1683,7 +1683,7 @@ class DefaultCommands:
             me=message.author
         )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1746,7 +1746,7 @@ class DefaultCommands:
                 )
             await message.reply(text)
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1910,7 +1910,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -1978,7 +1978,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2131,7 +2131,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2189,7 +2189,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2316,7 +2316,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2383,7 +2383,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2480,7 +2480,7 @@ class DefaultCommands:
                         )
                     )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2598,7 +2598,7 @@ class DefaultCommands:
                         )
                     )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -2703,7 +2703,7 @@ class DefaultCommands:
                 )
             )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -3016,7 +3016,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -3090,7 +3090,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -3182,7 +3182,7 @@ class DefaultCommands:
                         )
                     )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )
@@ -3281,7 +3281,7 @@ class DefaultCommands:
                         )
                     )
 
-            if len(users) > client.config['search_max']:
+            if client.config['search_max'] and len(users) > client.config['search_max']:
                 await message.reply(
                     client.l('too_many', client.l('user'), len(users))
                 )
@@ -3379,7 +3379,7 @@ class DefaultCommands:
                         )
                     )
 
-            if len(users) > client.config['search_max']:
+            if client.config['search_max'] and len(users) > client.config['search_max']:
                 await message.reply(
                     client.l('too_many', client.l('user'), len(users))
                 )
@@ -3534,7 +3534,7 @@ class DefaultCommands:
                     )
                 )
 
-        if len(users) > client.config['search_max']:
+        if client.config['search_max'] and len(users) > client.config['search_max']:
             await message.reply(
                 client.l('too_many', client.l('user'), len(users))
             )

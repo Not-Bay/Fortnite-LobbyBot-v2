@@ -203,6 +203,7 @@
         "not_a_party_leader": "パーティリーダーではありません",
         "already_in_list": "'{1}' は既に{0}に追加されています",
         "add_to_list": "'{1}' を{0}に追加しました",
+        "not_in_list": "'{1}' は{0}に含まれていません",
         "remove_from_list": "'{1}' を{0}から削除しました",
         "user_type": "ユーザーの種類",
         "operation": "発動時の操作",

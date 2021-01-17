@@ -336,6 +336,10 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
                     suffix = "['matchmethod']"
                 elif config_tag == 'ng_words_config':
                     suffix = "['count']"
+                elif config_tag == 'custom_commands_config':
+                    suffix = "['word']"
+                elif config_tag == 'replies_config':
+                    suffix = "['matchmethod']"
                 values = [
                     v
                     for k, v in request.form.items()
