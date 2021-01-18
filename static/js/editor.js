@@ -399,6 +399,8 @@ function paste(element, id_prefix) {
         const next_element = element.parentElement.nextElementSibling.nextElementSibling;
         const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
         const copied_element_num = parseInt(copied_element.id.slice(id_prefix.length + 1));
+        const element_open = element.parentElement.classList.contains('open');
+        const copied_element_open = copied_element.classList.contains('open');
         parent.removeChild(element.parentElement.nextElementSibling);
         parent.removeChild(element.parentElement);
 
@@ -450,6 +452,10 @@ function paste(element, id_prefix) {
                     }
                 }
             });
+
+            if (element_open && !copied_element_open) {
+                child.classList.add('open');
+            }
 
             parent.insertBefore(child, next_element);
             parent.insertBefore(document.createElement('br'), next_element);

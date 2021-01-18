@@ -507,6 +507,11 @@ class Client(fortnitepy.Client):
                 'content': content,
                 'received_at': self.bot.strftime(datetime.datetime.utcnow())
             })
+            self.dispatch_event(
+                'store_whisper',
+                to,
+                self.whisper[to][-1]
+            )
 
         async def store_whisper(message):
             _store_whisper(message.author.id, message.author, message.content)
@@ -521,9 +526,12 @@ class Client(fortnitepy.Client):
         def _store_party_chat(party, author, content):
             if party.id != self.party_id or self.party_id is None:
                 return
+            if self.party_chat['party_id'] is None:
+                self.party_chat['party_id'] = self.party_id
             if self.party_id != self.party_chat['party_id']:
                 self.party_chat['party_id'] = self.party_id
                 self.party_chat['party_chat'].clear()
+                self.dispatch_event('clear_party_chat')
             self.party_chat['party_chat'].append({
                 'author': {
                     'id': author.id,
@@ -532,6 +540,10 @@ class Client(fortnitepy.Client):
                 'content': content,
                 'received_at': self.bot.strftime(datetime.datetime.utcnow())
             })
+            self.dispatch_event(
+                'store_party_chat',
+                self.party_chat['party_chat'][-1]
+            )
 
         async def store_party_chat(message):
             _store_party_chat(message.author.party, message.author, message.content)
@@ -3526,14 +3538,17 @@ class Client(fortnitepy.Client):
                 for command in self.custom_commands['commands']:
                     if command['word'] == content:
                         for line in command['run']:
-                            mes = DummyMessage(self, message, content=line)
-                            await self.process_command(MyMessage(self, mes), None)
-                            if self.config['loglevel'] == 'debug':
-                                self.send(
-                                    mes.result,
-                                    color=yellow,
-                                    add_p=self.debug_message
-                                )
+                            try:
+                                await self.bot.aexec(line, self.variables)
+                            except Exception as e:
+                                self.debug_print_exception(e)
+                                mes = DummyMessage(self, message, content=line)
+                                await self.process_command(MyMessage(self, mes), None)
+                                if self.config['loglevel'] == 'debug':
+                                    self.send(
+                                        mes.result,
+                                        color=yellow
+                                    )
                         return True
                 return False
 
