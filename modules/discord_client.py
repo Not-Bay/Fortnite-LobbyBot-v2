@@ -382,7 +382,7 @@ class DiscordClient(discord.Client):
                 and len(message.content) > self.config['discord']['chat_max']):
             return
 
-        if not await self.ng_word_check(message.content, message.author):
+        if isinstance(self.bot, fortnitepy.Client) and not await self.ng_word_check(message.content, message.author):
             return
 
         if (message.author.id == self.user.id
@@ -390,8 +390,8 @@ class DiscordClient(discord.Client):
                 or not self.is_discord_enable_for(message.author.id)):
             return
 
-        if '{all}' not in self.config['discord']['channels']:
-            if isinstance(self.bot, fortnitepy.Client):
+        if isinstance(self.bot, fortnitepy.Client):
+            if '{all}' not in self.config['discord']['channels']:
                 mapping = {
                     'name': self.bot.user.display_name,
                     'id': self.bot.user.id,
@@ -402,15 +402,33 @@ class DiscordClient(discord.Client):
                 if not any([message.channel.name == self.bot.cleanup_channel_name(c.format_map(mapping))
                             for c in self.config['discord']['channels']]):
                     return
-            else:
-                if message.channel.name not in self.config['discord']['channels']:
-                    return
+                
+                self.send(
+                    message.content,
+                    user_name=self.name(message.author),
+                    add_p=[lambda x: f'{self.name(message.author)} | {x}', self.time]
+                )
 
-        self.send(
-            message.content,
-            user_name=self.name(message.author),
-            add_p=[lambda x: f'{self.name(message.author)} | {x}', self.time]
-        )
+                mes = MyMessage(self.bot, message)
+                await self.bot.process_command(mes, self.config['discord']['prefix'])
+        else:
+            for client in self.bot.clients:
+                mapping = {
+                    'name': client.user.display_name,
+                    'id': client.user.id,
+                    'discord_name': self.user.name,
+                    'discord_id': self.user.id,
+                    'num': client.num
+                }
+                if not any([message.channel.name == self.bot.cleanup_channel_name(c.format_map(mapping))
+                            for c in self.config['discord']['channels']]):
+                    continue
 
-        mes = MyMessage(self.bot, message)
-        await self.bot.process_command(mes, self.config['discord']['prefix'])
+                self.send(
+                    message.content,
+                    user_name=self.name(message.author),
+                    add_p=[lambda x: f'{self.name(message.author)} | {x}', self.time]
+                )
+
+                mes = MyMessage(client, message, discord_client=self)
+                await client.process_command(mes, self.config['discord']['prefix'])
