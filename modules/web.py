@@ -537,9 +537,9 @@ async def custom_commands_editor_add_command(request: Request) -> HTTPResponse:
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
     if app.bot.get_dict_key_default(custom_commands, ['commands'], None) is None:
-        app.bot.get_dict_key(custom_commands, ['commands'], [])
+        app.bot.set_dict_key(custom_commands, ['commands'], [])
     app.bot.get_dict_key(
-        app.bot.custom_commands,
+        custom_commands,
         ['commands']
     ).append(data)
     app.bot.save_json('custom_commands', custom_commands)
@@ -568,9 +568,9 @@ async def replies_editor_add_reply(request: Request) -> HTTPResponse:
         keys = raw_key[2:-2].split("']['")
         app.bot.set_dict_key(data, keys, tags[0]())
     if app.bot.get_dict_key_default(replies, ['replies'], None) is None:
-        app.bot.get_dict_key(replies, ['replies'], [])
+        app.bot.set_dict_key(replies, ['replies'], [])
     app.bot.get_dict_key(
-        app.bot.replies,
+        replies,
         ['replies']
     ).append(data)
     app.bot.save_json('replies', replies)

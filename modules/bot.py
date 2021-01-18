@@ -135,7 +135,7 @@ class Bot:
 
         self.booted_at = None
         self.email_pattern = re.compile(
-            r'[a-zA-Z0-9.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9]+'
+            r'[a-zA-Z0-9.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9]+'
         )
         self.format_pattern = re.compile(r'\{(.*?)\}')
         self.return_pattern = re.compile(
@@ -2652,4 +2652,5 @@ class Bot:
         if not message.args:
             return
         for client in self.clients:
+            message.client = client
             self.loop.create_task(client.process_command(message, None))

@@ -14,6 +14,7 @@ from .colors import yellow
 if TYPE_CHECKING:
     from .bot import Bot
     from .client import Client
+    from .discord_client import DiscordClient
 
 discord = importlib.import_module('discord')
 fortnitepy = importlib.import_module('fortnitepy')
@@ -118,8 +119,10 @@ class DummyMessage:
 class MyMessage:
     def __init__(self, client: Clients, message: Messages, *,
                  content: Optional[str] = None,
-                 author: Optional[Users] = None) -> None:
+                 author: Optional[Users] = None,
+                 discord_client: Optional['DiscordClient'] = None) -> None:
         self.client = client
+        self.discord_client = discord_client or client.discord_client
 
         self.message = (
             message
@@ -132,7 +135,7 @@ class MyMessage:
         self.args = self.content.split(' ')
         self.author = author or message.author
         self.user_type = (
-            self.client.discord_client.get_user_type(message.author.id)
+            self.discord_client.get_user_type(message.author.id)
             if self.is_discord_message() else
             'owner'
             if not isinstance(self.message, (discord.Message, fortnitepy.message.MessageBase)) else
@@ -307,7 +310,7 @@ async def list_operation(func: Callable, attr: str, command: Command,
 async def discord_add_to_list(attr: str, message: MyMessage, user: discord.User):
     client = message.client
 
-    if user.id in getattr(client.discord_client, f'_{attr}'):
+    if user.id in getattr(message.discord_client, f'_{attr}'):
         await message.reply(
             client.l(
                 'already_in_list',
@@ -316,14 +319,14 @@ async def discord_add_to_list(attr: str, message: MyMessage, user: discord.User)
             )
         )
         return
-    getattr(client.discord_client, f'_{attr}')[user.id] = user
+    getattr(message.discord_client, f'_{attr}')[user.id] = user
     client.config['discord'][attr].append(user.id)
     client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(
             'add_to_list',
             client.l(attr),
-            client.discord_client.name(user)
+            message.discord_client.name(user)
         )
     )
 
@@ -331,7 +334,7 @@ async def discord_add_to_list(attr: str, message: MyMessage, user: discord.User)
 async def discord_remove_from_list(attr: str, message: MyMessage, user: discord.User):
     client = message.client
 
-    if user.id not in getattr(client.discord_client, f'_{attr}'):
+    if user.id not in getattr(message.discord_client, f'_{attr}'):
         await message.reply(
             client.l(
                 'not_in_list',
@@ -340,7 +343,7 @@ async def discord_remove_from_list(attr: str, message: MyMessage, user: discord.
             )
         )
         return
-    getattr(client.discord_client, f'_{attr}').pop[user.id]
+    getattr(message.discord_client, f'_{attr}').pop[user.id]
     client.config['discord'][attr].append(user.id)
     client.bot.save_json('config', client.bot.config)
     await message.reply(
@@ -359,10 +362,10 @@ async def discord_list_operation(func: Callable, attr: str, command: Command,
         await client.show_help(command, message)
         return
 
-    user = client.discord_client.get_user(int(message.args[1]))
+    user = message.discord_client.get_user(int(message.args[1]))
     if user is None:
         try:
-            user = await client.discord_client.fetch_user(int(message.args[1]))
+            user = await message.discord_client.fetch_user(int(message.args[1]))
         except discord.NotFound:
             pass
 
