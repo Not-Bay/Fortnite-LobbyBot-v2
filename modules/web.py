@@ -2,12 +2,10 @@
 import asyncio
 import datetime
 import json
-from modules.cosmetics import Searcher
 import os
 import random
 import re
 import string
-from copy import deepcopy
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Optional
 
@@ -216,7 +214,10 @@ async def main(request: Request) -> HTTPResponse:
     app = request.app
     if app.bot.config['status'] == 0:
         return res.redirect('/config-editor')
-    return await app.render_template('index.jinja')
+    return await app.render_template(
+        'index.jinja',
+        version=app.bot.updater.version
+    )
 
 
 @bp.route('/l', methods=['POST'])
@@ -875,85 +876,47 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
         return
 
     async def sender():
-        async def friend_message(message):
+        async def store_whisper(to, data):
             try:
                 data = {
                     'type': 'friend_message',
-                    'to': message.author.id,
-                    'author': {
-                        'id': message.author.id,
-                        'display_name': message.author.display_name
-                    },
-                    'content': message.content,
-                    'received_at': client.bot.strftime(message.created_at)
+                    'to': to,
+                    **data
                 }
                 await ws.send(json.dumps(data))
             except Exception as e:
-                client.remove_event_handler('friend_message', friend_message)
+                client.remove_event_handler('store_whisper', store_whisper)
                 if e.__class__ is not ConnectionClosedOK:
                     raise
 
-        client.add_event_handler('friend_message', friend_message)
+        client.add_event_handler('store_whisper', store_whisper)
 
-        async def party_message(message):
+        async def store_party_chat(data):
             try:
                 data = {
                     'type': 'party_message',
-                    'author': {
-                        'id': message.author.id,
-                        'display_name': message.author.display_name
-                    },
-                    'content': message.content,
-                    'received_at': client.bot.strftime(message.created_at)
+                    **data
                 }
                 await ws.send(json.dumps(data))
             except Exception as e:
-                client.remove_event_handler('party_message', party_message)
+                client.remove_event_handler('store_party_chat', store_party_chat)
                 if e.__class__ is not ConnectionClosedOK:
                     raise
 
-        client.add_event_handler('party_message', party_message)
+        client.add_event_handler('store_party_chat', store_party_chat)
 
-        async def sent_friend_message(author, content):
+        async def clear_party_chat():
             try:
                 data = {
-                    'type': 'friend_message',
-                    'to': author.id,
-                    'author': {
-                        'id': client.user.id,
-                        'display_name': client.user.display_name
-                    },
-                    'content': content,
-                    'received_at': client.bot.strftime(datetime.datetime.utcnow())
+                    'type': 'clear_party_message'
                 }
                 await ws.send(json.dumps(data))
             except Exception as e:
-                client.remove_event_handler('friend_message_send', sent_friend_message)
+                client.remove_event_handler('clear_party_chat', clear_party_chat)
                 if e.__class__ is not ConnectionClosedOK:
                     raise
 
-        client.add_event_handler('friend_message_send', sent_friend_message)
-
-        async def sent_party_message(party, content):
-            if party.id != client.party_id or client.party_id is None:
-                return
-            try:
-                data = {
-                    'type': 'party_message',
-                    'author': {
-                        'id': client.user.id,
-                        'display_name': client.user.display_name
-                    },
-                    'content': content,
-                    'received_at': client.bot.strftime(datetime.datetime.utcnow())
-                }
-                await ws.send(json.dumps(data))
-            except Exception as e:
-                client.remove_event_handler('party_message_send', sent_party_message)
-                if e.__class__ is not ConnectionClosedOK:
-                    raise
-
-        client.add_event_handler('party_message_send', sent_party_message)
+        client.add_event_handler('clear_party_chat', clear_party_chat)
 
         while True:
             await asyncio.sleep(1)

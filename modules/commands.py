@@ -244,7 +244,7 @@ async def remove_from_list(attr: str, message: MyMessage, user: fortnitepy.User)
         )
         return
     getattr(client, f'_{attr}').pop(user.id)
-    client.config['fortnite'][attr].append(client.get_user_str(user))
+    client.config['fortnite'][attr].remove(client.get_user_str(user))
     client.bot.save_json('config', client.bot.config)
     await message.reply(
         client.l(

@@ -198,7 +198,7 @@ socket.addEventListener('message', function(ev) {
         remove.classList.add('red_button');
         remove.value = texts.remove
         remove.onclick = function () {
-            removeOrDeclineFriend('friend_remove', pending.id);
+            removeOrDeclineFriend('friend_remove', friend.id);
         }
         div.appendChild(remove);
 
@@ -207,7 +207,7 @@ socket.addEventListener('message', function(ev) {
         block.classList.add('red_button');
         block.value = texts.block
         block.onclick = function () {
-            blockUser('user_block', pending.id);
+            blockUser('user_block', friend.id);
         }
         div.appendChild(block);
 
@@ -233,7 +233,7 @@ socket.addEventListener('message', function(ev) {
         unblock.classList.add('gray_button');
         unblock.value = texts.unblock
         unblock.onclick = function () {
-            unblockUser('user_unblock', pending.id);
+            unblockUser('user_unblock', blocked_user.id);
         }
         div.appendChild(unblock);
 
@@ -256,7 +256,7 @@ socket.addEventListener('message', function(ev) {
             accept.classList.add('gray_button');
             accept.value = texts.accept
             accept.onclick = function () {
-                acceptFriend('friend_add', pending.id);
+                acceptFriend('friend_add', member.id);
             }
             div.appendChild(accept);
 
@@ -265,7 +265,7 @@ socket.addEventListener('message', function(ev) {
             decline.classList.add('red_button');
             decline.value = texts.decline
             decline.onclick = function () {
-                removeOrDeclineFriend('friend_request_decline', pending.id);
+                removeOrDeclineFriend('friend_request_decline', member.id);
             }
             div.appendChild(decline);
 
@@ -274,7 +274,7 @@ socket.addEventListener('message', function(ev) {
             block.classList.add('red_button');
             block.value = texts.block
             block.onclick = function () {
-                blockUser('user_block', pending.id);
+                blockUser('user_block', member.id);
             }
             div.appendChild(block);
         } else if (member.is_outgoing_pending) {
@@ -283,7 +283,7 @@ socket.addEventListener('message', function(ev) {
             cancel.classList.add('red_button');
             cancel.value = texts.cancel
             cancel.onclick = function () {
-                removeOrDeclineFriend('friend_request_abort', pending.id);
+                removeOrDeclineFriend('friend_request_abort', member.id);
             }
             div.appendChild(cancel);
 
@@ -292,7 +292,7 @@ socket.addEventListener('message', function(ev) {
             block.classList.add('red_button');
             block.value = texts.block
             block.onclick = function () {
-                blockUser('user_block', pending.id);
+                blockUser('user_block', member.id);
             }
             div.appendChild(block);
         } else if (member.is_friend) {
@@ -301,7 +301,7 @@ socket.addEventListener('message', function(ev) {
             remove.classList.add('red_button');
             remove.value = texts.remove
             remove.onclick = function () {
-                removeOrDeclineFriend('friend_remove', pending.id);
+                removeOrDeclineFriend('friend_remove', member.id);
             }
             div.appendChild(remove);
 
@@ -310,7 +310,7 @@ socket.addEventListener('message', function(ev) {
             block.classList.add('red_button');
             block.value = texts.block
             block.onclick = function () {
-                blockUser('user_block', pending.id);
+                blockUser('user_block', member.id);
             }
             div.appendChild(block);
         } else if (member.is_blocked) {
@@ -319,7 +319,7 @@ socket.addEventListener('message', function(ev) {
             unblock.classList.add('gray_button');
             unblock.value = texts.unblock
             unblock.onclick = function () {
-                unblockUser('user_unblock', pending.id);
+                unblockUser('user_unblock', member.id);
             }
             div.appendChild(unblock);
         }
@@ -631,8 +631,16 @@ socket.addEventListener('message', function(ev) {
         constructWhisper(client.to, client);
     } else if (client.type == 'party_message') {
         constructPartyChat(client);
+    } else if (client.type == 'clear_party_message') {
+        const party_chat_content = party_message.firstElementChild.nextElementSibling;
+        while (party_chat_content.firstElementChild) {
+            if (party_chat_content.firstElementChild.tagName == 'PRE') {
+                party_chat_content.removeChild(party_chat_content.firstElementChild);
+            } else {
+                break;
+            }
+        }
     } else if (client.type == 'response') {
-        console.log(client);
         const res = document.getElementById('res');
         res.innerHTML = '';
         const pre = document.createElement('pre');

@@ -14,10 +14,12 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.0.5'
+__version__ = '1.0.6'
 
 
 class Updater:
+    version = __version__
+
     def __init__(self, bot: 'Bot'):
         self.bot = bot
         self.updates = {
