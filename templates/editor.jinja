@@ -76,9 +76,9 @@
                             {% elif config_tag != None %}
                                 <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
                                 {% if config_tag in ['ng_names_config', 'ng_words_config'] %}
-                                    <div id="{{keys[-1]}}" client_num="{{prefix_keys[1]}}">
+                                    <div id="{{keys[-1]}}" client_num="{{prefix_keys[1]}}" class="editor_h">
                                 {% else %}
-                                    <div id="{{keys[-1]}}">
+                                    <div id="{{keys[-1]}}" class="editor_h">
                                 {% endif %}
                                     {% for num, config in enumerate(value) %}
                                         <input type="hidden" name="{{prefix + raw_key}}[{{num}}]">
