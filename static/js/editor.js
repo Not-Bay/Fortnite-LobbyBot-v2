@@ -359,7 +359,9 @@ function addElement(element, id_prefix) {
                 }
             }
 
-            const items = Array.from(newElement.children[1].children).slice(1);
+            const items = Array.from(newElement.children[1].children).filter(
+                child => child.tagName == 'DIV'
+            );
             items.forEach(item => {
                 if (Array.from(item.children).length == 2) {
                     const label = item.children[0];

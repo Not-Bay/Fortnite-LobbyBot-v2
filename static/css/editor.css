@@ -157,6 +157,11 @@
     padding-left: 20px;
 }
 
+#visual_editor .key_value,
+#visual_editor .editor_h {
+    border-bottom: solid 1px #42454A;
+}
+
 /* PC */
 @media print, screen and (min-width: 640px) {
     #visual_editor .list_list {
@@ -169,7 +174,8 @@
     #visual_editor .key_value {
         position: relative;
         white-space: nowrap;
-        margin-bottom: 5px;
+        padding-top: 3px;
+        padding-bottom: 3px;
     }
 
     #visual_editor .key {
@@ -200,7 +206,8 @@
     #visual_editor .key_value {
         position: relative;
         white-space: nowrap;
-        margin-bottom: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
     }
 
     #visual_editor .key {

@@ -370,6 +370,7 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
     format_part(final, [], '', data_tags, False)
 
     errors = []
+    app.bot.tag_check(final, errors, '', data_tags)
     if app.bot.config['loglevel'] == 'debug':
         app.bot.send(
             app.bot.dumps(final),
