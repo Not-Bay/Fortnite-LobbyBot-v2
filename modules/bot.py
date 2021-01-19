@@ -2572,16 +2572,16 @@ class Bot:
                     section = 0
                     if item == 'AthenaDance':
                         section = config['fortnite'][f'{conf}_section']
-                    coro = partial(
+                    coro = fortnitepy.EditEntry(
                         MyClientPartyMember.change_asset,
                         item,
                         (self.get_config_item_id(config['fortnite'][conf])
-                        or config['fortnite'][conf]),
+                         or config['fortnite'][conf]),
                         variants=variants,
                         section=section,
-                        keep=False
+                        keep=False,
+                        name=f'ClientPartyMember.set_{conf}'
                     )
-                    coro.func.__qualname__ = f'ClientPartyMember.set_{conf}'
                     member_meta.append(coro)
 
                 avatar = fortnitepy.kairos.get_random_default_avatar()

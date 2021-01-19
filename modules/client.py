@@ -2728,7 +2728,7 @@ class Client(fortnitepy.Client):
             friend = self.get_friend(member.id)
             if friend is not None and self.config['fortnite']['join_message_whisper']:
                 text = self.eval_format(
-                    '\n'.join(self.config['fortnite']['join_message']),
+                    '\n'.join(self.config['fortnite']['join_message_whisper']),
                     var
                 )
                 try:
@@ -2757,7 +2757,7 @@ class Client(fortnitepy.Client):
             if friend is not None and self.config['fortnite']['random_message_whisper']:
                 text = self.eval_format(
                     '\n'.join(
-                        random.choice(self.config['fortnite']['random_message'])
+                        random.choice(self.config['fortnite']['random_message_whisper'])
                     ),
                     var
                 )
@@ -2830,7 +2830,7 @@ class Client(fortnitepy.Client):
                 await self.party.me.change_asset(
                     item,
                     (self.get_config_item_id(self.config['fortnite'][f'join_{conf}'])
-                        or self.config['fortnite'][f'join_{conf}']),
+                     or self.config['fortnite'][f'join_{conf}']),
                     variants=variants,
                     section=section,
                     do_point=False
