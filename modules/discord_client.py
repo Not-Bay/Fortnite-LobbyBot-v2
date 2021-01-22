@@ -2,6 +2,7 @@
 import asyncio
 import datetime
 import importlib
+import inspect
 import io
 import sys
 from typing import TYPE_CHECKING, Any, Callable, Optional, Union, List, Type
@@ -184,7 +185,18 @@ class DiscordClient(discord.Client):
             if flag:
                 return False
         except Exception as e:
-            self.print_exception(e)
+            def cleanup(code_context):
+                return ''.join([i.strip('\n ') for i in code_context])
+
+            self.bot.send(
+                ('Ignoring exception\n'
+                 f'body: {body}\n'
+                 'Traceback\n'
+                 + '\n'.join([(f'  File "{stack.filename}", line {stack.lineno}, in {stack.function}'
+                               + (f'\n    {cleanup(stack.code_context)}' if stack.code_context else ''))
+                              for stack in reversed(inspect.stack()[1:])])),
+                file=sys.stderr
+            )
 
     async def exec_event(self, event: str, variables: dict) -> None:
         if self.config['discord']['exec'][event]:

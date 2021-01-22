@@ -437,7 +437,7 @@ function paste(element, prefix, id_prefix) {
 
             const items = Array.from(child.children[1].children).slice(1);
             items.forEach(item => {
-                if (Array.from(item.children).length == 3) {
+                if (Array.from(item.children).length == 2 || Array.from(item.children).length == 3) {
                     const label = item.children[0];
                     const input = item.children[1];
                     label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
