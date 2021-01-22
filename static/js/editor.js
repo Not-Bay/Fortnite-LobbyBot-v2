@@ -363,7 +363,7 @@ function addElement(element, prefix, id_prefix) {
                 child => child.tagName == 'DIV'
             );
             items.forEach(item => {
-                if (Array.from(item.children).length == 3) {
+                if (Array.from(item.children).length == 2 || Array.from(item.children).length == 3) {
                     const label = item.children[0];
                     const input = item.children[1];
                     if (input.tagName == 'DIV') {
