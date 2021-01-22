@@ -2232,6 +2232,10 @@ class Bot:
         self.fix_cosmetic_config(config)
 
     def fix_config_all(self) -> None:
+        self.config['discord']['status_type'] = getattr(
+            discord.ActivityType,
+            self.config['discord']['status_type'].lower()
+        )
         for num, channel in enumerate(self.config['discord']['channels']):
             self.config['discord']['channels'][num] = self.cleanup_channel_name(channel)
         for config in self.config['clients']:
