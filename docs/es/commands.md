@@ -157,6 +157,20 @@ Valores en [] son requeridos, valores en () son opcionales
 |  add_variant  |  add_variant [outfit/backpack/pickaxe] [[variante](#Variantes)] [Número]  |  **Esto es para usuarios avanzados. Utiliza set_style y add_style en su lugar**<br>Agrega una variante a la variante actual  |
 |  cosmetic_preset  |  cosmetic_preset [save/load] [número]  |  Guarda/Carga un conjunto guardado  |
 
+### Otros identificadores
+|  Identificador  |  Descripción  |
+| ---- | ---- |
+|  cid_  |  Cambia el item usando CID  |
+|  bid_  |  Cambia el item usando BID  |
+|  petcarrier_  |  Cambia el item usando PetCarrier  |
+|  petid_  |  Cambia el item usando PetID  |
+|  pickaxe_id_  |  Cambia el item usando Pickaxe_ID  |
+|  eid_  |  Cambia el item usando EID  |
+|  emoji_  |  Cambia el item usando ID de emoji  |
+|  toy_  |  Cambia el item usando ID de juguete  |
+|  playlist_  |  Cambia la playlist usando ID  |
+|  item_search  |  Busca ítems por nombre  |
+
 ### Otros
 Palabras a usar en comandos  
 

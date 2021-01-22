@@ -157,6 +157,20 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  add_variant  |  add_variant [outfit/backpack/pickaxe] [[variant](#variant)] [Number]  |  **For advanced users Normally please use set_style and add_style**<br>Add specified variant to current variant  |
 |  cosmetic_preset  |  cosmetic_preset [save/load] [Number]  |  Save/Load item preset  |
 
+### Other identifiers
+|  Identifier  |  Description  |
+| ---- | ---- |
+|  cid_  |  Item change using CID  |
+|  bid_  |  Item change using BID  |
+|  petcarrier_  |  Item change using PetCarrier  |
+|  petid_  |  Item change using PetID  |
+|  pickaxe_id_  |  Item change using Pickaxe_ID  |
+|  eid_  |  Item change using EID  |
+|  emoji_  |  Item change using Emoji ID  |
+|  toy_  |  Item change using Toy ID  |
+|  playlist_  |  Playlist change using ID  |
+|  item_search  |  Item search using Item name  |
+
 ### Others
 Words which use in commands  
 

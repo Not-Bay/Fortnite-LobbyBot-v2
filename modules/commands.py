@@ -2077,9 +2077,9 @@ class DefaultCommands:
             return
 
         kwargs = {
-            'days': message.args[1],
-            'hours': client.bot.get_list_index(message.args, 2, 0),
-            'minutes': client.bot.get_list_index(message.args, 3, 0)
+            'days': int(message.args[1]),
+            'hours': int(client.bot.get_list_index(message.args, 2, 0)),
+            'minutes': int(client.bot.get_list_index(message.args, 3, 0))
         }
         offline_for = datetime.timedelta(**kwargs)
         utcnow = datetime.datetime.utcnow()

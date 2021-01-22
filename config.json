@@ -22,10 +22,7 @@
                 "leave_outfit_style": null,
                 "leave_outfit_on": "me",
                 "outfit_mimic_for": [],
-                "outfit_lock_for": [
-                    "user",
-                    "blacklist"
-                ],
+                "outfit_lock_for": [],
                 "backpack": "",
                 "backpack_style": null,
                 "ng_backpacks": null,
@@ -268,7 +265,7 @@
     "lang": "en",
     "search_lang": "en",
     "sub_search_lang": "en",
-    "api": "BenBot",
+    "api": "Fortnite-API",
     "api_key": "",
     "discord_log": "",
     "omit_over2000": false,
