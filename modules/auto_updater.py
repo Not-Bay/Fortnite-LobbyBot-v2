@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.0.9'
+__version__ = '1.1.0'
 
 
 class Updater:
@@ -132,6 +132,7 @@ class Updater:
     async def check_update(self, uri: str, path: str, save: Optional[str] = None
                            ) -> Tuple[bool, Optional[Union[bytes, str]]]:
         dirs = '/'.join(path.split('/')[:-1])
+        dirs = f'{dirs}/' if dirs else ''
         filename = path.split('/')[-1]
         key = '.'.join(filename.split('.')[:-1])
         extension = filename.split('.')[-1]
@@ -146,9 +147,9 @@ class Updater:
         async def backup():
             if 'backup' in tags:
                 try:
-                    if os.path.isfile(f'{dirs}/{key}_old.{extension}'):
-                        await aremove(f'{dirs}/{key}_old.{extension}')
-                    await arename(path, f'{dirs}/{key}_old.{extension}')
+                    if os.path.isfile(f'{dirs}{key}_old.{extension}'):
+                        await aremove(f'{dirs}{key}_old.{extension}')
+                    await arename(path, f'{dirs}{key}_old.{extension}')
                 except PermissionError:
                     self.bot.send(
                         self.l(
@@ -253,7 +254,7 @@ class Updater:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            self.bot.save_json(f'{dirs}/{key}', new, force_file=True)
+                            self.bot.save_json(f'{dirs}{key}', new, force_file=True)
                         return True, new
                 else:
                     if existing != latest:
@@ -274,7 +275,7 @@ class Updater:
                             if dirs:
                                 os.makedirs(dirs, exist_ok=True)
                             await backup()
-                            self.bot.save_json(f'{dirs}/{key}', latest, force_file=True)
+                            self.bot.save_json(f'{dirs}{key}', latest, force_file=True)
                         return True, latest
             else:
                 if 'raw' in tags:

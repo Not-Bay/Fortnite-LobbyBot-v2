@@ -87,13 +87,13 @@
                                             <div class="content">
                                                 {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.bot, config_tag + '_tags'))}}
                                             </div>
-                                            <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, '{{keys[-1]}}')">
+                                            <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, `{{prefix + raw_key}}`), `{{keys[-1]}}`">
                                             <input class="copy_button" type="button" value="{{client.l('copy')}}" onclick="copy(this)">
-                                            <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{keys[-1]}}`)">
+                                            <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{prefix + raw_key}}`, `{{keys[-1]}}`)">
                                         </div>
                                         <br>
                                     {% endfor %}
-                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addElement(this, '{{keys[-1]}}')">
+                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addElement(this, `{{prefix + raw_key}}`, `{{keys[-1]}}`)">
                                 </div>
                             {% else %}
                                 <div class="key_value" style="left: {{15 * (len(keys) - 1)}}px;">
@@ -126,9 +126,9 @@
                                                         {% for num, val in enumerate(value) %}
                                                             <div>
                                                                 {% if val != None %}
-                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]">{{'\n'.join(map(str, val))}}</textarea>
+                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]" rows=4>{{'\n'.join(map(str, val))}}</textarea>
                                                                 {% else %}
-                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]"></textarea>
+                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]" rows=4></textarea>
                                                                 {% endif %}
                                                                 <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeListList(this, `{{prefix + raw_key}}`)">
                                                             </div>
@@ -138,9 +138,9 @@
                                                 </div>
                                             {% else %}
                                                 {% if value != None %}
-                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}">{{'\n'.join(map(str, value))}}</textarea>
+                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" rows=4>{{'\n'.join(map(str, value))}}</textarea>
                                                 {% else %}
-                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}"></textarea>
+                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" rows=4></textarea>
                                                 {% endif %}
                                             {% endif %}
                                         {% else %}
@@ -151,6 +151,9 @@
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
+                                    <!-- {% if client.bot.get_list_index(prefix_keys, 1) %}
+                                        <input class="apply_to_all_button" type="button" value="{{client.l('apply_to_all')}}" onclick="applyToAll(this, `{{keys[-1]}}`)">
+                                    {% endif %} -->
                                 </div>
                             {% endif %}
                         {% endfor %}

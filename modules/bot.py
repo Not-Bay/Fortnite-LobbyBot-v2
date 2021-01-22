@@ -135,7 +135,7 @@ class Bot:
 
         self.booted_at = None
         self.email_pattern = re.compile(
-            r'[a-zA-Z0-9.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9]+'
+            r'[a-zA-Z0-9.+-_]+@[a-zA-Z0-9-_]+\.[a-zA-Z0-9]+'
         )
         self.format_pattern = re.compile(r'\{(.*?)\}')
         self.return_pattern = re.compile(
@@ -315,6 +315,7 @@ class Bot:
             "['fortnite']['ng_outfits']": [list, str, 'can_be_none'],
             "['fortnite']['ng_outfit_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_outfit_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_outfit_reply']": [str, 'can_be_none'],
             "['fortnite']['join_outfit']": [str, 'can_be_none'],
             "['fortnite']['join_outfit_style']": [list, str, 'can_be_none'],
             "['fortnite']['join_outfit_on']": [str, 'select_event'],
@@ -328,6 +329,7 @@ class Bot:
             "['fortnite']['ng_backpacks']": [list, str, 'can_be_none'],
             "['fortnite']['ng_backpack_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_backpack_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_backpack_reply']": [str, 'can_be_none'],
             "['fortnite']['join_backpack']": [str, 'can_be_none'],
             "['fortnite']['join_backpack_style']": [list, str, 'can_be_none'],
             "['fortnite']['join_backpack_on']": [str, 'select_event'],
@@ -341,6 +343,7 @@ class Bot:
             "['fortnite']['ng_pickaxes']": [list, str, 'can_be_none'],
             "['fortnite']['ng_pickaxe_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_pickaxe_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_pickaxe_reply']": [str, 'can_be_none'],
             "['fortnite']['join_pickaxe']": [str, 'can_be_none'],
             "['fortnite']['join_pickaxe_style']": [list, str, 'can_be_none'],
             "['fortnite']['join_pickaxe_on']": [str, 'select_event'],
@@ -355,6 +358,7 @@ class Bot:
             "['fortnite']['ng_emotes']": [list, str, 'can_be_none'],
             "['fortnite']['ng_emote_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_emote_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_emote_reply']": [str, 'can_be_none'],
             "['fortnite']['join_emote']": [str, 'can_be_none'],
             "['fortnite']['join_emote_section']": [int, 'can_be_none'],
             "['fortnite']['join_emote_on']": [str, 'select_event'],
@@ -380,9 +384,11 @@ class Bot:
             "['fortnite']['ng_platforms']": [list, str, 'multiple_select_platform', 'can_be_none'],
             "['fortnite']['ng_platform_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_platform_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_platform_reply']": [str, 'can_be_none'],
             "['fortnite']['ng_names']": [list, dict, 'ng_names_config'],
             "['fortnite']['ng_name_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_name_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['fortnite']['ng_name_reply']": [str, 'can_be_none'],
             "['fortnite']['status']": [str],
             "['fortnite']['accept_invite_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['decline_invite_when']": [list, str, 'multiple_select_user_type', 'can_be_none'],
@@ -443,6 +449,7 @@ class Bot:
             "['ng_words']": [list, dict, 'ng_words_config'],
             "['ng_word_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['ng_word_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
+            "['ng_word_reply']": [str, 'can_be_none'],
             "['relogin_in']": [int, 'can_be_none'],
             "['search_max']": [int, 'can_be_none'],
             "['no_logs']": [bool, 'select_bool'],
@@ -1459,10 +1466,10 @@ class Bot:
                 if self.isfile(f'{filename}_old', force_file=True):
                     self.remove(f'{filename}_old', force_file=True)
                 self.rename(filename, f'{filename}_old', force_file=True)
-                try:
-                    self.remove(filename, force_file=True)
-                except Exception as e:
-                    self.debug_print_exception(e)
+            try:
+                self.remove(filename, force_file=True)
+            except Exception as e:
+                self.debug_print_exception(e)
             self.save_json(filename, data)
 
     def remove_unneeded_files(self) -> None:
@@ -1472,6 +1479,7 @@ class Bot:
             'RUN.bat'
         ]
         repl_only = [
+            '.replit',
             'pyproject.toml'
         ]
 
@@ -1587,9 +1595,10 @@ class Bot:
                 file=sys.stderr
             )
 
-        ids = [f'{prefix}_' for prefix in self.BACKEND_TO_ID_CONVERTER.values()]
+        ids = [f'{prefix}_'.lower() for prefix in self.BACKEND_TO_ID_CONVERTER.values()]
         self.whitelist_commands = []
         for identifier in self.commands['whitelist_commands']:
+            identifier = identifier.lower()
             command = self.all_commands.get(identifier)
             if command is None and identifier not in [*ids, 'playlist_', 'item_search']:
                 self.send(
@@ -1604,6 +1613,7 @@ class Bot:
 
         self.user_commands = []
         for identifier in self.commands['user_commands']:
+            identifier = identifier.lower()
             command = self.all_commands.get(identifier)
             if command is None and identifier not in [*ids, 'playlist_', 'item_search']:
                 self.send(
@@ -2324,16 +2334,16 @@ class Bot:
             key = f'ng_{lang_key}s'
             if not config['fortnite'][key]:
                 continue
-            for num, cosmetic in enumerate(config['fortnite'][key]):
-                if self.get_config_item_id(cosmetic) is not None:
+            for num, value in enumerate(config['fortnite'][key]):
+                if self.get_config_item_id(value) is not None:
                     continue
-                if cosmetic:
+                if value:
                     cosmetic = self.searcher.get_item(
-                        cosmetic
+                        value
                     )
                     if cosmetic is None:
                         cosmetics = self.searcher.search_item_name_id(
-                            cosmetic,
+                            value,
                             item
                         )
                         if len(cosmetics) != 0:
@@ -2347,7 +2357,7 @@ class Bot:
                             self.l(
                                 'not_found',
                                 self.l(lang_key),
-                                cosmetic
+                                value
                             ),
                             add_p=self.time,
                             file=sys.stderr
@@ -2366,7 +2376,7 @@ class Bot:
             await self.server.close()
 
         await fortnitepy.close_multiple(
-            self.clients
+            [client for client in self.clients if client.is_ready() or client.is_booting()]
         )
 
     async def rebooter(self) -> None:
@@ -2446,9 +2456,10 @@ class Bot:
                 )
             )
 
-        if await self.updater.check_updates(self.dev):
-            await self.reboot()
-            sys.exit(0)
+        if self.config['check_update_on_startup']:
+            if await self.updater.check_updates(self.dev):
+                await self.reboot()
+                sys.exit(0)
 
         if not self.is_error() and self.config['status'] == 1:
             self.send(

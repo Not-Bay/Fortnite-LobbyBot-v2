@@ -252,7 +252,7 @@ function addListList(element, key) {
     parent.insertBefore(div, element);
 }
 
-function removeElement(element, id_prefix) {
+function removeElement(element, prefix, id_prefix) {
     const parent = element.parentElement.parentElement;
     const element_count = Array.from(parent.children).filter(child => child.tagName == 'DIV').length;
     const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
@@ -279,20 +279,20 @@ function removeElement(element, id_prefix) {
                     }
                     const items = Array.from(child.children[1].children).slice(1);
                     items.forEach(item => {
-                        if (Array.from(item.children).length == 2) {
+                        if (Array.from(item.children).length == 3) {
                             const label = item.children[0];
                             const input = item.children[1];
-                            label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                            label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
                             if (input.tagName == 'DIV') {
                                 Array.from(input.children).forEach(child => {
                                     if (child.tagName == 'DIV') {
-                                        child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
-                                        child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                                        child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
+                                        child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
                                     }
                                 })
                             } else {
-                                input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
-                                input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${current_num}]`));
+                                input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
+                                input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
                             }
                         }
                     });
@@ -303,7 +303,7 @@ function removeElement(element, id_prefix) {
     }
 }
 
-function addElement(element, id_prefix) {
+function addElement(element, prefix, id_prefix) {
     const parent = element.parentElement;
     let copyElement = null;
     Array.from(parent.childNodes).forEach(child => {
@@ -363,7 +363,7 @@ function addElement(element, id_prefix) {
                 child => child.tagName == 'DIV'
             );
             items.forEach(item => {
-                if (Array.from(item.children).length == 2) {
+                if (Array.from(item.children).length == 3) {
                     const label = item.children[0];
                     const input = item.children[1];
                     if (input.tagName == 'DIV') {
@@ -371,9 +371,9 @@ function addElement(element, id_prefix) {
                             input.removeChild(input.firstChild);
                         }
                     } else {
-                        label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
-                        input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
-                        input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${num}]`, `['${id_prefix}'][${num + 1}]`));
+                        label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
+                        input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
+                        input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
                         if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
                             input.value = '';
                         } else {
@@ -395,7 +395,7 @@ function copy(element) {
     copied_element = element.parentElement;
 }
 
-function paste(element, id_prefix) {
+function paste(element, prefix, id_prefix) {
     if (copied_element) {
         const parent = element.parentElement.parentElement;
         const next_element = element.parentElement.nextElementSibling.nextElementSibling;
@@ -437,20 +437,20 @@ function paste(element, id_prefix) {
 
             const items = Array.from(child.children[1].children).slice(1);
             items.forEach(item => {
-                if (Array.from(item.children).length == 2) {
+                if (Array.from(item.children).length == 3) {
                     const label = item.children[0];
                     const input = item.children[1];
-                    label.setAttribute('for', label.getAttribute('for').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                    label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
                     if (input.tagName == 'DIV') {
                         Array.from(input.children).forEach(child => {
                             if (child.tagName == 'DIV') {
-                                child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
-                                child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                                child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
+                                child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
                             }
                         })
                     } else {
-                        input.setAttribute('id', input.getAttribute('id').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
-                        input.setAttribute('name', input.getAttribute('name').replace(`['${id_prefix}'][${copied_element_num}]`, `['${id_prefix}'][${element_num}]`));
+                        input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
+                        input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
                     }
                 }
             });
@@ -463,4 +463,8 @@ function paste(element, id_prefix) {
             parent.insertBefore(document.createElement('br'), next_element);
         }
     }
+}
+
+function applyToAll(element, prefix) {
+    const elements = document.querySelectorAll()
 }

@@ -14,7 +14,8 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Estilo de skin (outfit_style)  |  Nombre o ID del estilo de la skin por defecto del bot  |
 |  Skins NG (ng_outfits)  |  Nombre o ID de skins NG<br>Actualmente no afecta en nada, únicamente se utiliza para identificar  |
 |  Skin NG para (ng_outfit_for)  |  Tipos de usuario para skins NG  |
-|  Operación de skins NG  |  Operaciones a ejecutar cuando una skin NG es detectada  |
+|  Operación de skins NG (ng_outfit_operation) |  Operaciones a ejecutar cuando una skin NG es detectada  |
+|  Mensaje de skin NG (ng_outfit_reply)  |  Texto que se enviará cuando se detecta una skin NG  |
 |  Skin al unirse (join_outfit)  |  Nombre o ID del outfit al usar al unirse a un grupo  |
 |  Estilo de skin al unirse (join_outfit_style)  |  Nombre o ID del estilo de la skin al unirse a un grupo  |
 |  Habilitar skin al unirse (join_outfit_when)  |  Operación que ejecuta skin al unirse  |
@@ -27,7 +28,8 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Estilo de mochila (backpack_style)  |  Nombre o ID del estilo de mochila del bot por defecto  |
 |  Mochilas NG (ng_backpacks)  |  Nombre o ID de mochilas NG<br>Actualmente no afecta en nada, únicamente se utiliza para identificar  |
 |  Mochila NG para (ng_backpack_for)  |  Tipos de usuario para mochila NG  |
-|  Operación de mochila NG  |  Operaciones a ejecutar cuando se detecta una mochila NG  |
+|  Operación de mochila NG (ng_backpack_operation)  |  Operaciones a ejecutar cuando se detecta una mochila NG  |
+|  Mensaje de mochila NG (ng_backpack_reply)  |  Texto que se enviará cuando se detecta una mochila NG  |
 |  Mochila al unirse (join_backpack)  |  Nombre o ID de la mochila a usar al unirse  |
 |  Estilo de mochila al unirse (join_backpack_style)  |  Nombre o ID dle estilo de la mochila al unirse  |
 |  Habilitar mochila al unirse (join_backpack_when)  |  Operación que ejecuta mochila al unirse  |
@@ -40,7 +42,8 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Estilo del pico (pickaxe_style)  |  Nombre o ID del estilo del pico por defecto del bot  |
 |  Picos NG (ng_pickaxes)  |  Nomrbe o ID de picos NG<br>Actualmente no afecta en nada, únicamente se utiliza para identificar  |
 |  Picos NG para (ng_pickaxe_for)  |  Tipos de usuario para picos NG  |
-|  Operación de pico NG  |  Operaciónes a ejecutar cuando se detecta un pico NG  |
+|  Operación de pico NG (ng_pickaxe_operation)  |  Operaciónes a ejecutar cuando se detecta un pico NG  |
+|  Mensaje de pico NG (ng_pickaxe_reply)  |  Texto que se enviará cuando se detecta una pico NG  |
 |  Pico al unirse (join_pickaxe)  |  Nombre o ID del pico a usar al unirse  |
 |  Estilo de pico al unirse (join_pickaxe_style)  |  Nombre o ID del estilo del pico al unirse  |
 |  Habilitar pico al unirse (join_pickaxe_when)  |  Operación que ejecuta pico al unirse  |
@@ -53,7 +56,8 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Sección del emote (emote_section)  |  Sección del emote por defecto del bot  |
 |  Emotes NG (ng_emotes)  |  Nombre o ID para emotes NG<br>Actualmente no afecta en nada, únicamente se utiliza para identificar  |
 |  Emote NG para (ng_emote_for)  |  Tipos de usuario para emote NG  |
-|  Operación de emote NG  |  Operaciones a ejecutar cuando se detecta un emote NG  |
+|  Operación de emote NG (ng_emote_operation)  |  Operaciones a ejecutar cuando se detecta un emote NG  |
+|  Mensaje de emote NG (ng_emote_reply)  |  Texto que se enviará cuando se detecta una emote NG  |
 |  Emote al unirse (join_emote)  |  Nombre o ID del emote al unirse  |
 |  Sección de emote al unirse (join_emote_section)  |  Sección del emote al unirse  |
 |  Habilitar emote al unirse (join_emote_when)  |  Operación que ejecuta emote al unirse  |
@@ -85,6 +89,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Plataformas NG (ng_platforms)  |  Plataformas NG  |
 |  Plataformas NG para (ng_platform_for)  |  Tipos de usuario para plataformas NG  |
 |  Operación de plataformas NG (ng_platform_operation)  |  Operaciónes a ejecutar cuando se detecta una plataforma NG  |
+|  Mensaje de plataforma NG (ng_platform_reply)  |  Texto que se enviará cuando se detecta una plataforma NG  |
 
 ##### Nombres NG (ng_names)
 |  Valor (Valor Raw)  |  Descripción  |
@@ -96,6 +101,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 | --- | --- |
 |  Nombre NG para (ng_name_for)  |  Tipos de usuario para nombres NG  |
 |  Operación de nombres NG (ng_name_operation)  |  Operación que ejecuta nombres NG  |
+|  Mensaje de nombre NG (ng_name_reply)  |  Texto que se enviará cuando se detecta una nombre NG  |
 |  Status (status)  |  Status<br>Puedes utilizar [variables](#Variables)  |
 |  Aceptar invitación para (accept_invite_for)  |  Tipos de usuarios para aceptar invitaciones  |
 |  Rechazar invitaciones para (decline_invite_when)  |  Tipos de usuarios para rechazar invitaciones cuando un usuario esté en el grupo |
@@ -174,6 +180,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 | --- | --- |
 |  Palabras NG para (ng_word_for)  |  Tipos de usuarios para palabras NG  |
 |  Operación de palabras NG (ng_word_operation)  |  Operación a ejecutar cuando se detecta una palabra NG  |
+|  Mensaje de palabra NG (ng_word_reply)  |  Texto que se enviará cuando se detecta una palabra NG  |
 |  Tiempo hasta reiniciar sesión (relogin_in)  |  Tiempo en segundos hasta reiniciar la sesión  |
 |  Máximos resultados de búsqueda (search_max)  |  Máximos resultados para comandos con búsqueda  |
 |  Deshabilitar logs (no_logs)  |  Desactiva los logs para este bot  |
@@ -201,6 +208,7 @@ Revisa Discord arriba
 
 |  Valor (Valor Raw)  |  Descripción  |
 | --- | --- |
+|  Comprobar actualizaciones al inicio (check_update_on_startup)  |  Comprobar actualizaciones al inicio  |
 |  Tiempo hasta reiniciar (restart_in)  |  Tiempo en segundos hasta reiniciar el bot  |
 |  Idioma del bot (lang)  |  Idioma del bot  |
 |  Idioma de búsqueda (search_lang)  |  Idioma de búsqueda del bot  |

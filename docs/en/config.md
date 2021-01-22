@@ -14,7 +14,8 @@ Usually please use web config editor to change configs
 |  Outfit's style (outfit_style)  |  Name or ID of outfit style which will use as bot's default outfit style  |
 |  NG outfits (ng_outfits)  |  Name or ID of outfit which will set as NG<br>Actually this itself won't affect to anything, just used for identification  |
 |  NG outfit for (ng_outfit_for)  |  User types which apply NG outfit  |
-|  NG outfit operation  |  Operations which run when NG outfit has triggered  |
+|  NG outfit operation (ng_outfit_operation)  |  Operations which run when NG outfit has triggered  |
+|  NG outfit reply (ng_outfit_reply)  |  Text which send when NG outfit has triggered  |
 |  Join outfit (join_outfit)  |  Name or ID of outfit to use when party join  |
 |  Join outfit's style (join_outfit_style)  |  Name or ID of outfit style to use when party join  |
 |  Join outfit on (join_outfit_when)  |  Operation to trigger join outfit  |
@@ -27,7 +28,8 @@ Usually please use web config editor to change configs
 |  Backpack's style (backpack_style)  |  Name or ID of backpack style which will use as bot's default backpack style  |
 |  NG backpacks (ng_backpacks)  |  Name or ID of backpack which will set as NG<br>Actually this itself won't affect to anything, just used for identification  |
 |  NG backpack for (ng_backpack_for)  |  User types which apply NG backpack  |
-|  NG backpack operation  |  Operations which run when NG backpack has triggered  |
+|  NG backpack operation (ng_backpack_operation)  |  Operations which run when NG backpack has triggered  |
+|  NG backpack reply (ng_backpack_reply)  |  Text which send when NG backpack has triggered  |
 |  Join backpack (join_backpack)  |  Name or ID of backpack to use when party join  |
 |  Join backpack's style (join_backpack_style)  |  Name or ID of backpack style to use when party join  |
 |  Join backpack on (join_backpack_when)  |  Operation to trigger join backpack  |
@@ -40,7 +42,8 @@ Usually please use web config editor to change configs
 |  Pickaxe's style (pickaxe_style)  |  Name or ID of pickaxe style which will use as bot's default pickaxe style  |
 |  NG pickaxes (ng_pickaxes)  |  Name or ID of pickaxe which will set as NG<br>Actually this itself won't affect to anything, just used for identification  |
 |  NG pickaxe for (ng_pickaxe_for)  |  User types which apply NG pickaxe  |
-|  NG pickaxe operation  |  Operations which run when NG pickaxe has triggered  |
+|  NG pickaxe operation (ng_pickaxe_operation)  |  Operations which run when NG pickaxe has triggered  |
+|  NG pickaxe reply (ng_pickaxe_reply)  |  Text which send when NG pickaxe has triggered  |
 |  Join pickaxe (join_pickaxe)  |  Name or ID of pickaxe to use when party join  |
 |  Join pickaxe's style (join_pickaxe_style)  |  Name or ID of pickaxe style to use when party join  |
 |  Join pickaxe on (join_pickaxe_when)  |  Operation to trigger join pickaxe  |
@@ -53,7 +56,8 @@ Usually please use web config editor to change configs
 |  Emote section (emote_section)  |  Section of emote which will use as bot's default section  |
 |  NG emotes (ng_emotes)  |  Name or ID of emote which will set as NG<br>Actually this itself won't affect to anything, just used for identification  |
 |  NG emote for (ng_emote_for)  |  User types which apply NG emote  |
-|  NG emote operation  |  Operations which run when NG emote has triggered  |
+|  NG emote operation (ng_emote_operation)  |  Operations which run when NG emote has triggered  |
+|  NG emote reply (ng_emote_reply)  |  Text which send when NG emote has triggered  |
 |  Join emote (join_emote)  |  Name or ID of emote to use when party join  |
 |  Join emote section (join_emote_section)  |  Section of emote to use when party join  |
 |  Join emote on (join_emote_when)  |  Operation to trigger join emote  |
@@ -85,6 +89,7 @@ Usually please use web config editor to change configs
 |  NG platforms (ng_platforms)  |  Platforms which will set as NG  |
 |  NG platform for (ng_platform_for)  |  User types which apply NG platform  |
 |  NG platform operation (ng_platform_operation)  |  Operation which run when NG platform has triggered  |
+|  NG platform reply (ng_platform_reply)  |  Text which send when NG platform has triggered  |
 
 ##### NG names (ng_names)
 |  Key (Raw value)  |  Description  |
@@ -96,6 +101,7 @@ Usually please use web config editor to change configs
 | --- | --- |
 |  NG name for (ng_name_for)  |  User types which apply NG name  |
 |  NG name operation (ng_name_operation)  |  Operation which run when NG name has triggered  |
+|  NG name reply (ng_name_reply)  |  Text which send when NG name has triggered  |
 |  Status (status)  |  Status<br>Can use [variables](#Variables)  |
 |  Accept invite for (accept_invite_for)  |  User types which accept party invite  |
 |  Decline invite when user is in party (decline_invite_when)  |  User types which decline party invite when user is in party  |
@@ -174,6 +180,7 @@ Usually please use web config editor to change configs
 | --- | --- |
 |  NG word for (ng_word_for)  |  User types which apply NG word  |
 |  NG word operation (ng_word_operation)  |  Operation which run when NG word has triggered  |
+|  NG word reply (ng_word_reply)  |  Text which send when NG word has triggered  |
 |  Time until relogin (relogin_in)  |  Time until relogin (Seconds)  |
 |  Max search amount (search_max)  |  Max amount of result for command which have search function  |
 |  Disable log (no_logs)  |  Disable log for this bot  |
@@ -201,6 +208,7 @@ Check Discord above
 
 |  Key (Raw value)  |  Description  |
 | --- | --- |
+|  Check update on startup (check_update_on_startup)  |  Check update on startup  |
 |  Time until restart (restart_in)  |  Time until restart bot (Seconds)  |
 |  Bot's lang (lang)  |  Bot's display language  |
 |  Bot's search lang (search_lang)  |  Bot's search language  |

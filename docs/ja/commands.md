@@ -157,6 +157,20 @@
 |  add_variant  |  add_variant [outfit/backpack/pickaxe] [[variant](#variant)] [数値]  |  **上級者向け 通常はset_style, add_styleを使用してください**<br>指定したvariantを現在のvariantに統合する  |
 |  cosmetic_preset  |  cosmetic_preset [save/load] [数値]  |  アイテムプリセットを保存/読み込みする  |
 
+### その他の識別名
+|  識別名  |  説明  |
+| ---- | ---- |
+|  cid_  |  CIDを入力してのアイテム変更  |
+|  bid_  |  BIDを入力してのアイテム変更  |
+|  petcarrier_  |  PetCarrierを入力してのアイテム変更  |
+|  petid_  |  PetIDを入力してのアイテム変更  |
+|  pickaxe_id_  |  Pickaxe_IDを入力してのアイテム変更  |
+|  eid_  |  EIDを入力してのアイテム変更  |
+|  emoji_  |  Emoji IDを入力してのアイテム変更  |
+|  toy_  |  Toy IDを入力してのアイテム変更  |
+|  playlist_  |  IDを入力してのプレイリスト変更  |
+|  item_search  |  アイテム名だけでのアイテム検索  |
+
 ### その他
 コマンドで使用する単語  
 

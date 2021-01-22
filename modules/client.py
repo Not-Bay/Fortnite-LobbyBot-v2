@@ -677,9 +677,10 @@ class Client(fortnitepy.Client):
             if cache:
                 for u in self._caches.values():
                     try:
-                        if u.display_name.casefold() == dn.casefold():
-                            _users.append(u)
-                            return
+                        if u.display_name is not None:
+                            if u.display_name.casefold() == dn.casefold():
+                                _users.append(u)
+                                return
                     except AttributeError:
                         pass
 
@@ -2213,6 +2214,24 @@ class Client(fortnitepy.Client):
                         except Exception as e:
                             self.print_exception(e)
 
+                    if self.config['fortnite']['ng_name_reply']:
+                        var = self.variables
+                        var.update({
+                            'member': member,
+                            'member_display_name': member.display_name,
+                            'member_id': member.id
+                        })
+                        text = self.eval_format(
+                            self.config['fortnite']['ng_name_reply'],
+                            var
+                        )
+                        if self.party.get_member(member.id) is not None:
+                            await self.party.send(text)
+                        else:
+                            friend = self.get_friend(member.id)
+                            if friend is not None:
+                                await friend.send(text)
+
         # Platform
         if (self.is_ng_platform_for(self.get_user_type(member.id))
                 and self.config['fortnite']['ng_platforms'] is not None
@@ -2226,6 +2245,24 @@ class Client(fortnitepy.Client):
                         func()
                 except Exception as e:
                     self.print_exception(e)
+
+            if self.config['fortnite']['ng_platform_reply']:
+                var = self.variables
+                var.update({
+                    'member': member,
+                    'member_display_name': member.display_name,
+                    'member_id': member.id
+                })
+                text = self.eval_format(
+                    self.config['fortnite']['ng_platform_reply'],
+                    var
+                )
+                if self.party.get_member(member.id) is not None:
+                    await self.party.send(text)
+                else:
+                    friend = self.get_friend(member.id)
+                    if friend is not None:
+                        await friend.send(text)
 
         # Cosmetics
         items = [
@@ -2244,7 +2281,7 @@ class Client(fortnitepy.Client):
                 for cosmetic in self.config['fortnite'][f'ng_{conf}s']
             ] if ng is not None]
             if (self.is_for(f'ng_{conf}_for', self.get_user_type(member.id))
-                    and self.asset(item, member).lower() == ngs):
+                    and self.asset(item, member).lower() in ngs):
                 functions = await self.get_user_operation_func(f'ng_{conf}_operation', user_id=member.id)
                 for func in functions:
                     try:
@@ -2255,36 +2292,54 @@ class Client(fortnitepy.Client):
                     except Exception as e:
                         self.print_exception(e)
 
-    async def ng_word_check(self, text: str, user: Type[fortnitepy.user.UserBase]) -> bool:
-        if user.id == self.user.id:
+                if self.config['fortnite'][f'ng_{conf}_reply']:
+                    var = self.variables
+                    var.update({
+                        'member': member,
+                        'member_display_name': member.display_name,
+                        'member_id': member.id
+                    })
+                    text = self.eval_format(
+                        self.config['fortnite'][f'ng_{conf}_reply'],
+                        var
+                    )
+                    if self.party.get_member(member.id) is not None:
+                        await self.party.send(text)
+                    else:
+                        friend = self.get_friend(member.id)
+                        if friend is not None:
+                            await friend.send(text)
+
+    async def ng_word_check(self, message: Union[fortnitepy.FriendMessage, fortnitepy.PartyMessage]) -> bool:
+        if message.author.id == self.user.id:
             return True
-        if not self.is_ng_word_for(self.get_user_type(user.id)):
+        if not self.is_ng_word_for(self.get_user_type(message.author.id)):
             return True
 
         match = None
         for ng in self.config['ng_words']:
             flag = False
-            if ng['matchmethod'] == 'full' and any([text == word for word in ng['words']]):
+            if ng['matchmethod'] == 'full' and any([message.content == word for word in ng['words']]):
                 for word in ng['words']:
-                    if text == word:
+                    if message.content == word:
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'contains' and any([word in text for word in ng['words']]):
+            elif ng['matchmethod'] == 'contains' and any([word in message.content for word in ng['words']]):
                 for word in ng['words']:
-                    if word in text:
+                    if word in message.content:
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'starts' and any([text.startswith(word) for word in ng['words']]):
+            elif ng['matchmethod'] == 'starts' and any([message.content.startswith(word) for word in ng['words']]):
                 for word in ng['words']:
-                    if text.startswith(word):
+                    if message.content.startswith(word):
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'ends' and any([text.endswith(word) for word in ng['words']]):
+            elif ng['matchmethod'] == 'ends' and any([message.content.endswith(word) for word in ng['words']]):
                 for word in ng['words']:
-                    if text.endswith(word):
+                    if message.content.endswith(word):
                         match = word
                         break
                 flag = True
@@ -2293,14 +2348,14 @@ class Client(fortnitepy.Client):
                 if self.user.id not in self.bot.command_stats:
                     self.bot.command_stats[self.user.id] = {'commands': {}, 'ngs': {}}
                 stats = self.bot.command_stats[self.user.id]
-                if user.id not in stats['ngs']:
-                    stats['ngs'][user.id] = {}
-                if match not in stats['ngs'][user.id]:
-                    stats['ngs'][user.id][match] = 0
-                stats['ngs'][user.id][match] += 1
+                if message.author.id not in stats['ngs']:
+                    stats['ngs'][message.author.id] = {}
+                if match not in stats['ngs'][message.author.id]:
+                    stats['ngs'][message.author.id][match] = 0
+                stats['ngs'][message.author.id][match] += 1
 
-                if stats['ngs'][user.id][match] >= ng['count']:
-                    functions = await self.get_ng_word_operation(user_id=user.id)
+                if stats['ngs'][message.author.id][match] >= ng['count']:
+                    functions = await self.get_ng_word_operation(user_id=message.author.id)
                     for func in functions:
                         try:
                             if asyncio.iscoroutinefunction(func):
@@ -2309,6 +2364,26 @@ class Client(fortnitepy.Client):
                                 func()
                         except Exception as e:
                             self.print_exception(e)
+
+                    if self.config['ng_word_reply']:
+                        var = self.variables
+                        var.update({
+                            'message': message,
+                            'author': message.author,
+                            'author_display_name': message.author.display_name,
+                            'author_id': message.author.id
+                        })
+                        text = self.eval_format(
+                            self.config['ng_word_reply'],
+                            var
+                        )
+                        if (self.party.get_member(message.author.id) is not None
+                                and isinstance(message, fortnitepy.PartyMessage)):
+                            await self.party.send(text)
+                        else:
+                            friend = self.get_friend(message.author.id)
+                            if friend is not None:
+                                await friend.send(text)
                 return False
         return True
 
@@ -2316,6 +2391,13 @@ class Client(fortnitepy.Client):
         for member in self.party.members:
             if member.id == self.user.id:
                 continue
+
+            if self.party_hides.get(self.party.id) is None:
+                self.party_hides[self.party.id] = []
+            for m in self.party.members:
+                if self.party.me.leader and self.is_hide_for(self.get_user_type(m.id)):
+                    self.party_hides[self.party.id].append(m.id)
+            self.party.update_hide_users(self.party_hides[self.party.id])
 
             await self.ng_check(member)
 
@@ -2342,19 +2424,19 @@ class Client(fortnitepy.Client):
                             func()
                     except Exception as e:
                         self.print_exception(e)
-            if self.party.get_member(member.id) is None:
-                continue
 
-            if (self.party.playlist_info[0].lower().strip()
-                    != self.config['fortnite']['party']['playlist'].lower().strip()
-                    and self.config['fortnite']['party']['playlist']):
-                await self.party.set_playlist(
-                    self.bot.get_config_playlist_id(self.config['fortnite']['party']['playlist'])
-                )
-            if self.party.config['privacy'] != self.config['fortnite']['party']['privacy'].value:
-                await self.party.set_privacy(self.config['fortnite']['party']['privacy'])
-            if self.config['fortnite']['party']['disable_voice_chat']:
-                await self.party.disable_voice_chat()
+        await self.party.refresh_squad_assignments()
+
+        if (self.party.playlist_info[0].lower().strip()
+                != self.config['fortnite']['party']['playlist'].lower().strip()
+                and self.config['fortnite']['party']['playlist']):
+            await self.party.set_playlist(
+                self.bot.get_config_playlist_id(self.config['fortnite']['party']['playlist'])
+            )
+        if self.party.config['privacy'] != self.config['fortnite']['party']['privacy'].value:
+            await self.party.set_privacy(self.config['fortnite']['party']['privacy'])
+        if not self.party.voice_chat_enabled and self.config['fortnite']['party']['disable_voice_chat']:
+            await self.party.disable_voice_chat()
 
     def is_valid_party(self, party_or_member: Union[fortnitepy.party.PartyBase, fortnitepy.PartyMember]) -> bool:
         if (self.party_id != (
@@ -2694,7 +2776,7 @@ class Client(fortnitepy.Client):
         if self.party_hides.get(self.party.id) is None:
             self.party_hides[self.party.id] = []
         for m in self.party.members:
-            if not self.party.me.leader and self.is_hide_for(self.get_user_type(m.id)):
+            if self.party.me.leader and self.is_hide_for(self.get_user_type(m.id)):
                 self.party_hides[self.party.id].append(m.id)
         self.party.update_hide_users(self.party_hides[self.party.id])
 
@@ -2944,6 +3026,21 @@ class Client(fortnitepy.Client):
         if not self.is_ready():
             await self.wait_until_ready()
 
+        if not self.is_valid_party(confirmation):
+            if self.config['loglevel'] == 'debug':
+                self.send(
+                    self.l(
+                        'ignoring_event_party_id_mismatch',
+                        'party_member_confirm',
+                        self.party_id,
+                        confirmation.party.id
+                    ),
+                    color=yellow,
+                    add_p=self.time_party,
+                    add_d=[self.discord_party, self.debug_message]
+                )
+            return
+
         if self.config['loglevel'] != 'normal':
             self.send(
                 self.l(
@@ -2960,6 +3057,11 @@ class Client(fortnitepy.Client):
             return
 
         if self.is_accept_join_for(self.get_user_type(confirmation.user.id)):
+            if self.party_hides.get(self.party.id) is None:
+                self.party_hides[self.party.id] = []
+            if self.party.me.leader and self.is_hide_for(self.get_user_type(confirmation.user.id)):
+                self.party_hides[self.party.id].append(confirmation.user.id)
+
             try:
                 await confirmation.confirm()
             except fortnitepy.HTTPException as e:
@@ -3384,7 +3486,7 @@ class Client(fortnitepy.Client):
                     self.print_exception(e)
             return
 
-        if not await self.ng_word_check(message.content, message.author):
+        if not await self.ng_word_check(message):
             return
 
         if not self.is_party_chat_enable_for(self.get_user_type(message.author.id)):
@@ -3418,7 +3520,8 @@ class Client(fortnitepy.Client):
                     self.print_exception(e)
             return
 
-        await self.ng_word_check(message.content, message.author)
+        if not await self.ng_word_check(message):
+            return
 
         if not self.is_whisper_enable_for(self.get_user_type(message.author.id)):
             return
@@ -3570,9 +3673,9 @@ class Client(fortnitepy.Client):
                     if arg in words:
                         executed = True
                         if (message.user_type == 'owner'
-                                or (identifier in self.whitelist_commands
+                                or (identifier.lower() in self.whitelist_commands
                                     and message.user_type in ['owner', 'whitelist'])
-                                or identifier in self.user_commands):
+                                or identifier.lower() in self.user_commands):
                             tasks.append(
                                 self.loop.create_task(self.call_command(command, message))
                             )
@@ -3645,9 +3748,9 @@ class Client(fortnitepy.Client):
             for item, prefix in self.bot.BACKEND_TO_ID_CONVERTER.items():
                 if args[0].lower().startswith(f'{prefix}_'.lower()):
                     if (message.user_type == 'owner'
-                            or (f'{prefix}_' in self.whitelist_commands
+                            or (f'{prefix}_'.lower() in self.whitelist_commands
                                 and message.user_type in ['owner', 'whitelist'])
-                            or f'{prefix}_' in self.user_commands):
+                            or f'{prefix}_'.lower() in self.user_commands):
                         key = self.bot.convert_backend_to_key(item)
                         attr = f'is_{key}_lock_for'
                         if getattr(self, attr)(message.user_type):

@@ -287,37 +287,37 @@ class DiscordClient(discord.Client):
                 self.debug_print_exception(e)
             await asyncio.sleep(30)
 
-    async def ng_word_check(self, text: str, user: Type[discord.user.BaseUser]) -> bool:
-        if user.id == self.user.id:
+    async def ng_word_check(self, message: discord.Message) -> bool:
+        if message.author.id == self.user.id:
             return True
-        if not self.is_ng_word_for(user.id):
+        if not self.is_ng_word_for(message.author.id):
             return True
         command_stats = getattr(self.bot, 'command_stats', self.bot.bot.command_stats)
 
         match = None
         for ng in self.config['ng_words']:
             flag = False
-            if ng['matchmethod'] == 'full' and any([text == word for word in ng['words']]):
+            if ng['matchmethod'] == 'full' and any([message.content == word for word in ng['words']]):
                 for word in ng['words']:
-                    if text == word:
+                    if message.content == word:
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'contains' and any([word in text for word in ng['words']]):
+            elif ng['matchmethod'] == 'contains' and any([word in message.content for word in ng['words']]):
                 for word in ng['words']:
-                    if word in text:
+                    if word in message.content:
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'starts' and any([text.startswith(word) for word in ng['words']]):
+            elif ng['matchmethod'] == 'starts' and any([message.content.startswith(word) for word in ng['words']]):
                 for word in ng['words']:
-                    if text.startswith(word):
+                    if message.content.startswith(word):
                         match = word
                         break
                 flag = True
-            elif ng['matchmethod'] == 'ends' and any([text.endswith(word) for word in ng['words']]):
+            elif ng['matchmethod'] == 'ends' and any([message.content.endswith(word) for word in ng['words']]):
                 for word in ng['words']:
-                    if text.endswith(word):
+                    if message.content.endswith(word):
                         match = word
                         break
                 flag = True
@@ -326,11 +326,26 @@ class DiscordClient(discord.Client):
                 if self.user.id not in command_stats:
                     command_stats[self.user.id] = {'commands': {}, 'ngs': {}}
                 stats = command_stats[self.user.id]
-                if user.id not in stats['ngs']:
-                    stats['ngs'][user.id] = {}
-                if match not in stats['ngs'][user.id]:
-                    stats['ngs'][user.id][match] = 0
-                stats['ngs'][user.id][match] += 1
+                if message.author.id not in stats['ngs']:
+                    stats['ngs'][message.author.id] = {}
+                if match not in stats['ngs'][message.author.id]:
+                    stats['ngs'][message.author.id][match] = 0
+                stats['ngs'][message.author.id][match] += 1
+
+                if self.config['ng_word_reply']:
+                    var = self.variables
+                    var.update({
+                        'message': message,
+                        'author': message.author,
+                        'author_display_name': message.author.name,
+                        'author_id': message.author.id
+                    })
+                    text = self.eval_format(
+                        self.config['ng_word_reply'],
+                        var
+                    )
+                    await message.channel.send(text)
+
                 return False
 
         return True
