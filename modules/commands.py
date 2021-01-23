@@ -2310,7 +2310,7 @@ class DefaultCommands:
                     )
                 )
 
-            ret = await client.block_user(user, message)
+            ret = await client.user_block(user, message)
             if not isinstance(ret, Exception):
                 await message.reply(
                     client.l(
@@ -2377,7 +2377,7 @@ class DefaultCommands:
                     )
                 )
 
-            ret = await client.unblock_user(blocked_user, message)
+            ret = await client.user_unblock(blocked_user, message)
             if not isinstance(ret, Exception):
                 await message.reply(
                     client.l(

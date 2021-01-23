@@ -46,7 +46,7 @@
         </div>
     </div>
     <div id="content">
-        <form class="auth">
+        <form class="auth" onsubmit="return false">
             <label id="password_label" for="password">{{client.l('password')}}</label>
             <input id="password_input" type="password" name="password">
             <input id="password_submit" type="button" value="{{client.l('submit')}}" onclick="send(this)">
@@ -54,4 +54,10 @@
     </div>
 </body>
 <script type="text/javascript" src="{{client.url_for('static', filename='js/header.js')}}"></script>
+<script>
+const input = document.getElementById('password_input');
+input.onkeydown = function (e) {
+    keyCheck(input, e);
+}
+</script>
 </html>

@@ -147,6 +147,7 @@
         "error_invitee_max_friendships_exceeded": "No puedo aceptar la solicitud de amistad de '{0}' porque '{0}' ya alcanzó el límite de amigos",
         "error_invitee_max_friendship_requests_exceeded": "No puedo enviar solicitud de amistad a '{0}' porque '{0}' ya alcanzó el límite de amigos",
         "error_forbidden_send": "Debido a las configuraciónes del usuario, no puedo enviar solicitud de amistad a '{0}'",
+        "error_max_outgoing_requests_exceeded": "No puedo enviar solicitud de amistad a '{0}' porque alcanzó el límite de solicitud de amistad",
         "error_while_updating_owner": "Hubo un error al configurar el owner",
         "error_while_updating_list": "Hubo un error al configurar la lista de usuarios",
         "error_while_accepting_friend_request": "Hubo un error al aceptar la solicitud de amistad de '{0}'",

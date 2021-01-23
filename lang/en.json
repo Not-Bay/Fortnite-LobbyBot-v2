@@ -147,6 +147,7 @@
         "error_invitee_max_friendships_exceeded": "Couldn't accept friend request from '{0}' because '{0}' has hit to friend count limit",
         "error_invitee_max_friendship_requests_exceeded": "Couldn't send friend request to '{0}' because '{0}' has hit to friend count limit",
         "error_forbidden_send": "Due to an target user setting, can't send friend request to '{0}'",
+        "error_max_outgoing_requests_exceeded": "Couldn't send friend request to '{0}' because hit to friend request limit",
         "error_while_updating_owner": "There was an error while setting up owner",
         "error_while_updating_list": "There was an error while setting up list user",
         "error_while_accepting_friend_request": "There was an error while accepting friend request from '{0}'",
