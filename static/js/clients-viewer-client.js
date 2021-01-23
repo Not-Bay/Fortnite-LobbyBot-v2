@@ -33,7 +33,7 @@ function addFriend(wait_event, user_id) {
 }
 
 function blockUser(wait_event, user_id) {
-    sendEvent('block_user', wait_event, user_id);
+    sendEvent('user_block', wait_event, user_id);
 }
 
 function removeOrDeclineFriend(wait_event, user_id) {
@@ -41,7 +41,7 @@ function removeOrDeclineFriend(wait_event, user_id) {
 }
 
 function unblockUser(wait_event, user_id) {
-    sendEvent('unblock_user', wait_event, user_id);
+    sendEvent('user_unblock', wait_event, user_id);
 }
 
 function sendWhisper(element) {

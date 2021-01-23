@@ -147,6 +147,7 @@
         "error_invitee_max_friendships_exceeded": "'{0}' がフレンド数の上限に達したため、'{0}' からのフレンドリクエストを承諾できません",
         "error_invitee_max_friendship_requests_exceeded": "'{0}' がフレンドリクエスト数の上限に達したため、'{0}' にフレンドリクエストを送信できません",
         "error_forbidden_send": "相手の設定により、'{0}' にフレンドリクエストを送信できません",
+        "error_max_outgoing_requests_exceeded": "フレンドリクエスト数の上限に達したため、'{0}' にフレンドリクエストを送信できません",
         "error_while_updating_owner": "所有者の設定中にエラーが発生しました",
         "error_while_updating_list": "リストユーザーの設定中にエラーが発生しました",
         "error_while_accepting_friend_request": "'{0}' からのフレンドリクエストを承諾中にエラーが発生しました",

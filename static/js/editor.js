@@ -220,6 +220,40 @@ function saveRaw(reload = false) {
     }
 }
 
+
+function replaceAttr(element, attr, before, after) {
+    element.setAttribute(attr, element.getAttribute(attr).replace(before, after));
+}
+
+function fixId(items, id_before, id_after) {
+    items.forEach(item => {
+        console.log(item);
+        // item = key_value
+        let label, input;
+        [label, input]  = item.children;
+        if (input !== undefined) {
+            if (input.classList.contains('value')) {
+                replaceAttr(label, 'for', id_before, id_after);
+                replaceAttr(input, 'id', id_before, id_after);
+                replaceAttr(input, 'name', id_before, id_after);
+            } else {
+                // ng_names
+                Array.from(item.children[1].children).forEach(item_child => {
+                    // item_child == ng_name
+                    if (item_child.tagName == 'DIV') {
+                        const item_items = Array.from(item_child.children[1].children).filter(
+                            child => child.tagName == 'DIV'
+                        );
+                        fixId(item_items, id_before, id_after);
+                    }
+                });
+            }
+        }
+    });
+}
+
+
+
 function removeListList(element) {
     element.parentNode.parentNode.removeChild(element.parentNode.nextElementSibling);
     element.parentNode.parentNode.removeChild(element.parentNode);
@@ -253,18 +287,25 @@ function addListList(element, key) {
 }
 
 function removeElement(element, prefix, id_prefix) {
-    const parent = element.parentElement.parentElement;
-    const element_count = Array.from(parent.children).filter(child => child.tagName == 'DIV').length;
-    const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
-    parent.removeChild(element.parentElement.nextElementSibling);
-    parent.removeChild(element.parentElement);
+    // prefix = "['clients']"
+    // id_prefix = clients
+    const parent = element.parentElement.parentElement;  // clients
+    const element_count = Array.from(parent.children).filter(
+        child => child.tagName == 'DIV'
+    ).length;  // Total count of clients
+    const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));  // Number of client which trying to remove
+    parent.removeChild(element.parentElement.nextElementSibling);  // br
+    parent.removeChild(element.parentElement);  // client
     if (element_count != element_num) {
         let current_num = 0;
         Array.from(parent.children).forEach(child => {
+            // child = client
             if (child.tagName == 'DIV') {
                 if (element_count >= current_num) {
                     const num = parseInt(child.id.slice(id_prefix.length + 1));
                     child.id = `${id_prefix}_${current_num}`;
+                    const id_before = `${prefix}[${num}]`;
+                    const id_after = `${prefix}[${current_num}]`;
     
                     const request = new XMLHttpRequest();
                     request.open('POST', '/l');
@@ -277,25 +318,11 @@ function removeElement(element, prefix, id_prefix) {
                     request.onload = function () {
                         child.children[0].textContent = request.responseText;
                     }
-                    const items = Array.from(child.children[1].children).slice(1);
-                    items.forEach(item => {
-                        if (Array.from(item.children).length == 3) {
-                            const label = item.children[0];
-                            const input = item.children[1];
-                            label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
-                            if (input.tagName == 'DIV') {
-                                Array.from(input.children).forEach(child => {
-                                    if (child.tagName == 'DIV') {
-                                        child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
-                                        child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
-                                    }
-                                })
-                            } else {
-                                input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
-                                input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${current_num}]`));
-                            }
-                        }
-                    });
+
+                    const items = Array.from(child.children[1].children).filter(
+                        child => child.tagName == 'DIV'
+                    );
+                    fixId(items, id_before, id_after);
                 }
                 current_num += 1
             }
@@ -304,7 +331,9 @@ function removeElement(element, prefix, id_prefix) {
 }
 
 function addElement(element, prefix, id_prefix) {
-    const parent = element.parentElement;
+    // prefix = "['clients']"
+    // id_prefix = clients
+    const parent = element.parentElement;  // clients
     let copyElement = null;
     Array.from(parent.childNodes).forEach(child => {
         if (child.tagName == 'DIV') {
@@ -314,10 +343,8 @@ function addElement(element, prefix, id_prefix) {
     if (copyElement === null) {
         const request = new XMLHttpRequest();
         if (id_prefix == 'ng_names' || id_prefix == 'ng_words') {
-            console.log(`${location.pathname}/add-${id_prefix.replace('_', '-').slice(0, -1)}/` + element.parentNode.getAttribute('client_num'));
             request.open('POST', `${location.pathname}/add-${id_prefix.replace('_', '-').slice(0, -1)}/` + element.parentNode.getAttribute('client_num'));
         } else {
-            console.log(`${location.pathname}/add-${id_prefix.replace('_', '-').slice(0, -1)}`);
             request.open('POST', `${location.pathname}/add-${id_prefix.replace('_', '-').slice(0, -1)}`);
         }
         request.send(null);
@@ -331,6 +358,8 @@ function addElement(element, prefix, id_prefix) {
         const newElement = copyElement.cloneNode(true);
         const num = parseInt(newElement.id.slice(id_prefix.length + 1));
         newElement.id = `${id_prefix}_${num + 1}`;
+        const id_before = `${prefix}[${num}]`;
+        const id_after = `${prefix}[${num + 1}]`;
 
         const request = new XMLHttpRequest();
         request.open('POST', '/l');
@@ -341,52 +370,50 @@ function addElement(element, prefix, id_prefix) {
             kwargs: {}
         }));
         request.onload = function () {
-            newElement.children[0].textContent = request.responseText
-
-            newElement.firstElementChild.onclick = function () {
-                const css = `#${newElement.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(newElement.id, css)) {
-                    pseudo(newElement.id, '')
-                } else {
-                    pseudo(newElement.id, css)
-                }
-                newElement.classList.toggle('open');
-            }
-            newElement.firstElementChild.onanimationend = function () {
-                const css = `#${newElement.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(newElement.id, css)) {
-                    pseudo(newElement.id, '')
-                }
-            }
-
-            const items = Array.from(newElement.children[1].children).filter(
-                child => child.tagName == 'DIV'
-            );
-            items.forEach(item => {
-                if (Array.from(item.children).length == 2 || Array.from(item.children).length == 3) {
-                    const label = item.children[0];
-                    const input = item.children[1];
-                    if (input.tagName == 'DIV') {
-                        while (input.firstChild) {
-                            input.removeChild(input.firstChild);
-                        }
-                    } else {
-                        label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
-                        input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
-                        input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${num}]`, `${prefix}[${num + 1}]`));
-                        if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
-                            input.value = '';
-                        } else {
-                            Array.from(input.children).forEach(select => {
-                                select.selected = false;
-                            });   
-                        }
-                    }
-                }
-            });
-            parent.insertBefore(newElement, element);
-            parent.insertBefore(document.createElement('br'), element);
+            newElement.children[0].textContent = request.responseText;
         }
+
+        newElement.children[0].onclick = function () {
+            const css = `#${newElement.id}::before {transform: rotate(90deg);}`;
+            if (hasCSS(newElement.id, css)) {
+                pseudo(newElement.id, '');
+            } else {
+                pseudo(newElement.id, css);
+            }
+            newElement.classList.toggle('open');
+        }
+        newElement.children[0].onanimationend = function () {
+            const css = `#${newElement.id}::before {transform: rotate(90deg);}`;
+            if (hasCSS(newElement.id, css)) {
+                pseudo(newElement.id, '');
+            }
+        }
+
+        const items = Array.from(newElement.children[1].children).filter(
+            child => child.tagName == 'DIV'
+        );
+        items.forEach(item => {
+            const label = item.children[0];
+            const input = item.children[1];
+            if (input.tagName == 'DIV') {
+                while (input.firstChild) {
+                    input.removeChild(input.firstChild);
+                }
+            } else {
+                replaceAttr(label, 'for', id_before, id_after);
+                replaceAttr(input, 'id', id_before, id_after);
+                replaceAttr(input, 'name', id_before, id_after);
+                if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
+                    input.value = '';
+                } else {
+                    Array.from(input.children).forEach(select => {
+                        select.selected = false;
+                    });   
+                }
+            }
+        });
+        parent.insertBefore(newElement, element);
+        parent.insertBefore(document.createElement('br'), element);
     }
 }
 
@@ -396,9 +423,11 @@ function copy(element) {
 }
 
 function paste(element, prefix, id_prefix) {
+    // prefix = "['clients']"
+    // id_prefix = clients
     if (copied_element) {
-        const parent = element.parentElement.parentElement;
-        const next_element = element.parentElement.nextElementSibling.nextElementSibling;
+        const parent = element.parentElement.parentElement;  // clients
+        const next_element = element.parentElement.nextElementSibling.nextElementSibling;  // next client
         const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
         const copied_element_num = parseInt(copied_element.id.slice(id_prefix.length + 1));
         const element_open = element.parentElement.classList.contains('open');
@@ -408,6 +437,9 @@ function paste(element, prefix, id_prefix) {
 
         const child = copied_element.cloneNode(true);
         child.id = `${id_prefix}_${element_num}`;
+        const id_before = `${prefix}[${copied_element_num}]`
+        const id_after = `${prefix}[${element_num}]`
+        
         const request = new XMLHttpRequest();
         request.open('POST', '/l');
         request.setRequestHeader('Content-Type', 'application/json');
@@ -418,50 +450,35 @@ function paste(element, prefix, id_prefix) {
         }));
         request.onload = function () {
             child.children[0].textContent = request.responseText;
-
-            child.firstElementChild.onclick = function () {
-                const css = `#${child.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(child.id, css)) {
-                    pseudo(child.id, '')
-                } else {
-                    pseudo(child.id, css)
-                }
-                child.classList.toggle('open');
-            }
-            child.firstElementChild.onanimationend = function () {
-                const css = `#${child.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(child.id, css)) {
-                    pseudo(child.id, '')
-                }
-            }
-
-            const items = Array.from(child.children[1].children).slice(1);
-            items.forEach(item => {
-                if (Array.from(item.children).length == 2 || Array.from(item.children).length == 3) {
-                    const label = item.children[0];
-                    const input = item.children[1];
-                    label.setAttribute('for', label.getAttribute('for').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
-                    if (input.tagName == 'DIV') {
-                        Array.from(input.children).forEach(child => {
-                            if (child.tagName == 'DIV') {
-                                child.firstElementChild.setAttribute('id', child.firstElementChild.getAttribute('id').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
-                                child.firstElementChild.setAttribute('name', child.firstElementChild.getAttribute('name').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
-                            }
-                        })
-                    } else {
-                        input.setAttribute('id', input.getAttribute('id').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
-                        input.setAttribute('name', input.getAttribute('name').replace(`${prefix}[${copied_element_num}]`, `${prefix}[${element_num}]`));
-                    }
-                }
-            });
-
-            if (element_open && !copied_element_open) {
-                child.classList.add('open');
-            }
-
-            parent.insertBefore(child, next_element);
-            parent.insertBefore(document.createElement('br'), next_element);
         }
+
+        child.firstElementChild.onclick = function () {
+            const css = `#${child.id}::before {transform: rotate(90deg);}`;
+            if (hasCSS(child.id, css)) {
+                pseudo(child.id, '');
+            } else {
+                pseudo(child.id, css);
+            }
+            child.classList.toggle('open');
+        }
+        child.firstElementChild.onanimationend = function () {
+            const css = `#${child.id}::before {transform: rotate(90deg);}`;
+            if (hasCSS(child.id, css)) {
+                pseudo(child.id, '');
+            }
+        }
+
+        const items = Array.from(child.children[1].children).filter(
+            child => child.tagName == 'DIV'
+        );
+        fixId(items, id_before, id_after);
+
+        if (element_open && !copied_element_open) {
+            child.classList.add('open');
+        }
+
+        parent.insertBefore(child, next_element);
+        parent.insertBefore(document.createElement('br'), next_element);
     }
 }
 

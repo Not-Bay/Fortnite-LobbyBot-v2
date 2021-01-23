@@ -888,18 +888,33 @@ class Client(fortnitepy.Client):
                 await message.reply(text)
             return e
         except Exception as e:
-            self.print_exception(e)
-            text = self.l(
-                'error_while_accepting_fiend_request',
-                self.name(user)
-            )
-            self.send(
-                text,
-                add_p=self.time,
-                file=sys.stderr
-            )
-            if message is not None:
-                await message.reply(text)
+            m = 'errors.com.epicgames.friends.outgoing_friendships_limit_exceeded'
+            if isinstance(e, fortnitepy.HTTPException) and e.message_code == m:
+                self.debug_print_exception(e)
+                text = self.l(
+                    'error_max_outgoing_requests_exceeded',
+                    self.name(user)
+                )
+                self.send(
+                    text,
+                    add_p=self.time,
+                    file=sys.stderr
+                )
+                if message is not None:
+                    await message.reply(text)
+            else:
+                self.print_exception(e)
+                text = self.l(
+                    'error_while_accepting_friend_request',
+                    self.name(user)
+                )
+                self.send(
+                    text,
+                    add_p=self.time,
+                    file=sys.stderr
+                )
+                if message is not None:
+                    await message.reply(text)
             return e
 
     async def remove_friend(self, friend: fortnitepy.Friend,
@@ -984,7 +999,7 @@ class Client(fortnitepy.Client):
         except Exception as e:
             self.print_exception(e)
             text = self.l(
-                'error_while_accepting_fiend_request',
+                'error_while_accepting_friend_request',
                 self.name(request)
             )
             self.send(
@@ -1262,7 +1277,7 @@ class Client(fortnitepy.Client):
                 await message.reply(text)
             return e
 
-    async def block_user(self, user: Type[fortnitepy.user.UserBase],
+    async def user_block(self, user: Type[fortnitepy.user.UserBase],
                          message: Optional[MyMessage] = None) -> Optional[Exception]:
         try:
             await user.block()
@@ -1281,7 +1296,7 @@ class Client(fortnitepy.Client):
                 await message.reply(text)
             return e
 
-    async def unblock_user(self, blocked_user: fortnitepy.BlockedUser,
+    async def user_unblock(self, blocked_user: fortnitepy.BlockedUser,
                            message: Optional[MyMessage] = None) -> Optional[Exception]:
         try:
             await blocked_user.unblock()
