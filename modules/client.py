@@ -3602,7 +3602,7 @@ class Client(fortnitepy.Client):
             else:
                 execute = False
         content = message.content[prefix_length:]
-        args = content.split(' ')
+        args = re.split(r'\s', content)
 
         async def replies():
             flag = False

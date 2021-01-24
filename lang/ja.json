@@ -369,6 +369,7 @@
         "copy": "コピー",
         "paste": "ペースト",
         "remove": "削除",
+        "apply_to_all": "全てに適用",
         "password": "パスワード",
         "submit": "決定",
         "incorrect_password": "パスワードが違います",

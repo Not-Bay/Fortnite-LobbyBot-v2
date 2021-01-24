@@ -134,7 +134,7 @@
                                                             </div>
                                                         {% endfor %}
                                                     {% endif %}
-                                                        <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addListList(this, `{{prefix + raw_key}}`)">
+                                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addListList(this, `{{prefix + raw_key}}`)">
                                                 </div>
                                             {% else %}
                                                 {% if value != None %}
@@ -151,9 +151,9 @@
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
-                                    <!-- {% if client.bot.get_list_index(prefix_keys, 1) %}
-                                        <input class="apply_to_all_button" type="button" value="{{client.l('apply_to_all')}}" onclick="applyToAll(this, `{{keys[-1]}}`)">
-                                    {% endif %} -->
+                                    {% if client.bot.get_list_index(prefix_keys, 1) != none %}
+                                        <input class="apply_to_all_button" type="button" value="{{client.l('apply_to_all')}}" onclick="applyToAll(this, `{{list_key_to_str(prefix_keys[:-1])}}`, `{{list_key_to_str(keys)}}`)">
+                                    {% endif %}
                                 </div>
                             {% endif %}
                         {% endfor %}

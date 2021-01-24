@@ -409,7 +409,7 @@ class DiscordClient(discord.Client):
                 and len(message.content) > self.config['discord']['chat_max']):
             return
 
-        if isinstance(self.bot, fortnitepy.Client) and not await self.ng_word_check(message.content, message.author):
+        if isinstance(self.bot, fortnitepy.Client) and not await self.ng_word_check(message):
             return
 
         if (message.author.id == self.user.id
