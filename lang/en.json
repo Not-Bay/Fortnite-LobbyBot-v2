@@ -8,7 +8,7 @@
         "bool_true": "Yes",
         "bool_false": "No",
         "event_me": "On bot join",
-        "event_user": "On member join",
+        "event_user": "On member join",4
         "platform_WIN": "Windows",
         "platform_MAC": "Mac",
         "platform_PSN": "PlayStation 4",
@@ -369,6 +369,7 @@
         "copy": "Copy",
         "paste": "Paste",
         "remove": "Remove",
+        "apply_to_all": "Apply to all",
         "password": "Password",
         "submit": "Submit",
         "incorrect_password": "Incorrect password",

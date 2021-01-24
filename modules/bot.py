@@ -1511,11 +1511,11 @@ class Bot:
     def setup(self) -> None:
         self.remove_unneeded_files()
         files = [
-            ('config', ),
-            ('commands', ),
-            ('custom_commands', ),
-            ('replies', ),
-            ('cosmetic_preset', ),
+            ('config',),
+            ('commands',),
+            ('custom_commands',),
+            ('replies',),
+            ('cosmetic_preset',),
             ('command_stats', False),
             ('device_auths', False)
         ]
@@ -2006,7 +2006,7 @@ class Bot:
                 items = await self.aload_json(f"{self.item_dir}/items_{self.config['search_lang']}", force_file=True)
             except json.decoder.JSONDecodeError as e:
                 self.debug_print_exception(e)
-                await self.aremove(f"{self.item_dir}/items_{self.config['search_lang']}")
+                await self.aremove(f"{self.item_dir}/items_{self.config['search_lang']}", force_file=True)
                 flag = True
             else:
                 if items['api'] != self.config['api']:
@@ -2027,7 +2027,7 @@ class Bot:
                 items = await self.aload_json(f"{self.item_dir}/items_{self.config['sub_search_lang']}", force_file=True)
             except json.decoder.JSONDecodeError as e:
                 self.debug_print_exception(e)
-                await self.aremove(f"{self.item_dir}/items_{self.config['sub_search_lang']}")
+                await self.aremove(f"{self.item_dir}/items_{self.config['sub_search_lang']}", force_file=True)
                 flag = True
             else:
                 if items['api'] != self.config['api']:
@@ -2071,7 +2071,7 @@ class Bot:
                 items = await self.aload_json(f"{self.item_dir}/new_items_{self.config['search_lang']}", force_file=True)
             except json.decoder.JSONDecodeError as e:
                 self.debug_print_exception(e)
-                await self.aremove(f"{self.item_dir}/new_items_{self.config['search_lang']}")
+                await self.aremove(f"{self.item_dir}/new_items_{self.config['search_lang']}", force_file=True)
                 flag = True
             else:
                 if items['api'] != self.config['api']:
@@ -2103,7 +2103,7 @@ class Bot:
                 playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['search_lang']}", force_file=True)
             except json.decoder.JSONDecodeError as e:
                 self.debug_print_exception(e)
-                await self.aremove(f"{self.item_dir}/playlists_{self.config['search_lang']}")
+                await self.aremove(f"{self.item_dir}/playlists_{self.config['search_lang']}", force_file=True)
                 flag = True
             else:
                 if playlists['api'] != self.config['api']:
@@ -2124,7 +2124,7 @@ class Bot:
                 playlists = await self.aload_json(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}", force_file=True)
             except json.decoder.JSONDecodeError as e:
                 self.debug_print_exception(e)
-                await self.aremove(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}")
+                await self.aremove(f"{self.item_dir}/playlists_{self.config['sub_search_lang']}", force_file=True)
                 flag = True
             else:
                 if playlists['api'] != self.config['api']:
@@ -2168,7 +2168,7 @@ class Bot:
                     banners = await self.aload_json(f"{self.item_dir}/banners", force_file=True)
                 except json.decoder.JSONDecodeError as e:
                     self.debug_print_exception(e)
-                    await self.aremove(f"{self.item_dir}/banners")
+                    await self.aremove(f"{self.item_dir}/banners", force_file=True)
                     flag = True
                 else:
                     if banners['api'] != self.config['api']:
@@ -2373,12 +2373,13 @@ class Bot:
 
     async def reboot(self) -> None:
         await self.close()
-        os.execv(sys.executable, ['python', sys.argv[0], *sys.argv[1:]])
+        os.execv(sys.executable, [sys.executable, sys.argv[0], *sys.argv[1:]])
 
     async def close(self) -> None:
         if self.server is not None:
             await self.server.close()
 
+        await asyncio.wait({client.wait_until_ready() for client in self.clients})
         await fortnitepy.close_multiple(
             [client for client in self.clients if client.is_ready() or client.is_booting()]
         )

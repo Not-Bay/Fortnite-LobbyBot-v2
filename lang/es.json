@@ -369,6 +369,7 @@
         "copy": "Copiar",
         "paste": "Pegar",
         "remove": "Eliminar",
+        "apply_to_all": "Aplicar a todo",
         "password": "Contraseña",
         "submit": "Enviar",
         "incorrect_password": "Contraseña incorrecta",

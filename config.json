@@ -15,6 +15,7 @@
                 "ng_outfit_operation": [
                     "kick"
                 ],
+                "ng_outfit_reply": "",
                 "join_outfit": "",
                 "join_outfit_style": null,
                 "join_outfit_on": "me",
@@ -33,6 +34,7 @@
                 "ng_backpack_operation": [
                     "kick"
                 ],
+                "ng_backpack_reply": "",
                 "join_backpack": "",
                 "join_backpack_style": null,
                 "join_backpack_on": "me",
@@ -51,6 +53,7 @@
                 "ng_pickaxe_operation": [
                     "kick"
                 ],
+                "ng_pickaxe_reply": "",
                 "join_pickaxe": "",
                 "join_pickaxe_style": null,
                 "join_pickaxe_on": "me",
@@ -70,6 +73,7 @@
                 "ng_emote_operation": [
                     "kick"
                 ],
+                "ng_emote_reply": "",
                 "join_emote": "",
                 "join_emote_section": null,
                 "join_emote_on": "user",
@@ -101,6 +105,7 @@
                 "ng_platform_operation": [
                     "kick"
                 ],
+                "ng_platform_reply": "",
                 "ng_names": [],
                 "ng_name_for": [
                     "user",
@@ -109,6 +114,7 @@
                 "ng_name_operation": [
                     "kick"
                 ],
+                "ng_name_reply": "",
                 "status": "Fortnite-LobbyBot-v2",
                 "accept_invite_for": [
                     "owner"
@@ -214,6 +220,7 @@
             "ng_word_operation": [
                 "chatban"
             ],
+            "ng_word_reply": "",
             "relogin_in": 0,
             "search_max": 60,
             "no_logs": false,

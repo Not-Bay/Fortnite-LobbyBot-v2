@@ -61,10 +61,10 @@ function saveVisual(reload = false) {
         for (let [key, value] of Object.entries(data.flat_data)) {
             const valueElement = document.getElementById(key);
             if (valueElement) {
-                if (valueElement.tagName in ['INPUT', 'TEXTAREA']) {
+                if (valueElement.tagName == 'INPUT' || valueElement.tagName == 'TEXTAREA') {
                     valueElement.value = value;
                 } else {
-                    Array.from(valueElement.childNodes).forEach(select => {
+                    Array.from(valueElement.children).forEach(select => {
                         if (value === null) {
                             if (select.value == 'null') {
                                 select.selected = true;
@@ -393,22 +393,24 @@ function addElement(element, prefix, id_prefix) {
             child => child.tagName == 'DIV'
         );
         items.forEach(item => {
-            const label = item.children[0];
-            const input = item.children[1];
-            if (input.tagName == 'DIV') {
-                while (input.firstChild) {
-                    input.removeChild(input.firstChild);
-                }
-            } else {
-                replaceAttr(label, 'for', id_before, id_after);
-                replaceAttr(input, 'id', id_before, id_after);
-                replaceAttr(input, 'name', id_before, id_after);
-                if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
-                    input.value = '';
+            let label, input;
+            [label, input]  = item.children;
+            if (input !== undefined) {
+                if (input.tagName == 'DIV') {
+                    while (input.firstChild) {
+                        input.removeChild(input.firstChild);
+                    }
                 } else {
-                    Array.from(input.children).forEach(select => {
-                        select.selected = false;
-                    });   
+                    replaceAttr(label, 'for', id_before, id_after);
+                    replaceAttr(input, 'id', id_before, id_after);
+                    replaceAttr(input, 'name', id_before, id_after);
+                    if (input.tagName == 'INPUT' || input.tagName == 'TEXTAREA') {
+                        input.value = '';
+                    } else {
+                        Array.from(input.children).forEach(select => {
+                            select.selected = false;
+                        });   
+                    }
                 }
             }
         });
@@ -482,6 +484,26 @@ function paste(element, prefix, id_prefix) {
     }
 }
 
-function applyToAll(element, prefix) {
-    const elements = document.querySelectorAll()
+function applyToAll(element, prefix_keys, keys) {
+    element = element.previousElementSibling;
+    let elements = document.getElementsByClassName('apply_to_all_button');
+    elements = Array.from(elements).filter(e => (
+        e.previousElementSibling && e.previousElementSibling.id
+        && e.previousElementSibling.id.startsWith(prefix_keys)
+        && e.previousElementSibling.id.endsWith(keys)
+        && e.previousElementSibling.tagName == element.tagName
+        && e.previousElementSibling != element
+    ));
+    Array.from(elements).forEach(e => {
+        const valueElement = e.previousElementSibling;
+        if (element.tagName == 'INPUT' || element.tagName == 'TEXTAREA') {
+            valueElement.value = element.value;
+        } else {
+            for (let i = 0; i < valueElement.children.length; i++) {
+                const select = element.children[i];
+                const valueSelect = valueElement.children[i];
+                valueSelect.selected = select.selected;
+            }
+        }
+    });
 }

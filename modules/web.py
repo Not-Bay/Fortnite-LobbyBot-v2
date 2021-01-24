@@ -1139,12 +1139,14 @@ class Web(sanic.Sanic):
             'enumerate': enumerate,
             'getattr': getattr,
             'str_key_to_list': self.str_key_to_list,
+            'list_key_to_str': self.list_key_to_str,
             'len': len,
             'map': map,
             'str': str,
             'dict': dict,
             'list': list,
-            'none': None
+            'none': None,
+            'repr': repr
         })
         self.route_prefix = 'route_'
 
@@ -1160,10 +1162,13 @@ class Web(sanic.Sanic):
         return [
             i[1:-1]
             if i.startswith("'") and i.endswith("'") else
-            i
+            int(i)
             for i in text[1:-1].split('][')
             if i != ''
         ]
+
+    def list_key_to_str(self, value: list) -> str:
+        return ''.join([f"[{repr(i)}]" for i in value])
 
     def convert_web_value(self, raw_value: Any, tags: list) -> Any:
         select_tag = self.bot.get_select_tag(tags)
