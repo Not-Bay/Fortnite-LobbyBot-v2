@@ -8,7 +8,7 @@
         "bool_true": "Yes",
         "bool_false": "No",
         "event_me": "On bot join",
-        "event_user": "On member join",4
+        "event_user": "On member join",
         "platform_WIN": "Windows",
         "platform_MAC": "Mac",
         "platform_PSN": "PlayStation 4",
