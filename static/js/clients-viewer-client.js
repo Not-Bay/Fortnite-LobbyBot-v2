@@ -1,19 +1,7 @@
 const openables = document.getElementsByClassName('openable');
 Array.from(openables).forEach(openable => {
     openable.firstElementChild.onclick = function () {
-        const css = `#${openable.id}::before {transform: rotate(90deg);}`
-        if (hasCSS(openable.id, css)) {
-            pseudo(openable.id, '')
-        } else {
-            pseudo(openable.id, css)
-        }
         openable.classList.toggle('open');
-    }
-    openable.firstElementChild.onanimationend = function () {
-        const css = `#${openable.id}::before {transform: rotate(90deg);}`
-        if (hasCSS(openable.id, css)) {
-            pseudo(openable.id, '')
-        }
     }
 });
 
@@ -247,6 +235,7 @@ socket.addEventListener('message', function(ev) {
 
     function constructPartyMember(element, member) {
         const div = document.createElement('div');
+        div.classList.add('member');
         div.setAttribute('user_id', member.id);
         div.setAttribute('position', member.position);
 
@@ -324,12 +313,29 @@ socket.addEventListener('message', function(ev) {
             div.appendChild(unblock);
         }
 
+        const container = document.createElement('div');
+        container.classList.add('container');
+        if (member.is_leader) {
+            container.classList.add('leader');
+        }
+
+        const img = document.createElement('img');
+        img.classList.add('banner');
+        img.src = member.banner;
+        img.onerror = "this.onerror=null; this.src='/static/images/banner.jpg'";
+        container.appendChild(img);
+
+        const level = document.createElement('span');
+        level.classList.add('level');
+        level.textContent = String(member.level);
+        div.appendChild(level);
+
+        div.appendChild(container);
+
         const span = document.createElement('span');
         span.classList.add('user');
-        if (member.is_leader) {
-            span.classList.add('leader');
-        }
         span.textContent = member.name;
+
         div.appendChild(span);
         div.appendChild(document.createElement('br'));
 
@@ -417,19 +423,7 @@ socket.addEventListener('message', function(ev) {
             }
 
             whisper_to.firstElementChild.onclick = function () {
-                const css = `#${whisper_to.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(whisper_to.id, css)) {
-                    pseudo(whisper_to.id, '')
-                } else {
-                    pseudo(whisper_to.id, css)
-                }
                 whisper_to.classList.toggle('open');
-            }
-            whisper_to.firstElementChild.onanimationend = function () {
-                const css = `#${whisper_to.id}::before {transform: rotate(90deg);}`
-                if (hasCSS(whisper_to.id, css)) {
-                    pseudo(whisper_to.id, '')
-                }
             }
 
             whisper_to_content.scrollTo(0, whisper_to_content.scrollHeight);

@@ -339,11 +339,16 @@ class MyClientParty(fortnitepy.ClientParty):
             bot=self.me.outfit
         )
 
-        _default_status = {
-            'Status': self.client.eval_format(
+        try:
+            status  = self.client.eval_format(
                 status,
                 self.client.variables
-            ),
+            )
+        except Exception:
+            status = None
+
+        _default_status = {
+            'Status': status,
             'bIsPlaying': False,
             'bIsJoinable': False,
             'bHasVoiceSupport': False,
@@ -2535,12 +2540,19 @@ class Client(fortnitepy.Client):
                 await self.accept_request(pending)
         return True
 
+    async def status_loop(self) -> None:
+        while True:
+            if self.party is not None:
+                await self.send_presence(self.party.construct_presence())
+            await asyncio.sleep(30)
+
     # Events
     async def event_ready(self) -> None:
         self._is_booting = False
         self.booted_at = datetime.datetime.now()
         if self.config['relogin_in']:
             self.loop.create_task(self.rebooter())
+        self.loop.create_task(self.status_loop())
 
         try:
             await self.send_presence(self.party.last_raw_status)
