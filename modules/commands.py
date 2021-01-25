@@ -410,12 +410,12 @@ async def all_cosmetics(item: str, client: 'Client', message: MyMessage) -> None
                 f'{cosmetic["type"]["displayValue"]}: {client.name_cosmetic(cosmetic)}'
             )
             await asyncio.sleep(5)
-    await message.reply(
-        client.l(
-            'has_end',
-            client.l(client.bot.convert_backend_to_key(item))
+        await message.reply(
+            client.l(
+                'has_end',
+                client.bot.l(client.bot.convert_backend_to_key(item))
+            )
         )
-    )
 
     task = client.loop.create_task(all_cosmetics())
     client.stoppable_tasks.append(task)
@@ -3574,11 +3574,14 @@ class DefaultCommands:
     )
     async def stop(command: Command, client: 'Client', message: MyMessage) -> None:
         for num in reversed(range(len(client.stoppable_tasks))):
-            exc = client.stoppable_tasks[num].exception()
+            exc = None
+            task = client.stoppable_tasks[num]
+            if task.done():
+                exc = task.exception()
             if exc is not None:
                 client.debug_print_exception(exc)
-            client.stoppable_tasks[num].cancel()
-            del client.stoppable_tasks[num]
+            task.cancel()
+            del task
 
         await message.reply(
             client.l('stopped')

@@ -1140,6 +1140,7 @@ class Web(sanic.Sanic):
             'getattr': getattr,
             'str_key_to_list': self.str_key_to_list,
             'list_key_to_str': self.list_key_to_str,
+            'convert_list_str': self.convert_list_str,
             'len': len,
             'map': map,
             'str': str,
@@ -1170,6 +1171,9 @@ class Web(sanic.Sanic):
     def list_key_to_str(self, value: list) -> str:
         return ''.join([f"[{repr(i)}]" for i in value])
 
+    def convert_list_str(self, value: list) -> str:
+        return '\n'.join([str(i).replace('\n', '\\n') for i in value])
+
     def convert_web_value(self, raw_value: Any, tags: list) -> Any:
         select_tag = self.bot.get_select_tag(tags)
         multiple_select_tag = self.bot.get_multiple_select_tag(tags)
@@ -1187,7 +1191,7 @@ class Web(sanic.Sanic):
             else:
                 if tags[1] in [str, list]:
                     if multiple_select_tag is None:
-                        value = re.split(r'\r\n|\n', value)
+                        value = [i.replace('\\n', '\n') for i in re.split(r'\r\n|\n', value)]
                 elif tags[1] is int:
                     value = [int(i) for i in re.split(r'\r\n|\n', value)]
         elif tags[0] is str:

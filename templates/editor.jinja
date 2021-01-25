@@ -82,18 +82,18 @@
                                 {% endif %}
                                     {% for num, config in enumerate(value) %}
                                         <input type="hidden" name="{{prefix + raw_key}}[{{num}}]">
-                                        <div id="{{keys[-1]}}_{{num}}" class="openable" style="left: {{15 * len(keys)}}px;">
+                                        <div id="{{keys[-1]}}_{{num}}" num="{{num}}" class="openable" style="left: {{15 * len(keys)}}px;">
                                             <span>{{client.l(keys[-1][:-1], num + 1)}}</span>
                                             <div class="content">
                                                 {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.bot, config_tag + '_tags'))}}
                                             </div>
-                                            <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, `{{prefix + raw_key}}`, `{{keys[-1]}}`)">
+                                            <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, `{{prefix + raw_key}}`)">
                                             <input class="copy_button" type="button" value="{{client.l('copy')}}" onclick="copy(this)">
-                                            <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{prefix + raw_key}}`, `{{keys[-1]}}`)">
+                                            <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{prefix + raw_key}}`)">
                                         </div>
                                         <br>
                                     {% endfor %}
-                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addElement(this, `{{prefix + raw_key}}`, `{{keys[-1]}}`)">
+                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addElement(this, `{{prefix + raw_key}}`)">
                                 </div>
                             {% else %}
                                 <div class="key_value" style="left: {{15 * (len(keys) - 1)}}px;">
@@ -126,7 +126,7 @@
                                                         {% for num, val in enumerate(value) %}
                                                             <div>
                                                                 {% if val != None %}
-                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]" rows=4>{{'\n'.join(map(str, val))}}</textarea>
+                                                                    <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]" rows=4>{{convert_list_str(val)}}</textarea>
                                                                 {% else %}
                                                                     <textarea id="{{prefix + raw_key}}[{{num}}]" class="value" name="{{prefix + raw_key}}[{{num}}]" rows=4></textarea>
                                                                 {% endif %}
@@ -134,11 +134,11 @@
                                                             </div>
                                                         {% endfor %}
                                                     {% endif %}
-                                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addListList(this, `{{prefix + raw_key}}`)">
+                                                    <input class="add_button" type="button" value="{{client.l('add')}}" onclick="addListList(this, `{{prefix + raw_key}}`)" key="{{prefix + raw_key}}">
                                                 </div>
                                             {% else %}
                                                 {% if value != None %}
-                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" rows=4>{{'\n'.join(map(str, value))}}</textarea>
+                                                    <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" rows=4>{{convert_list_str(value)}}</textarea>
                                                 {% else %}
                                                     <textarea id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" rows=4></textarea>
                                                 {% endif %}
@@ -171,19 +171,7 @@
     const clients = document.getElementsByClassName('openable');
     for (let client of clients) {
         client.firstElementChild.onclick = function () {
-            const css = `#${client.id}::before {transform: rotate(90deg);}`
-            if (hasCSS(client.id, css)) {
-                pseudo(client.id, '')
-            } else {
-                pseudo(client.id, css)
-            }
             client.classList.toggle('open');
-        }
-        client.firstElementChild.onanimationend = function () {
-            const css = `#${client.id}::before {transform: rotate(90deg);}`
-            if (hasCSS(client.id, css)) {
-                pseudo(client.id, '')
-            }
         }
     }
 

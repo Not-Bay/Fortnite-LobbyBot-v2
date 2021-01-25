@@ -151,6 +151,10 @@
     color: #DCDDDE;
 }
 
+.open::before {
+    transform: rotate(90deg);
+}
+
 .content {
     display: none;
     -webkit-transition: 400ms ease-in-out;

@@ -38,6 +38,10 @@
     transition: 400ms ease-in-out;
 }
 
+.open::before {
+    transform: rotate(90deg);
+}
+
 .open > .content {
     display: block;
     margin-left: 20px;
@@ -74,8 +78,26 @@
     border-radius: 50%;
 }
 
+.member {
+    margin-top: 11px;
+}
+
+.container {
+    display: inline;
+}
+
+.container > img {
+    position: relative;
+}
+
+.banner {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+}
+
 .leader {
-    padding-left: 25px;
+    margin-top: 11px;
 }
 
 .leader::before {
@@ -86,8 +108,14 @@
     background-size: contain;
     width: 20px;
     height: 11px;
-    margin-left: -25px;
-    margin-top: 7px;
+    margin-top: -11px;
+}
+
+.level {
+    position: relative;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
 }
 
 .whisper,
@@ -194,7 +222,7 @@ input {
 
 img {
     width: 10vmin;
-    height: 10vmin;
+    min-width: 60px;
 }
 
 .img_div {

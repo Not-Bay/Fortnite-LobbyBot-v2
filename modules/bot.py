@@ -935,6 +935,7 @@ class Bot:
         self.set_dict_key_default(config, ['api_key'], None)
         self.set_dict_key_default(config, ['discord_log'], None)
         self.set_dict_key_default(config, ['loglevel'], 'normal')
+        self.set_dict_key_default(config, ['no_logs'], 'normal')
         self.set_dict_key_default(config, ['debug'], False)
         self.set_dict_key_default(config, ['status'], 0)
 
@@ -2379,7 +2380,9 @@ class Bot:
         if self.server is not None:
             await self.server.close()
 
-        await asyncio.wait({client.wait_until_ready() for client in self.clients})
+        coros = {client.wait_until_ready() for client in self.clients}
+        if coros:
+            await asyncio.wait(coros)
         await fortnitepy.close_multiple(
             [client for client in self.clients if client.is_ready() or client.is_booting()]
         )
