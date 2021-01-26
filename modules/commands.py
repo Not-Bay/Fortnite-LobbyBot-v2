@@ -5,6 +5,7 @@ import importlib
 import json
 import os
 import random
+import re
 import sys
 from functools import partial
 from typing import TYPE_CHECKING, Awaitable, Callable, List, Optional, Union
@@ -132,7 +133,7 @@ class MyMessage:
         self.content = content or message.content
         self.content = self.content.strip('\r\n').strip('\r').strip('\n')
 
-        self.args = self.content.split(' ')
+        self.args = re.split(r'\s', self.content)
         self.author = author or message.author
         self.user_type = (
             self.discord_client.get_user_type(message.author.id)
@@ -4013,16 +4014,12 @@ class DefaultCommands:
             await client.show_help(command, message)
             return
 
-        if not any([message.args[1] in client.commands[key]
-                    for key in ['outfit', 'backpack', 'pickaxe']]):
-            await client.show_help(command, message)
-            return
-
         for k in ['outfit', 'backpack', 'pickaxe']:
             if message.args[1] in client.commands[k]:
                 key = k
                 break
         else:
+            await client.show_help(command, message)
             return
 
         item = client.bot.convert_to_backend_type(key)
@@ -4076,16 +4073,12 @@ class DefaultCommands:
             await client.show_help(command, message)
             return
 
-        if not any([message.args[1] in client.commands[key]
-                    for key in ['outfit', 'backpack', 'pickaxe']]):
-            await client.show_help(command, message)
-            return
-
         for k in ['outfit', 'backpack', 'pickaxe']:
             if message.args[1] in client.commands[k]:
                 key = k
                 break
         else:
+            await client.show_help(command, message)
             return
 
         item = client.bot.convert_to_backend_type(key)
