@@ -2298,9 +2298,11 @@ class DefaultCommands:
             ' '.join(message.args[1:]),
             mode=FindUserMode.NAME_ID,
             method=FindUserMatchMethod.CONTAINS,
-            users=client.incoming_pending_friends,
             me=message.author
         )
+        user = await client.fetch_user(' '.join(message.args[1:]), cache=True)
+        if user is not None and user not in users:
+            users.append(user)
 
         async def block_user(user):
             if client.is_blocked(user.id):
@@ -2364,7 +2366,7 @@ class DefaultCommands:
             ' '.join(message.args[1:]),
             mode=FindUserMode.NAME_ID,
             method=FindUserMatchMethod.CONTAINS,
-            users=client.incoming_pending_friends,
+            users=client.blocked_users,
             me=message.author
         )
 

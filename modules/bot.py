@@ -2212,19 +2212,22 @@ class Bot:
         )['banners'])
 
     def fix_config(self, config: dict) -> None:
-        config['fortnite']['party']['privacy'] = getattr(
-            PartyPrivacy,
-            config['fortnite']['party']['privacy'].upper()
-        )
-        config['fortnite']['platform'] = fortnitepy.Platform(
-            config['fortnite']['platform'].upper()
-        )
+        if isinstance(config['fortnite']['party']['privacy'], str):
+            config['fortnite']['party']['privacy'] = getattr(
+                PartyPrivacy,
+                config['fortnite']['party']['privacy'].upper()
+            )
+        if isinstance(config['fortnite']['platform'], str):
+            config['fortnite']['platform'] = fortnitepy.Platform(
+                config['fortnite']['platform'].upper()
+            )
         for num, channel in enumerate(config['discord']['channels']):
             config['discord']['channels'][num] = self.cleanup_channel_name(channel)
-        config['discord']['status_type'] = getattr(
-            discord.ActivityType,
-            config['discord']['status_type'].lower()
-        )
+        if isinstance(config['discord']['status_type'], str):
+            config['discord']['status_type'] = getattr(
+                discord.ActivityType,
+                config['discord']['status_type'].lower()
+            )
         if config['fortnite']['ng_platforms'] is not None:
             for num, ng_platform in enumerate(config['fortnite']['ng_platforms']):
                 config['fortnite']['ng_platforms'][num] = fortnitepy.Platform(
@@ -2233,10 +2236,11 @@ class Bot:
         self.fix_cosmetic_config(config)
 
     def fix_config_all(self) -> None:
-        self.config['discord']['status_type'] = getattr(
-            discord.ActivityType,
-            self.config['discord']['status_type'].lower()
-        )
+        if isinstance(self.config['discord']['status_type'], str):
+            self.config['discord']['status_type'] = getattr(
+                discord.ActivityType,
+                self.config['discord']['status_type'].lower()
+            )
         for num, channel in enumerate(self.config['discord']['channels']):
             self.config['discord']['channels'][num] = self.cleanup_channel_name(channel)
         for config in self.config['clients']:
