@@ -12,7 +12,7 @@ colorama = "*"
 fortnitepy = { git = "https://github.com/gomashio1596/fortnitepy" }
 jaconv = "*"
 jinja2 = "*"
-pykakasi = { git = "https://github.com/miurahr/pykakasi" }
+pykakasi = "*"
 replit = "*"
 sanic = "*"
 uvloop = "*"

@@ -32,6 +32,14 @@ function unblockUser(wait_event, user_id) {
     sendEvent('unblock_user', wait_event, user_id);
 }
 
+function promoteMember(wait_event, user_id) {
+    sendEvent('member_promote', wait_event, user_id);
+}
+
+function kickMember(wait_event, user_id) {
+    sendEvent('member_kick', wait_event, user_id);
+}
+
 function sendWhisper(element) {
     const user_id = element.parentElement.parentElement.id.slice('whisper_to_'.length);
     const input = element.previousElementSibling;
@@ -239,6 +247,28 @@ socket.addEventListener('message', function(ev) {
         div.setAttribute('user_id', member.id);
         div.setAttribute('position', member.position);
 
+        if (client.client_party_member.id != member.id){
+            const promote = document.createElement('input');
+            promote.type = 'button';
+            promote.classList.add('gray_button');
+            promote.classList.add('party_button');
+            promote.value = texts.promote;
+            promote.onclick = function () {
+                promoteMember('party_member_promote', member.id)
+            }
+            div.appendChild(promote);
+
+            const kick = document.createElement('input');
+            kick.type = 'button';
+            kick.classList.add('gray_button');
+            kick.classList.add('party_button');
+            kick.value = texts.kick;
+            kick.onclick = function () {
+                kickMember('party_member_kick', member.id)
+            }
+            div.appendChild(kick);
+        }
+
         if (member.is_incoming_pending) {
             const accept = document.createElement('input');
             accept.type = 'button';
@@ -322,7 +352,10 @@ socket.addEventListener('message', function(ev) {
         const img = document.createElement('img');
         img.classList.add('banner');
         img.src = member.banner;
-        img.onerror = "this.onerror=null; this.src='/static/images/banner.jpg'";
+        img.onerror = function () {
+            img.onerror = null;
+            img.src = '/static/images/banner.jpg';
+        }
         container.appendChild(img);
 
         const level = document.createElement('span');
@@ -351,7 +384,10 @@ socket.addEventListener('message', function(ev) {
                 img_div.classList.add('img_div');
                 const img = document.createElement('img');
                 img.src = member[key]['url'];
-                img.onerror = `this.onerror=null; this.src='../images/${key}.jpg'`
+                img.onerror = function () {
+                    img.onerror = null;
+                    img.src = `/static/images/${key}.jpg`;
+                }
                 img_div.appendChild(img);
                 const p = document.createElement('p');
                 p.textContent = member[key]['name'];
@@ -640,5 +676,16 @@ socket.addEventListener('message', function(ev) {
         const pre = document.createElement('pre');
         pre.innerText = client.response;
         res.appendChild(pre);
+    }
+
+    if (client.type == 'full' || client.type == 'diff') {
+        const party_buttons = document.getElementsByClassName('party_button');
+        Array.from(party_buttons).forEach(button => {
+            if (client.client_party_member.is_leader) {
+                button.style.display = 'inline-block';
+            } else {
+                button.style.display = 'none';
+            }
+        });
     }
 })

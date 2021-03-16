@@ -385,6 +385,8 @@
         "remove_friend": "削除",
         "block_user": "ブロック",
         "unblock_user": "ブロック解除",
+        "promote_member": "譲渡",
+        "kick_member": "キック",
         "party": "パーティー",
         "party_name": "パーティー / {0}",
         "member": "パーティーメンバー [{0}/{1}]",

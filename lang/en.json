@@ -385,6 +385,8 @@
         "remove_friend": "Remove",
         "block_user": "Block",
         "unblock_user": "Unblock",
+        "promote_member": "Promote",
+        "kick_member": "Kick",
         "party": "Party",
         "party_name": "Party / {0}",
         "member": "Party members [{0}/{1}]",

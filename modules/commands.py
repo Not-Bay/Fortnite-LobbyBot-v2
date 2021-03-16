@@ -2689,7 +2689,7 @@ class DefaultCommands:
             me=message.author
         )
 
-        async def message(user):
+        async def send_message(user):
             friend = client.get_friend(user.id)
             if friend is None:
                 await message.reply(
@@ -2724,10 +2724,10 @@ class DefaultCommands:
                 )
             )
         elif len(users) == 1:
-            await message(users[0])
+            await send_message(users[0])
         else:
             client.select[message.author.id] = {
-                'exec': 'await message(user)',
+                'exec': 'await send_message(user)',
                 'globals': {**globals(), **locals()},
                 'variables': [
                     {'user': user}
