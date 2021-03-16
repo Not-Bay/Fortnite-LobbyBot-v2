@@ -611,6 +611,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
+            'id': client.user.id,
             'is_ready': client.is_ready(),
             'state': (
                 'ready'
@@ -707,6 +708,66 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                     'level': member.banner[2]
                 } for member in getattr(party, 'members', [])
             ],
+            'client_party_member': {
+                'name': f'{client.party.me.display_name} / {client.party.me.id}',
+                'id': client.party.me.id,
+                'position': client.party.me.position,
+                'is_leader': client.party.me.leader,
+                'is_incoming_pending': client.is_incoming_pending(client.party.me.id),
+                'is_outgoing_pending': client.is_outgoing_pending(client.party.me.id),
+                'is_friend': client.has_friend(client.party.me.id),
+                'is_blocked': client.is_blocked(client.party.me.id),
+                'outfit': {
+                    'name': client.searcher.get_item(
+                        client.asset('AthenaCharacter', client.party.me),
+                        {}
+                    ).get('name', 'TBD'),
+                    'url': client.searcher.get_item(
+                        client.asset('AthenaCharacter', client.party.me),
+                        {}
+                    ).get('url') or app.url_for('static', filename='images/outfit.jpg')
+                }
+                if client.searcher.get_item(client.asset('AthenaCharacter', client.party.me)) is not None else
+                None,
+                'backpack': {
+                    'name': client.searcher.get_item(
+                        client.asset('AthenaBackpack', client.party.me),
+                        {}
+                    ).get('name', 'TBD'),
+                    'url': client.searcher.get_item(
+                        client.asset('AthenaBackpack', client.party.me),
+                        {}
+                    ).get('url') or app.url_for('static', filename='images/backpack.jpg')
+                }
+                if client.searcher.get_item(client.asset('AthenaBackpack', client.party.me)) is not None else
+                None,
+                'pickaxe': {
+                    'name': client.searcher.get_item(
+                        client.asset('AthenaPickaxe', client.party.me),
+                        {}
+                    ).get('name', 'TBD'),
+                    'url': client.searcher.get_item(
+                        client.asset('AthenaPickaxe', client.party.me),
+                        {}
+                    ).get('url') or app.url_for('static', filename='images/pickaxe.jpg')
+                }
+                if client.searcher.get_item(client.asset('AthenaPickaxe', client.party.me)) is not None else
+                None,
+                'emote': {
+                    'name': client.searcher.get_item(
+                        client.asset('AthenaDance', client.party.me),
+                        {}
+                    ).get('name', 'TBD'),
+                    'url': client.searcher.get_item(
+                        client.asset('AthenaDance', client.party.me),
+                        {}
+                    ).get('url') or app.url_for('static', filename='images/emote.jpg')
+                }
+                if client.searcher.get_item(client.asset('AthenaDance', client.party.me)) is not None else
+                None,
+                'banner': client.bot.get_banner_url(client.party.me.banner[0]),
+                'level': client.party.me.banner[2]
+            },
             'whisper': client.whisper,
             'party_chat': (
                 client.party_chat['party_chat']
@@ -724,6 +785,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
+            'id': client.user.id,
             'is_ready': client.is_ready(),
             'state': (
                 'ready'
@@ -855,6 +917,7 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
             final['added'][key] = get_added(key)
             final['removed'][key] = get_removed(key)
         for key in ['name',
+                    'id',
                     'is_ready',
                     'state',
                     'num',
@@ -864,7 +927,8 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
                     'blocked_user',
                     'party',
                     'party_member',
-                    'party_data']:
+                    'party_data',
+                    'client_party_member']:
             final[key] = after[key]
         
         return final
@@ -1031,6 +1095,7 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
             final['added'][key] = get_added(key)
             final['removed'][key] = get_removed(key)
         for key in ['name',
+                    'id',
                     'is_ready',
                     'state',
                     'num',
@@ -1040,7 +1105,8 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                     'blocked_user',
                     'party',
                     'party_member',
-                    'party_data']:
+                    'party_data',
+                    'client_party_member']:
             final[key] = after[key]
         
         return final
@@ -1082,7 +1148,13 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                 'response': mes.result
             }))
         else:
-            func = getattr(client, data['event'])
+            if data['event'].startswith('member_'):
+                member = client.party.get_member(data['user_id'])
+                if member is None:
+                    continue
+                func = lambda x: getattr(member, data['event'][len('member_'):])()
+            else:
+                func = getattr(client, data['event'])
             client.cached_var = variables()
             try:
                 await func(data['user_id'])

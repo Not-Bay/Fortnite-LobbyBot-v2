@@ -588,6 +588,7 @@ class Client(fortnitepy.Client):
             )
 
         self.add_event_handler('party_member_leave', store_member_leave)
+        self.add_event_handler('party_member_kick', store_member_leave)
 
         self.OPERATION_FUNC_CONVERTER = {
             'kick': fortnitepy.PartyMember.kick,
@@ -3681,7 +3682,14 @@ class Client(fortnitepy.Client):
                     if command['word'] == content:
                         for line in command['run']:
                             try:
-                                await self.bot.aexec(line, self.variables)
+                                var = self.variables
+                                var.update({
+                                    'message': message,
+                                    'author': message.author,
+                                    'author_display_name': message.author.display_name,
+                                    'author_id': message.author.id
+                                })
+                                await self.bot.aexec(line, var)
                             except Exception as e:
                                 self.debug_print_exception(e)
                                 mes = DummyMessage(self, message, content=line)
