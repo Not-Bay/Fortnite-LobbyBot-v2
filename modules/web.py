@@ -7,13 +7,15 @@ import random
 import re
 import string
 from functools import wraps
+from types import SimpleNamespace
 from typing import TYPE_CHECKING, Any, Callable, Optional
+from urllib.parse import urlparse
 
 import sanic
 from jinja2 import Environment, FileSystemLoader
 from sanic import exceptions as exc
-from sanic.request import Request
 from sanic import response as res
+from sanic.request import Request
 from sanic.response import HTTPResponse
 from sanic.websocket import WebSocketConnection
 from websockets.exceptions import ConnectionClosedOK
@@ -48,9 +50,10 @@ class LoginManager:
         return id_
 
     def authenticated(self, request: Request) -> bool:
-        if (not request.app.bot.is_error()
-                and request.app.bot.config['web']['login_required']
-                and request.app.bot.config['status'] == 1):
+        app = request.app
+        if (not app.ctx.bot.is_error()
+                and app.ctx.bot.config['web']['login_required']
+                and app.ctx.bot.config['status'] == 1):
             id_ = request.cookies.get(self.cookie_key)
             if not id_:
                 return False
@@ -107,11 +110,11 @@ async def login(request: Request, *args: Any, **kwargs: Any) -> HTTPResponse:
 @auth.login_required
 async def readme(request: Request) -> HTTPResponse:
     app = request.app
-    if app.bot.config['lang'] == 'ja':
+    if app.ctx.bot.config['lang'] == 'ja':
         return await res.file('README.md')
-    elif app.bot.config['lang'] == 'en':
+    elif app.ctx.bot.config['lang'] == 'en':
         return await res.file('README_EN.md')
-    elif app.bot.config['lang'] == 'es':
+    elif app.ctx.bot.config['lang'] == 'es':
         return await res.file('README_ES.md')
     exc.abort(404)
 
@@ -131,6 +134,32 @@ async def openfile(request: Request, filename: str) -> HTTPResponse:
             'openfile.jinja',
             open_file=filename
         )
+
+    url_path = os.path.normpath(urlparse(request.url).path)
+    if url_path.startswith('/') or url_path.startswith('\\'):
+        url_path = url_path[1:]
+    for static in app._future_statics:
+        file_or_directory = os.path.normpath(static.file_or_directory)
+        path = url_path
+        if path.startswith(file_or_directory):
+            path = path[len(file_or_directory):]
+        if path.startswith('/') or path.startswith('\\'):
+            path = path[1:]
+        try:
+            if os.path.isfile(os.path.join(file_or_directory, re.sub('^[/]*', '', path))):
+                return await app._static_request_handler(
+                    file_or_directory,
+                    static.use_modified_since,
+                    static.use_content_range,
+                    static.stream_large_files,
+                    request=request,
+                    content_type=static.content_type,
+                    __file_uri__=path
+                )
+        except Exception:
+            pass
+        else:
+            break
     exc.abort(404)
 
 
@@ -212,11 +241,11 @@ async def favicon(request: Request) -> HTTPResponse:
 @auth.login_required
 async def main(request: Request) -> HTTPResponse:
     app = request.app
-    if app.bot.config['status'] == 0:
+    if app.ctx.bot.config['status'] == 0:
         return res.redirect('/config-editor')
     return await app.render_template(
         'index.jinja',
-        version=app.bot.updater.version
+        version=app.ctx.bot.updater.version
     )
 
 
@@ -236,7 +265,7 @@ async def login(request: Request) -> HTTPResponse:
             'success': True
         })
 
-    if request.form.get('password', '') == app.bot.config['web']['password']:
+    if request.form.get('password', '') == app.ctx.bot.config['web']['password']:
         r = res.json({
             'success': True
         })
@@ -255,8 +284,8 @@ async def config_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='config_',
-        data=await app.bot.aload_json('config'),
-        tags=app.bot.config_tags
+        data=await app.ctx.bot.aload_json('config'),
+        tags=app.ctx.bot.config_tags
     )
 
 
@@ -267,8 +296,8 @@ async def commands_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='commands_',
-        data=await app.bot.aload_json('commands'),
-        tags=app.bot.commands_tags
+        data=await app.ctx.bot.aload_json('commands'),
+        tags=app.ctx.bot.commands_tags
     )
 
 
@@ -279,8 +308,8 @@ async def custom_commands_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='custom_commands_',
-        data=await app.bot.aload_json('custom_commands'),
-        tags=app.bot.custom_commands_tags
+        data=await app.ctx.bot.aload_json('custom_commands'),
+        tags=app.ctx.bot.custom_commands_tags
     )
 
 
@@ -291,8 +320,8 @@ async def replies_editor(request: Request) -> HTTPResponse:
     return await app.render_template(
         'editor.jinja',
         key_prefix='replies_',
-        data=await app.bot.aload_json('replies'),
-        tags=app.bot.replies_tags
+        data=await app.ctx.bot.aload_json('replies'),
+        tags=app.ctx.bot.replies_tags
     )
 
 
@@ -316,8 +345,8 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
         part_data = {}
         for raw_key, tags in tag_data.items():
             keys = raw_key[2:-2].split("']['")
-            multiple_select_tag = app.bot.get_multiple_select_tag(tags)
-            config_tag = app.bot.get_config_tag(tags)
+            multiple_select_tag = app.ctx.bot.get_multiple_select_tag(tags)
+            config_tag = app.ctx.bot.get_config_tag(tags)
             try:
                 raw_value = request.form[f'{prefix}{raw_key}']
             except KeyError:
@@ -326,7 +355,7 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
                 raw_value = raw_value[0]
 
             if tags[0] in [dict, list]:
-                app.bot.set_dict_key(part_data, keys, tags[0]())
+                app.ctx.bot.set_dict_key(part_data, keys, tags[0]())
                 if tags[0] is dict:
                     continue
             if config_tag is not None:
@@ -348,7 +377,7 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
                 ]
                 for num in range(len(values)):
                     format_part(part_data, keys, f'{prefix}{raw_key}[{num}]',
-                                getattr(app.bot, f'{config_tag}_tags'))
+                                getattr(app.ctx.bot, f'{config_tag}_tags'))
             else:
                 if tags[0] is list and tags[1] is list:
                     raw_client_values = sum([
@@ -357,12 +386,12 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
                         if k.startswith(f'{prefix}{raw_key}')
                     ], [])
                     value = [app.convert_web_value(value, tags) for value in raw_client_values]
-                    app.bot.set_dict_key(part_data, keys, value)
+                    app.ctx.bot.set_dict_key(part_data, keys, value)
                 else:
                     value = app.convert_web_value(raw_value, tags)
-                    app.bot.set_dict_key(part_data, keys, value)
+                    app.ctx.bot.set_dict_key(part_data, keys, value)
         if is_append:
-            app.bot.get_dict_key(data, data_keys).append(part_data)
+            app.ctx.bot.get_dict_key(data, data_keys).append(part_data)
         else:
             data.clear()
             data.update(part_data)
@@ -370,39 +399,39 @@ def save(request: Request, data: dict, data_tags: list, filename: str, reload: O
     format_part(final, [], '', data_tags, False)
 
     errors = []
-    app.bot.tag_check(final, errors, '', data_tags)
-    if app.bot.config['loglevel'] == 'debug':
-        app.bot.send(
-            app.bot.dumps(final),
-            add_p=app.bot.time
+    app.ctx.bot.tag_check(final, errors, '', data_tags)
+    if app.ctx.bot.config['loglevel'] == 'debug':
+        app.ctx.bot.send(
+            app.ctx.bot.dumps(final),
+            add_p=app.ctx.bot.time
         )
 
     if len(errors) == 0:
         final['status'] = 1
-        app.bot.save_json(filename, final)
+        app.ctx.bot.save_json(filename, final)
 
         async def rebooter():
             await asyncio.sleep(1)
-            await app.bot.reboot()
+            await app.ctx.bot.reboot()
 
-        if app.bot.config['status'] == 0 or reload:
-            app.loop_.create_task(rebooter())
+        if app.ctx.bot.config['status'] == 0 or reload:
+            app.ctx.loop.create_task(rebooter())
 
         return res.json({
             'color': '#57FF33',
             'text': app.l('saved').get_text(),
             'data': final,
-            'flat_data': app.bot.flat_dict(final),
+            'flat_data': app.ctx.bot.flat_dict(final),
             'errors': []
-        }, dumps=app.bot.dumps)
+        }, dumps=app.ctx.bot.dumps)
     else:
         return res.json({
             'color': '#FF0000',
             'text': app.l('error_keys').get_text(),
             'data': final,
-            'flat_data': app.bot.flat_dict(final),
+            'flat_data': app.ctx.bot.flat_dict(final),
             'errors': errors
-        }, dumps=app.bot.dumps)
+        }, dumps=app.ctx.bot.dumps)
 
 
 def save_raw(request: Request, data: dict, data_tags: list, filename: str, reload: Optional[bool] = False) -> HTTPResponse:
@@ -421,48 +450,48 @@ def save_raw(request: Request, data: dict, data_tags: list, filename: str, reloa
     final.update(data)
     final.update(request.json)
     errors = []
-    app.bot.tag_check(final, errors, '', data_tags)
+    app.ctx.bot.tag_check(final, errors, '', data_tags)
     
     if len(errors) == 0:
         final['status'] = 1
-        app.bot.save_json(filename, final)
+        app.ctx.bot.save_json(filename, final)
 
         async def rebooter():
             await asyncio.sleep(1)
-            await app.bot.reboot()
+            await app.ctx.bot.reboot()
 
-        if app.bot.config['status'] == 0 or reload:
-            app.loop_.create_task(rebooter())
+        if app.ctx.bot.config['status'] == 0 or reload:
+            app.ctx.loop.create_task(rebooter())
 
         return res.json({
             'color': '#57FF33',
             'text': app.l('saved').get_text(),
             'data': final,
-            'flat_data': app.bot.flat_dict(final),
+            'flat_data': app.ctx.bot.flat_dict(final),
             'errors': []
-        }, dumps=app.bot.dumps)
+        }, dumps=app.ctx.bot.dumps)
     else:
         return res.json({
             'color': '#FF0000',
             'text': app.l('error_keys').get_text(),
             'data': final,
-            'flat_data': app.bot.flat_dict(final),
+            'flat_data': app.ctx.bot.flat_dict(final),
             'errors': errors
-        }, dumps=app.bot.dumps)
+        }, dumps=app.ctx.bot.dumps)
 
 
 @bp.route('/config-editor/add-client', methods=['POST'])
 async def config_editor_add_client(request: Request) -> HTTPResponse:
     app = request.app
-    config = await app.bot.aload_json('config')
+    config = await app.ctx.bot.aload_json('config')
     data = {}
-    for raw_key, tags in app.bot.client_config_tags.items():
+    for raw_key, tags in app.ctx.bot.client_config_tags.items():
         keys = raw_key[2:-2].split("']['")
-        app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(config, ['clients']) is None:
-        app.bot.set_dict_key(config, ['clients'], [])
-    app.bot.get_dict_key(config, ['clients']).append(data)
-    app.bot.save_json('config', config)
+        app.ctx.bot.set_dict_key(data, keys, tags[0]())
+    if app.ctx.bot.get_dict_key_default(config, ['clients']) is None:
+        app.ctx.bot.set_dict_key(config, ['clients'], [])
+    app.ctx.bot.get_dict_key(config, ['clients']).append(data)
+    app.ctx.bot.save_json('config', config)
 
     return res.empty()
 
@@ -470,18 +499,18 @@ async def config_editor_add_client(request: Request) -> HTTPResponse:
 @bp.route('/config-editor/add-ng-name/<num>', methods=['POST'])
 async def config_editor_add_ng_name(request: Request, num: str) -> HTTPResponse:
     app = request.app
-    config = await app.bot.aload_json('config')
+    config = await app.ctx.bot.aload_json('config')
     data = {}
-    for raw_key, tags in app.bot.ng_names_config_tags.items():
+    for raw_key, tags in app.ctx.bot.ng_names_config_tags.items():
         keys = raw_key[2:-2].split("']['")
-        app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_names'], None) is None:
-        app.bot.set_dict_key(config, ['clients', int(num), 'fortnite', 'ng_names'], [])
-    app.bot.get_dict_key(
+        app.ctx.bot.set_dict_key(data, keys, tags[0]())
+    if app.ctx.bot.get_dict_key_default(config, ['clients', int(num), 'fortnite', 'ng_names'], None) is None:
+        app.ctx.bot.set_dict_key(config, ['clients', int(num), 'fortnite', 'ng_names'], [])
+    app.ctx.bot.get_dict_key(
         config,
         ['clients', int(num), 'fortnite', 'ng_names']
     ).append(data)
-    app.bot.save_json('config', config)
+    app.ctx.bot.save_json('config', config)
 
     return res.empty()
 
@@ -489,18 +518,18 @@ async def config_editor_add_ng_name(request: Request, num: str) -> HTTPResponse:
 @bp.route('/config-editor/add-ng-word/<num>', methods=['POST'])
 async def config_editor_add_ng_word(request: Request, num: str) -> HTTPResponse:
     app = request.app
-    config = await app.bot.aload_json('config')
+    config = await app.ctx.bot.aload_json('config')
     data = {}
-    for raw_key, tags in app.bot.ng_words_config_tags.items():
+    for raw_key, tags in app.ctx.bot.ng_words_config_tags.items():
         keys = raw_key[2:-2].split("']['")
-        app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(config, ['clients', int(num), 'ng_words'], None) is None:
-        app.bot.set_dict_key(config, ['clients', int(num), 'ng_words'], [])
-    app.bot.get_dict_key(
+        app.ctx.bot.set_dict_key(data, keys, tags[0]())
+    if app.ctx.bot.get_dict_key_default(config, ['clients', int(num), 'ng_words'], None) is None:
+        app.ctx.bot.set_dict_key(config, ['clients', int(num), 'ng_words'], [])
+    app.ctx.bot.get_dict_key(
         config,
         ['clients', int(num), 'ng_words']
     ).append(data)
-    app.bot.save_json('config', config)
+    app.ctx.bot.save_json('config', config)
 
     return res.empty()
 
@@ -508,42 +537,42 @@ async def config_editor_add_ng_word(request: Request, num: str) -> HTTPResponse:
 @bp.route('/config-editor/save', methods=['POST'])
 async def config_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, await app.bot.aload_json('config'), app.bot.config_tags, 'config', request.args.get('reload') == 'true')
+    return save(request, await app.ctx.bot.aload_json('config'), app.ctx.bot.config_tags, 'config', request.args.get('reload') == 'true')
 
 
 @bp.route('/config-editor/save-raw', methods=['POST'])
 async def config_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, await app.bot.aload_json('config'), app.bot.config_tags, 'config', request.args.get('reload') == 'true')
+    return save_raw(request, await app.ctx.bot.aload_json('config'), app.ctx.bot.config_tags, 'config', request.args.get('reload') == 'true')
 
 
 @bp.route('/commands-editor/save', methods=['POST'])
 async def commands_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, await app.bot.aload_json('commands'), app.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
+    return save(request, await app.ctx.bot.aload_json('commands'), app.ctx.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/commands-editor/save-raw', methods=['POST'])
 async def commands_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, await app.bot.aload_json('commands') , app.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
+    return save_raw(request, await app.ctx.bot.aload_json('commands') , app.ctx.bot.commands_tags, 'commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/custom-commands-editor/add-command', methods=['POST'])
 async def custom_commands_editor_add_command(request: Request) -> HTTPResponse:
     app = request.app
-    custom_commands = await app.bot.aload_json('custom_commands')
+    custom_commands = await app.ctx.bot.aload_json('custom_commands')
     data = {}
-    for raw_key, tags in app.bot.custom_commands_config_tags.items():
+    for raw_key, tags in app.ctx.bot.custom_commands_config_tags.items():
         keys = raw_key[2:-2].split("']['")
-        app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(custom_commands, ['commands'], None) is None:
-        app.bot.set_dict_key(custom_commands, ['commands'], [])
-    app.bot.get_dict_key(
+        app.ctx.bot.set_dict_key(data, keys, tags[0]())
+    if app.ctx.bot.get_dict_key_default(custom_commands, ['commands'], None) is None:
+        app.ctx.bot.set_dict_key(custom_commands, ['commands'], [])
+    app.ctx.bot.get_dict_key(
         custom_commands,
         ['commands']
     ).append(data)
-    app.bot.save_json('custom_commands', custom_commands)
+    app.ctx.bot.save_json('custom_commands', custom_commands)
 
     return res.empty()
 
@@ -551,30 +580,30 @@ async def custom_commands_editor_add_command(request: Request) -> HTTPResponse:
 @bp.route('/custom-commands-editor/save', methods=['POST'])
 async def custom_commands_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, await app.bot.aload_json('custom_commands'), app.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
+    return save(request, await app.ctx.bot.aload_json('custom_commands'), app.ctx.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/custom-commands-editor/save-raw', methods=['POST'])
 async def custom_commands_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, await app.bot.aload_json('custom_commands'), app.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
+    return save_raw(request, await app.ctx.bot.aload_json('custom_commands'), app.ctx.bot.custom_commands_tags, 'custom_commands', request.args.get('reload') == 'true')
 
 
 @bp.route('/replies-editor/add-replie', methods=['POST'])
 async def replies_editor_add_reply(request: Request) -> HTTPResponse:
     app = request.app
-    replies = await app.bot.aload_json('replies')
+    replies = await app.ctx.bot.aload_json('replies')
     data = {}
-    for raw_key, tags in app.bot.replies_config_tags.items():
+    for raw_key, tags in app.ctx.bot.replies_config_tags.items():
         keys = raw_key[2:-2].split("']['")
-        app.bot.set_dict_key(data, keys, tags[0]())
-    if app.bot.get_dict_key_default(replies, ['replies'], None) is None:
-        app.bot.set_dict_key(replies, ['replies'], [])
-    app.bot.get_dict_key(
+        app.ctx.bot.set_dict_key(data, keys, tags[0]())
+    if app.ctx.bot.get_dict_key_default(replies, ['replies'], None) is None:
+        app.ctx.bot.set_dict_key(replies, ['replies'], [])
+    app.ctx.bot.get_dict_key(
         replies,
         ['replies']
     ).append(data)
-    app.bot.save_json('replies', replies)
+    app.ctx.bot.save_json('replies', replies)
 
     return res.empty()
 
@@ -582,13 +611,13 @@ async def replies_editor_add_reply(request: Request) -> HTTPResponse:
 @bp.route('/replies-editor/save', methods=['POST'])
 async def replies_editor_save(request: Request) -> HTTPResponse:
     app = request.app
-    return save(request, await app.bot.aload_json('replies'), app.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
+    return save(request, await app.ctx.bot.aload_json('replies'), app.ctx.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
 
 
 @bp.route('/replies-editor/save-raw', methods=['POST'])
 async def replies_editor_save_raw(request: Request) -> HTTPResponse:
     app = request.app
-    return save_raw(request, await app.bot.aload_json('replies'), app.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
+    return save_raw(request, await app.ctx.bot.aload_json('replies'), app.ctx.bot.replies_tags, 'replies', request.args.get('reload') == 'true')
 
 
 @bp.route('/boot-switch', methods=['GET'])
@@ -805,7 +834,7 @@ async def websocket_sender(request: Request, ws: WebSocketConnection,
     def variables():
         return json.dumps([
             client_variables(client)
-            for client in app.bot.clients
+            for client in app.ctx.bot.clients
         ])
 
     var = variables()
@@ -826,7 +855,7 @@ async def websocket_sender(request: Request, ws: WebSocketConnection,
                 except ConnectionClosedOK:
                     break
 
-    loop = app.loop_
+    loop = app.ctx.loop
     loop.create_task(sender())
 
 
@@ -834,14 +863,14 @@ async def websocket_sender(request: Request, ws: WebSocketConnection,
 @auth.login_required
 async def boot_switch_ws(request: Request, ws: WebSocketConnection) -> None:
     app = request.app
-    loop = app.loop_
+    loop = app.ctx.loop
 
     await websocket_sender(request, ws)
 
     while True:
         data = json.loads(await ws.recv())
         try:
-            client = app.bot.clients[data['num']]
+            client = app.ctx.bot.clients[data['num']]
         except IndexError:
             continue
         if data['event'] == 'start' and not client.is_ready():
@@ -995,7 +1024,7 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
                 except ConnectionClosedOK:
                     break
 
-    loop = app.loop_
+    loop = app.ctx.loop
     loop.create_task(sender())
 
 
@@ -1015,7 +1044,7 @@ async def clients_viewer_ws(request: Request, ws: WebSocketConnection) -> None:
 async def clients_viewer_client(request: Request, num: str) -> HTTPResponse:
     app = request.app
     num = int(num)
-    client = app.bot.get_list_index(app.bot.clients, num)
+    client = app.ctx.bot.get_list_index(app.ctx.bot.clients, num)
     if client is None:
         exc.abort(404)
 
@@ -1033,7 +1062,7 @@ async def clients_viewer_client(request: Request, num: str) -> HTTPResponse:
 async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, num: str) -> None:
     app = request.app
     num = int(num)
-    client = app.bot.get_list_index(app.bot.clients, num)
+    client = app.ctx.bot.get_list_index(app.ctx.bot.clients, num)
     if client is None:
         exc.abort(404)
 
@@ -1164,11 +1193,11 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                 try:
                     await client.wait_for(data['wait_event'], timeout=5)
                 except asyncio.TimeoutError:
-                    if app.bot.config['loglevel'] == 'debug':
-                        app.bot.send(
+                    if app.ctx.bot.config['loglevel'] == 'debug':
+                        app.ctx.bot.send(
                             f"Event '{data['wait_event']}' timeout",
                             color=yellow,
-                            add_d=app.bot.discord_error
+                            add_d=app.ctx.bot.discord_error
                         )
                 after_var = variables()
                 diff = get_diff(client.cached_var, after_var)
@@ -1197,15 +1226,17 @@ class WebMessage:
 class Web(sanic.Sanic):
     def __init__(self, bot: 'Bot', *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self.bot = bot
-        self.loop_ = self.bot.loop
+        if sanic.__version__ < '21.3.1':
+            self.ctx = SimpleNamespace()
+        self.ctx.bot = bot
+        self.ctx.loop = self.ctx.bot.loop
 
-        self.env = Environment(
+        self.ctx.env = Environment(
             loader=FileSystemLoader('./templates', encoding='utf8'),
             extensions=['jinja2.ext.do'],
             enable_async=True
         )
-        self.env.globals.update({
+        self.ctx.env.globals.update({
             'client': self,
             'isinstance': isinstance,
             'enumerate': enumerate,
@@ -1221,15 +1252,14 @@ class Web(sanic.Sanic):
             'none': None,
             'repr': repr
         })
-        self.route_prefix = 'route_'
+        self.ctx.route_prefix = 'route_'
 
-        self.secret_key = os.urandom(32)
+        self.ctx.secret_key = os.urandom(32)
         self.blueprint(bp)
-
         self.static('/static', './static')
 
     def l(self, key: str, *args: tuple, default: Optional[str] = '', **kwargs: dict) -> LocalizedText:
-        return LocalizedText(self.bot, ['web', key], default, *args, **kwargs)
+        return LocalizedText(self.ctx.bot, ['web', key], default, *args, **kwargs)
 
     def str_key_to_list(self, text: str) -> list:
         return [
@@ -1247,8 +1277,8 @@ class Web(sanic.Sanic):
         return '\n'.join([str(i).replace('\n', '\\n') for i in value])
 
     def convert_web_value(self, raw_value: Any, tags: list) -> Any:
-        select_tag = self.bot.get_select_tag(tags)
-        multiple_select_tag = self.bot.get_multiple_select_tag(tags)
+        select_tag = self.ctx.bot.get_select_tag(tags)
+        multiple_select_tag = self.ctx.bot.get_multiple_select_tag(tags)
 
         # Fix type
         value = raw_value
@@ -1288,11 +1318,11 @@ class Web(sanic.Sanic):
         # Fix tag values
         def fix_tag_value(val):
             if select_tag is not None:
-                for v in getattr(self.bot, select_tag):
+                for v in getattr(self.ctx.bot, select_tag):
                     if v['value'] == val:
                         return v['real_value']
             if multiple_select_tag is not None:
-                for v in getattr(self.bot, multiple_select_tag):
+                for v in getattr(self.ctx.bot, multiple_select_tag):
                     if v['value'] == val:
                         return v['real_value']
             return val
@@ -1307,5 +1337,5 @@ class Web(sanic.Sanic):
         return value
 
     async def render_template(self, filename: str, *args: Any, **kwargs: Any) -> HTTPResponse:
-        template = self.env.get_template(filename)
+        template = self.ctx.env.get_template(filename)
         return res.html(await template.render_async(*args, **kwargs))

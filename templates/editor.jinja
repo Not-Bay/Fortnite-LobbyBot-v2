@@ -21,8 +21,8 @@
             '/boot-switch': "{{client.l('boot_switch')}}",
             '/clients-viewer': "{{client.l('clients_viewer')}}"
         };
-        let tags_ = {{client.bot.dumps(tags)}};
-        let data = {{client.bot.dumps(data)}};
+        let tags_ = {{client.ctx.bot.dumps(tags)}};
+        let data = {{client.ctx.bot.dumps(data)}};
     </script>
     <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/main.css')}}">
     <link rel="stylesheet" type="text/css" href="{{client.url_for('static', filename='css/header.css')}}">
@@ -66,10 +66,10 @@
 
                         {% for raw_key, tags in tag_data.items() %}
                             {% set keys = str_key_to_list(raw_key) %}
-                            {% set value = client.bot.get_dict_key_default(data, keys, '') %}
-                            {% set select_tag = client.bot.get_select_tag(tags) %}
-                            {% set multiple_select_tag = client.bot.get_multiple_select_tag(tags) %}
-                            {% set config_tag = client.bot.get_config_tag(tags) %}
+                            {% set value = client.ctx.bot.get_dict_key_default(data, keys, '') %}
+                            {% set select_tag = client.ctx.bot.get_select_tag(tags) %}
+                            {% set multiple_select_tag = client.ctx.bot.get_multiple_select_tag(tags) %}
+                            {% set config_tag = client.ctx.bot.get_config_tag(tags) %}
 
                             {% if tags[0] == dict %}
                                 <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
@@ -85,7 +85,7 @@
                                         <div id="{{keys[-1]}}_{{num}}" num="{{num}}" class="openable" style="left: {{15 * len(keys)}}px;">
                                             <span>{{client.l(keys[-1][:-1], num + 1)}}</span>
                                             <div class="content">
-                                                {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.bot, config_tag + '_tags'))}}
+                                                {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.ctx.bot, config_tag + '_tags'))}}
                                             </div>
                                             <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, `{{prefix + raw_key}}`)">
                                             <input class="copy_button" type="button" value="{{client.l('copy')}}" onclick="copy(this)">
@@ -100,7 +100,7 @@
                                     <label class="key" for="{{prefix + raw_key}}">{{client.l('editor_' + key_prefix + '_'.join(keys))}}</label>
                                     {% if select_tag != None %}
                                         <select id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}">
-                                            {% for v in getattr(client.bot, select_tag) %}
+                                            {% for v in getattr(client.ctx.bot, select_tag) %}
                                                 {% if v['real_value'] == value %}
                                                     <option value="{{v['value']}}" selected>{{str(v['display_value'])}}</option>
                                                 {% else %}
@@ -110,7 +110,7 @@
                                         </select>
                                     {% elif multiple_select_tag != None %}
                                         <select id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" multiple>
-                                            {% for v in getattr(client.bot, multiple_select_tag) %}
+                                            {% for v in getattr(client.ctx.bot, multiple_select_tag) %}
                                                 {% if value != None and v['real_value'] in value %}
                                                     <option value="{{v['value']}}" selected>{{str(v['display_value'])}}</option>
                                                 {% else %}
@@ -151,7 +151,7 @@
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
-                                    {% if client.bot.get_list_index(prefix_keys, 1) != none %}
+                                    {% if client.ctx.bot.get_list_index(prefix_keys, 1) != none %}
                                         <input class="apply_to_all_button" type="button" value="{{client.l('apply_to_all')}}" onclick="applyToAll(this, `{{list_key_to_str(prefix_keys[:-1])}}`, `{{list_key_to_str(keys)}}`)">
                                     {% endif %}
                                 </div>

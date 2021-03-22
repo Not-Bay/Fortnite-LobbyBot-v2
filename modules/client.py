@@ -1924,6 +1924,7 @@ class Client(fortnitepy.Client):
         return self.bot.debug_print_exception(exc)
 
     def section(self, member: Optional[fortnitepy.PartyMember] = None) -> int:
+        member = member or self.party.me
         base = member.meta.get_prop('Default:FrontendEmote_j')
         return base['FrontendEmote']['emoteSection']
 
@@ -2813,6 +2814,13 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
+        if member.id == self.user.id and self.get_config_item_id(self.config['fortnite']['emote']) is not None:
+            await self.party.me.change_asset(
+                'AthenaDance',
+                self.get_config_item_id(self.config['fortnite']['emote']),
+                section=self.config['fortnite']['emote_section']
+            )
+
         if self.party_hides.get(self.party.id) is None:
             self.party_hides[self.party.id] = []
         for m in self.party.members:
@@ -2926,7 +2934,8 @@ class Client(fortnitepy.Client):
                 if item == 'AthenaDance' and self.config['fortnite']['repeat_emote_when_join']:
                     await self.party.me.change_asset(
                         item,
-                        self.emote
+                        self.emote,
+                        section=self.section()
                     )
                 continue
 

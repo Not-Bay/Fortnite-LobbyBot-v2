@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.1.7'
+__version__ = '1.1.8'
 
 
 class Updater:
@@ -129,8 +129,8 @@ class Updater:
                 result.setdefault(key, value)
         return result
 
-    async def check_update(self, uri: str, path: str, save: Optional[str] = None
-                           ) -> Tuple[bool, Optional[Union[bytes, str]]]:
+    async def check_update(self, uri: str, path: str, save: Optional[str] = None,
+                           write: Optional[bool] = True) -> Tuple[bool, Optional[Union[bytes, str]]]:
         dirs = '/'.join(path.split('/')[:-1])
         dirs = f'{dirs}/' if dirs else ''
         filename = path.split('/')[-1]
@@ -237,45 +237,47 @@ class Updater:
                 if 'diff' in tags:
                     new = self.add_new_key(existing, latest, 'diff' not in tags)
                     if existing != new:
-                        self.bot.send(
-                            self.l(
-                                'update_detected',
-                                path,
-                                default=(
-                                    "'{0}' のアップデートを確認しました\n"
-                                    "Detected update for '{0}'"
-                                )
-                            ),
-                            add_p=self.bot.time
-                        )
-                        if 'db' in tags:
-                            self.bot.save_json(key, new)
-                        else:
-                            if dirs:
-                                os.makedirs(dirs, exist_ok=True)
-                            await backup()
-                            self.bot.save_json(f'{dirs}{key}', new, force_file=True)
+                        if write:
+                            self.bot.send(
+                                self.l(
+                                    'update_detected',
+                                    path,
+                                    default=(
+                                        "'{0}' のアップデートを確認しました\n"
+                                        "Detected update for '{0}'"
+                                    )
+                                ),
+                                add_p=self.bot.time
+                            )
+                            if 'db' in tags:
+                                self.bot.save_json(key, new)
+                            else:
+                                if dirs:
+                                    os.makedirs(dirs, exist_ok=True)
+                                await backup()
+                                self.bot.save_json(f'{dirs}{key}', new, force_file=True)
                         return True, new
                 else:
                     if existing != latest:
-                        self.bot.send(
-                            self.l(
-                                'update_detected',
-                                path,
-                                default=(
-                                    "'{0}' のアップデートを確認しました\n"
-                                    "Detected update for '{0}'"
-                                )
-                            ),
-                            add_p=self.bot.time
-                        )
-                        if 'db' in tags:
-                            self.bot.save_json(key, latest)
-                        else:
-                            if dirs:
-                                os.makedirs(dirs, exist_ok=True)
-                            await backup()
-                            self.bot.save_json(f'{dirs}{key}', latest, force_file=True)
+                        if write:
+                            self.bot.send(
+                                self.l(
+                                    'update_detected',
+                                    path,
+                                    default=(
+                                        "'{0}' のアップデートを確認しました\n"
+                                        "Detected update for '{0}'"
+                                    )
+                                ),
+                                add_p=self.bot.time
+                            )
+                            if 'db' in tags:
+                                self.bot.save_json(key, latest)
+                            else:
+                                if dirs:
+                                    os.makedirs(dirs, exist_ok=True)
+                                await backup()
+                                self.bot.save_json(f'{dirs}{key}', latest, force_file=True)
                         return True, latest
             else:
                 if 'raw' in tags:
@@ -289,26 +291,27 @@ class Updater:
                 await res.release()
 
                 if existing != latest:
-                    self.bot.send(
-                        self.l(
-                            'update_detected',
-                            path,
-                            default=(
-                                "'{0}' のアップデートを確認しました\n"
-                                "Detected update for '{0}'"
-                            )
-                        ),
-                        add_p=self.bot.time
-                    )
-                    if dirs:
-                        os.makedirs(dirs, exist_ok=True)
-                    await backup()
-                    if 'raw' in tags:
-                        async with aopen(path, 'wb') as f:
-                            await f.write(latest)
-                    else:
-                        async with aopen(path, 'w', encoding='utf-8') as f:
-                            await f.write(latest)
+                    if write:
+                        self.bot.send(
+                            self.l(
+                                'update_detected',
+                                path,
+                                default=(
+                                    "'{0}' のアップデートを確認しました\n"
+                                    "Detected update for '{0}'"
+                                )
+                            ),
+                            add_p=self.bot.time
+                        )
+                        if dirs:
+                            os.makedirs(dirs, exist_ok=True)
+                        await backup()
+                        if 'raw' in tags:
+                            async with aopen(path, 'wb') as f:
+                                await f.write(latest)
+                        else:
+                            async with aopen(path, 'w', encoding='utf-8') as f:
+                                await f.write(latest)
                     return True, latest
             return False, latest
 
@@ -318,11 +321,11 @@ class Updater:
         else:
             uri = 'https://raw.githubusercontent.com/gomashio1596/Fortnite-LobbyBot-v2/main/'
 
-        _, data = await self.check_update(uri, 'modules/auto_updater.py')
+        _, data = await self.check_update(uri, 'modules/auto_updater.py', write=False)
 
         var = {}
         exec(data, globals(), var)
-        if __version__ != var['__version__']:
+        if __version__ < var['__version__']:
             self.bot.send(
                 self.l(
                     'new_version',
@@ -337,7 +340,6 @@ class Updater:
             tasks = [
                 self.bot.loop.create_task(self.check_update(uri, path))
                 for path in self.updates.keys()
-                if path != 'modules/auto_updater.py'
             ]
             if self.bot.mode == 'pc':
                 tasks.extend([
