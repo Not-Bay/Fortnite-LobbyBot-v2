@@ -2667,7 +2667,10 @@ class Bot:
                 if self.discord_client is not None:
                     tasks.append(self.discord_client.start(self.config['discord']['token']))
 
-                await asyncio.gather(*tasks)
+                try:
+                    await asyncio.gather(*tasks)
+                except Exception as e:
+                    self.print_exception(e)
         while True:
             await asyncio.sleep(0.1)
 
