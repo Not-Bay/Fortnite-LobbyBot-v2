@@ -5,7 +5,8 @@
 .openable span,
 .openable .content *,
 .openable .add_button,
-.openable .remove_button{
+.openable .remove_button,
+.openable .leave_button {
     pointer-events: all;
 }
 
@@ -162,6 +163,7 @@
     width: 10%;
     height: 30px;
     background-color: #0032B9;
+    cursor: pointer;
     color: #0087D7;
     border: 0;
     margin-right: 0;
@@ -173,8 +175,19 @@ input {
     margin-right: 10px;
 }
 
+.leave_button {
+    width: 80%;
+    cursor: pointer;
+    background-color: #F04747;
+    border: 1px solid #222428;
+    border-radius: 3px;
+    outline: 0;
+    box-sizing: border-box;
+}
+
 .command_input,
 .command_button {
+    cursor: pointer;
     background-color: #303339;
     border: 1px solid #222428;
     border-radius: 3px;
@@ -202,6 +215,7 @@ input {
 .command_button {
     width: 50px;
     height: 25px;
+    cursor: pointer;
 }
 
 .red_button {

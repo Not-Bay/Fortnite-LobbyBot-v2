@@ -2,6 +2,22 @@
     margin-bottom: 20px;
 }
 
+#restart {
+    position: fixed;
+    cursor: pointer;
+    color: white;
+    background-color: #43b581;
+    width: 130px;
+    height: 32px;
+    font-size: 14px;
+    border-radius: 3px;
+    bottom: 5px;
+    right: 5px;
+    z-index: 1;
+    border: 1px solid #303339;
+    border-radius: 3px;
+}
+
 #content .info {
     background-color: #2F3136;
     border-style: solid;

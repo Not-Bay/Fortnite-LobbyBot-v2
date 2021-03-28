@@ -194,7 +194,6 @@ async def openfile_docs(request: Request, lang: str, filename: str) -> HTTPRespo
 @bp.route('/file/<filename>', methods=['GET'])
 @auth.login_required
 async def file_openfile(request: Request, filename: str) -> HTTPResponse:
-    app = request.app
     files = [
         'README.md',
         'README_EN.md',
@@ -209,7 +208,6 @@ async def file_openfile(request: Request, filename: str) -> HTTPResponse:
 @bp.route('/file/docs/<lang>/<filename>', methods=['GET'])
 @auth.login_required
 async def file_openfile_docs(request: Request, lang: str, filename: str) -> HTTPResponse:
-    app = request.app
     langs = [
         'en',
         'es',
@@ -627,20 +625,29 @@ async def boot_switch(request: Request) -> HTTPResponse:
     return await app.render_template('boot-switch.jinja')
 
 
+@bp.route('/boot-switch/restart', methods=['POST'])
+@auth.login_required
+async def boot_switch_restart(request: Request) -> HTTPResponse:
+    app = request.app
+    await app.ctx.bot.reboot()
+    return res.empty()
+
+
 def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
     if full:
         app = client.bot.web
+        user = getattr(client, 'user', None)
         party = getattr(client, 'party', None)
         return {
             'name': (
-                f'{client.config["fortnite"]["nickname"] or client.user.display_name}'
-                f' / {client.user.id}'
+                f'{client.config["fortnite"]["nickname"] or user.display_name}'
+                f' / {user.id}'
             ) if client.is_ready() else (
                 f'{client.config["fortnite"]["nickname"]} / {client.email}'
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
-            'id': client.user.id,
+            'id': user.id if user is not None else None,
             'is_ready': client.is_ready(),
             'state': (
                 'ready'
@@ -738,65 +745,65 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 } for member in getattr(party, 'members', [])
             ],
             'client_party_member': {
-                'name': f'{client.party.me.display_name} / {client.party.me.id}',
-                'id': client.party.me.id,
-                'position': client.party.me.position,
-                'is_leader': client.party.me.leader,
-                'is_incoming_pending': client.is_incoming_pending(client.party.me.id),
-                'is_outgoing_pending': client.is_outgoing_pending(client.party.me.id),
-                'is_friend': client.has_friend(client.party.me.id),
-                'is_blocked': client.is_blocked(client.party.me.id),
+                'name': f'{party.me.display_name} / {party.me.id}',
+                'id': party.me.id,
+                'position': party.me.position,
+                'is_leader': party.me.leader,
+                'is_incoming_pending': client.is_incoming_pending(party.me.id),
+                'is_outgoing_pending': client.is_outgoing_pending(party.me.id),
+                'is_friend': client.has_friend(party.me.id),
+                'is_blocked': client.is_blocked(party.me.id),
                 'outfit': {
                     'name': client.searcher.get_item(
-                        client.asset('AthenaCharacter', client.party.me),
+                        client.asset('AthenaCharacter', party.me),
                         {}
                     ).get('name', 'TBD'),
                     'url': client.searcher.get_item(
-                        client.asset('AthenaCharacter', client.party.me),
+                        client.asset('AthenaCharacter', party.me),
                         {}
                     ).get('url') or app.url_for('static', filename='images/outfit.jpg')
                 }
-                if client.searcher.get_item(client.asset('AthenaCharacter', client.party.me)) is not None else
+                if client.searcher.get_item(client.asset('AthenaCharacter', party.me)) is not None else
                 None,
                 'backpack': {
                     'name': client.searcher.get_item(
-                        client.asset('AthenaBackpack', client.party.me),
+                        client.asset('AthenaBackpack', party.me),
                         {}
                     ).get('name', 'TBD'),
                     'url': client.searcher.get_item(
-                        client.asset('AthenaBackpack', client.party.me),
+                        client.asset('AthenaBackpack', party.me),
                         {}
                     ).get('url') or app.url_for('static', filename='images/backpack.jpg')
                 }
-                if client.searcher.get_item(client.asset('AthenaBackpack', client.party.me)) is not None else
+                if client.searcher.get_item(client.asset('AthenaBackpack', party.me)) is not None else
                 None,
                 'pickaxe': {
                     'name': client.searcher.get_item(
-                        client.asset('AthenaPickaxe', client.party.me),
+                        client.asset('AthenaPickaxe', party.me),
                         {}
                     ).get('name', 'TBD'),
                     'url': client.searcher.get_item(
-                        client.asset('AthenaPickaxe', client.party.me),
+                        client.asset('AthenaPickaxe', party.me),
                         {}
                     ).get('url') or app.url_for('static', filename='images/pickaxe.jpg')
                 }
-                if client.searcher.get_item(client.asset('AthenaPickaxe', client.party.me)) is not None else
+                if client.searcher.get_item(client.asset('AthenaPickaxe', party.me)) is not None else
                 None,
                 'emote': {
                     'name': client.searcher.get_item(
-                        client.asset('AthenaDance', client.party.me),
+                        client.asset('AthenaDance', party.me),
                         {}
                     ).get('name', 'TBD'),
                     'url': client.searcher.get_item(
-                        client.asset('AthenaDance', client.party.me),
+                        client.asset('AthenaDance', party.me),
                         {}
                     ).get('url') or app.url_for('static', filename='images/emote.jpg')
                 }
-                if client.searcher.get_item(client.asset('AthenaDance', client.party.me)) is not None else
+                if client.searcher.get_item(client.asset('AthenaDance', party.me)) is not None else
                 None,
-                'banner': client.bot.get_banner_url(client.party.me.banner[0]),
-                'level': client.party.me.banner[2]
-            },
+                'banner': client.bot.get_banner_url(party.me.banner[0]),
+                'level': party.me.banner[2]
+            } if party is not None else None,
             'whisper': client.whisper,
             'party_chat': (
                 client.party_chat['party_chat']
@@ -805,16 +812,17 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             )
         }
     else:
+        user = getattr(client, 'user', None)
         return {
             'name': (
-                f'{client.config["fortnite"]["nickname"] or client.user.display_name}'
-                f' / {client.user.id}'
+                f'{client.config["fortnite"]["nickname"] or user.display_name}'
+                f' / {user.id}'
             ) if client.is_ready() else (
                 f'{client.config["fortnite"]["nickname"]} / {client.email}'
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
-            'id': client.user.id,
+            'id': user.id if user is not None else None,
             'is_ready': client.is_ready(),
             'state': (
                 'ready'
@@ -892,7 +900,7 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
 
     def variables():
         var = client_variables(client, full=True)
-        
+
         incoming = len([i for i in var['friend_requests'] if i['type'] == 'incoming'])
         online = len([i for i in var['friends'] if i['is_online']])
 
@@ -1142,7 +1150,12 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
 
     while True:
         data = json.loads(await ws.recv())
-        if data['event'] == 'friend_message':
+        if data['event'] == 'leave_party':
+            try:
+                await client.party.me.leave()
+            except Exception as e:
+                client.bot.debug_print_exception(e)
+        elif data['event'] == 'friend_message':
             friend = client.get_friend(data['user_id'])
             if friend is None:
                 continue
@@ -1297,7 +1310,13 @@ class Web(sanic.Sanic):
                 elif tags[1] is int:
                     value = [int(i) for i in re.split(r'\r\n|\n', value)]
         elif tags[0] is str:
-            value = value
+            if value == '':
+                if 'can_be_none' in tags:
+                    value = None
+                else:
+                    value = ''
+            else:
+                value = value
         elif tags[0] is int:
             if value == '':
                 if 'can_be_none' in tags:

@@ -142,7 +142,7 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
                 kwargs.pop(key, None)
             if self.client.config['fortnite']['avatar_id'] == '{bot}':
                 self.client.set_avatar(fortnitepy.Avatar(
-                    asset=asset.split('/')[-1],
+                    asset=asset.split('/')[-1].split('.')[0],
                     background_colors=(
                         self.client.avatar.background_colors
                         if self.client.avatar is not None else
@@ -161,14 +161,18 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
                 kwargs.pop(key, None)
             if asset is None:
                 await self.clear_emote()
-                self.client.emote = None
+                if keep:
+                    self.client.emote = None
+                    self.client.emote_section = None
             else:
                 asset_id = re.search(r".*\.([^\'\"]*)", asset.strip("'"))
                 if (self.asset(item) is not None and asset_id is not None
                         and self.asset(item).lower() == asset_id.group(1).lower()):
                     await self.clear_emote()
                 await func(asset=asset, **kwargs)
-                self.client.emote = asset
+                if keep:
+                    self.client.emote = asset
+                    self.client.emote_section = kwargs.get('section')
         else:  # other things
             keys = ['enlightenment', 'corruption', 'run_for', 'section']
             for key in keys:
@@ -441,6 +445,7 @@ class Client(fortnitepy.Client):
         self._is_booting = False
         self.booted_at = None
         self.emote = None
+        self.emote_section = None
 
         self.email = self.config['fortnite']['email']
         self.config_user_pattern = re.compile(
@@ -2814,7 +2819,8 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
-        if member.id == self.user.id and self.get_config_item_id(self.config['fortnite']['emote']) is not None:
+        if (member.id == self.user.id and self.get_config_item_id(self.config['fortnite']['emote']) is not None
+                and self.emote is None and self.emote_section is None):
             await self.party.me.change_asset(
                 'AthenaDance',
                 self.get_config_item_id(self.config['fortnite']['emote']),
@@ -2930,13 +2936,17 @@ class Client(fortnitepy.Client):
         ]
         for item in items:
             conf = self.bot.convert_backend_type(item)
-            if not self.config['fortnite'][f'join_{conf}']:
-                if item == 'AthenaDance' and self.config['fortnite']['repeat_emote_when_join']:
-                    await self.party.me.change_asset(
-                        item,
-                        self.emote,
-                        section=self.section()
-                    )
+
+            if (not self.config['fortnite'][f'join_{conf}'] and item == 'AthenaDance'
+                    and self.config['fortnite']['repeat_emote_when_join']):
+                await self.party.me.change_asset(
+                    item,
+                    self.emote,
+                    section=self.emote_section
+                )
+                continue
+
+            if self.config['fortnite'][f'join_{conf}'] is None:
                 continue
 
             variants = []

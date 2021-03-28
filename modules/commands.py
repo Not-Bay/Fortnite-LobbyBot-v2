@@ -3334,6 +3334,7 @@ class DefaultCommands:
             for member in client.party.members:
                 if client.party.remove_hide_user(member.id):
                     count += 1
+            client.party.update_hide_users([])
             try:
                 await client.party.refresh_squad_assignments()
             except Exception as e:

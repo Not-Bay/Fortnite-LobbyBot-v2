@@ -91,6 +91,8 @@
             <span>{{client.l('party')}}</span>
             <div class="content">
                 <p id="party_name">{{client.l('loading')}}</p>
+                <input class="leave_button" type="button" value="{{client.l('leave_party')}}" onclick="leaveParty()">
+                <br>
                 <div id="member" class="openable">
                     <span>{{client.l('member', 0, 0)}}</span>
                     <div class="content">
