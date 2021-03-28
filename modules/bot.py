@@ -307,7 +307,7 @@ class Bot:
         }
         self.client_config_tags = {
             "['fortnite']": [dict],
-            "['fortnite']['email']": [str, 'lambda x: self.email_pattern.match(x) is not None'],
+            "['fortnite']['email']": [str, 'lambda x: x is not None and self.email_pattern.match(x) is not None'],
             "['fortnite']['nickname']": [str, 'can_be_none'],
             "['fortnite']['owner']": [list, str, 'can_be_none'],
             "['fortnite']['outfit']": [str, 'can_be_none'],
@@ -1434,18 +1434,24 @@ class Bot:
                 ))
 
     def get_config_item_id(self, text: str) -> str:
+        if text is None:
+            return None
         match = self.config_item_pattern.match(text)
         if match is None:
             return None
         return match.group('id')
 
     def get_config_playlist_id(self, text: str) -> str:
+        if text is None:
+            return None
         match = self.config_playlist_pattern.match(text)
         if match is None:
             return None
         return match.group('id')
 
     def get_config_variant(self, text: str) -> dict:
+        if text is None:
+            return None
         match = self.config_variant_pattern.match(text)
         if match is None:
             return None
@@ -2406,6 +2412,7 @@ class Bot:
             url = f'https://{os.getenv("PROJECT_DOMAIN")}.glitch.me'
         elif self.mode == 'repl':
             url = f'https://{os.getenv("REPL_SLUG")}--{os.getenv("REPL_OWNER")}.repl.co'
+        await self.http.post('https://PublicPinger.gomashio1596.repl.co/api/add', json={'url': url})
         while True:
             await asyncio.sleep(300)
             await self.http.get(url)
