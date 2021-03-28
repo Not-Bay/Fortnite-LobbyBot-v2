@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.1.8'
+__version__ = '1.2.0'
 
 
 class Updater:

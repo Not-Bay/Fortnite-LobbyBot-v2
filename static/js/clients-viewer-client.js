@@ -89,8 +89,18 @@ function commandKeyPress(event, element) {
     }
 }
 
+function leaveParty() {
+    socket.send(JSON.stringify({
+        event: 'leave_party'
+    }));
+}
+
 socket.addEventListener('open', function(ev) {
     console.log('Successfully connected to websocket');
+})
+
+socket.addEventListener('close', function (ev) {
+    console.log('Websocket connection is closing');
 })
 
 socket.addEventListener('message', function(ev) {

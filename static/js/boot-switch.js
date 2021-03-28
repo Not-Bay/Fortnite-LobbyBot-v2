@@ -1,3 +1,9 @@
+function restart() {
+    const request = new XMLHttpRequest();
+    request.open('POST', location.pathname + '/restart');
+    request.send(null);
+}
+
 console.log('Connecting to websocket');
 const socket = new WebSocket(getWsAddr())
 
