@@ -1737,6 +1737,8 @@ class Client(fortnitepy.Client):
                 'type={0.type!r}>'.format(external_auth))
 
     def get_config_user_id(self, text: str) -> Optional[str]:
+        if text is None:
+            return None
         match = self.config_user_pattern.match(text)
         if match is None:
             return None
