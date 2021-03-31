@@ -15,6 +15,7 @@ jinja2 = "*"
 pykakasi = "*"
 replit = "*"
 sanic = "*"
+"sanic-routing" = "0.4.1"
 uvloop = "*"
 websockets = "*"
 
