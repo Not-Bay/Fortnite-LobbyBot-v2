@@ -277,7 +277,7 @@ class Bot:
             "['discord']['whitelist']": [list, int],
             "['discord']['prefix']": [list, str, 'can_be_none'],
             "['discord']['exec']": [dict],
-            "['discord']['exec']['ready']": [list, str, 'can_be_none'],
+            "['discord']['exec']['ready']": [list, str, 'can_be_none', 'accept_empty'],
             "['web']": [dict],
             "['web']['enabled']": [bool, 'select_bool'],
             "['web']['ip']": [str],
@@ -400,10 +400,10 @@ class Bot:
             "['fortnite']['party_chat_enable_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['permission_command_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
             "['fortnite']['accept_join_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
-            "['fortnite']['join_message']": [list, str, 'can_be_none'],
-            "['fortnite']['join_message_whisper']": [list, str, 'can_be_none'],
-            "['fortnite']['random_message']": [list, list, str, 'can_be_none'],
-            "['fortnite']['random_message_whisper']": [list, list, str, 'can_be_none'],
+            "['fortnite']['join_message']": [list, str, 'can_be_none', 'accept_empty'],
+            "['fortnite']['join_message_whisper']": [list, str, 'can_be_none', 'accept_empty'],
+            "['fortnite']['random_message']": [list, list, str, 'can_be_none', 'accept_empty'],
+            "['fortnite']['random_message_whisper']": [list, list, str, 'can_be_none', 'accept_empty'],
             "['fortnite']['chat_max']": [int, 'can_be_none'],
             "['fortnite']['chat_max_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['chat_max_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
@@ -534,7 +534,7 @@ class Bot:
         self.replies_config_tags = {
             "['matchmethod']": [str, 'select_matchmethod'],
             "['word']": [str],
-            "['reply']": [list, str, 'can_be_multiple'],
+            "['reply']": [list, str, 'can_be_multiple', 'accept_empty'],
             "['ct']": [int, 'can_be_none']
         }
 
@@ -1263,7 +1263,7 @@ class Bot:
             if f'{prefix}{key}' not in error_list:
                 if tags[0] is list and value is not None:
                     try:
-                        exec(f'data{key} = self.cleanup_list(value)')
+                        exec(f'data{key} = self.cleanup_list(value, "accept_empty" not in tags)')
                     except Exception as e:
                         self.debug_print_exception(e)
                     else:
@@ -1373,8 +1373,8 @@ class Bot:
             return '\n'.join(content.split('\n')[1:-1])
         return content.strip(' \n')
 
-    def cleanup_list(self, data: list) -> list:
-        return [d for d in data if d is not None and d != '']
+    def cleanup_list(self, data: list, remove_empty: Optional[bool] = True) -> list:
+        return [d for d in data if d is not None and (d != '' if remove_empty else True)]
 
     def cleanup_channel_name(self, text: str) -> str:
         converter = {
