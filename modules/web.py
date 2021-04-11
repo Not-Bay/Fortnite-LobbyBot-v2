@@ -30,7 +30,8 @@ if TYPE_CHECKING:
 
 
 class LoginManager:
-    def __init__(self) -> None:
+    def __init__(self, ignore: Optional[Callable] = lambda r: False) -> None:
+        self.ignore = ignore
         self.id_len = 64
         self.expires_in = datetime.timedelta(minutes=10)
         self.expires = {}
@@ -78,7 +79,7 @@ class LoginManager:
     def login_required(self, func: Callable) -> Callable:
         @wraps(func)
         def deco(request: Request, *args: Any, **kwargs: Any):
-            if self.authenticated(request):
+            if self.ignore(request) or self.authenticated(request):
                 return func(request, *args, **kwargs)
             elif isinstance(self.unauthorized_handler_, HTTPResponse):
                 return self.unauthorized_handler_
@@ -96,7 +97,7 @@ class LoginManager:
         return deco
 
 
-auth = LoginManager()
+auth = LoginManager(lambda r: urlparse(r.url).path.startswith('/static'))
 bp = sanic.Blueprint('app')
 
 

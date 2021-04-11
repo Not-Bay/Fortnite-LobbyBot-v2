@@ -15,7 +15,7 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, List,
 import jaconv
 
 from .colors import blue, green, magenta, yellow
-from .commands import (Command, DummyMessage, FindUserMatchMethod,
+from .commands import (Command, DummyMessage, DummyUser, FindUserMatchMethod,
                        FindUserMode, MyMessage)
 from .cosmetics import Searcher
 from .discord_client import DiscordClient
@@ -2052,13 +2052,29 @@ class Client(fortnitepy.Client):
                               for stack in reversed(inspect.stack()[1:])])),
                 file=sys.stderr
             )
+            return None
+        return True
 
     async def exec_event(self, event: str, variables: dict) -> None:
         if self.config['fortnite']['exec'][event]:
-            return await self.aexec(
-                ' '.join(self.config['fortnite']['exec'][event]),
+            ret = await self.aexec(
+                '\n'.join(self.config['fortnite']['exec'][event]),
                 variables
             )
+            if ret is None:
+                for line in self.config['fortnite']['exec'][event]:
+                    try:
+                        await self.bot.aexec(line, variables)
+                    except Exception as e:
+                        mes = DummyMessage(self, None, content=line, author=DummyUser())
+                        await self.process_command(MyMessage(self, mes), None)
+                        if self.config['loglevel'] == 'debug':
+                            self.send(
+                                mes.result,
+                                color=yellow
+                            )
+            else:
+                return ret
 
     async def update_owner(self) -> None:
         self._owner = {}
@@ -3663,16 +3679,16 @@ class Client(fortnitepy.Client):
                 elif word['matchmethod'] == 'ends' and content.endswith(word['word']):
                     flag = True
                 if flag:
-                    self.disabled_replies.append(word)
-
                     def remove():
                         if word in self.disabled_replies:
                             self.disabled_replies.remove(word)
 
-                    self.loop.call_later(
-                        word['ct'],
-                        remove
-                    )
+                    if word['ct']:
+                        self.disabled_replies.append(word)
+                        self.loop.call_later(
+                            word['ct'],
+                            remove
+                        )
                     var = self.variables
                     var.update({
                         'message': message,
@@ -3701,25 +3717,36 @@ class Client(fortnitepy.Client):
             async def custom_commands():
                 for command in self.custom_commands['commands']:
                     if command['word'] == content:
-                        for line in command['run']:
-                            try:
-                                var = self.variables
-                                var.update({
-                                    'message': message,
-                                    'author': message.author,
-                                    'author_display_name': message.author.display_name,
-                                    'author_id': message.author.id
-                                })
-                                await self.bot.aexec(line, var)
-                            except Exception as e:
-                                self.debug_print_exception(e)
-                                mes = DummyMessage(self, message, content=line)
-                                await self.process_command(MyMessage(self, mes), None)
-                                if self.config['loglevel'] == 'debug':
-                                    self.send(
-                                        mes.result,
-                                        color=yellow
-                                    )
+                        try:
+                            var = self.variables
+                            var.update({
+                                'message': message,
+                                'author': message.author,
+                                'author_display_name': message.author.display_name,
+                                'author_id': message.author.id
+                            })
+                            await self.bot.aexec('\n'.join(command['run']), var)
+                        except Exception as e:
+                            self.debug_print_exception(e)
+                            for line in command['run']:
+                                try:
+                                    var = self.variables
+                                    var.update({
+                                        'message': message,
+                                        'author': message.author,
+                                        'author_display_name': message.author.display_name,
+                                        'author_id': message.author.id
+                                    })
+                                    await self.bot.aexec(line, var)
+                                except Exception as e:
+                                    self.debug_print_exception(e)
+                                    mes = DummyMessage(self, message, content=line)
+                                    await self.process_command(MyMessage(self, mes), None)
+                                    if self.config['loglevel'] == 'debug':
+                                        self.send(
+                                            mes.result,
+                                            color=yellow
+                                        )
                         return True
                 return False
 

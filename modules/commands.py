@@ -95,6 +95,12 @@ class FindUserMode(fortnitepy.Enum):
     NAME_ID = 'name_id'
 
 
+class DummyUser:
+    def __init__(self) -> None:
+        self.display_name = 'Dummy'
+        self.id = 'Dummy'
+
+
 class DummyMessage:
     def __init__(self, client: Clients, message: Messages, *,
                  content: Optional[str] = None,
@@ -109,7 +115,11 @@ class DummyMessage:
         self.content = content or message.content
 
         self.author = author or message.author
-        self.created_at = message.created_at
+        self.created_at = (
+            message.created_at
+            if hasattr(message, 'created_at') else
+            datetime.datetime.utcnow()
+        )
 
         self.result = ''
 
