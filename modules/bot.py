@@ -19,6 +19,7 @@ from logging import WARNING, getLogger
 from typing import Any, Callable, List, Optional, Tuple, Union
 
 import aiohttp
+from aioconsole import ainput
 from aiofiles import open as aopen
 from aiofiles.os import remove as aremove
 from tzlocal import get_localzone
@@ -32,6 +33,7 @@ from .device_code import Auth, HTTPClient
 from .discord_client import DiscordClient
 from .encoder import MyJSONEncoder
 from .localize import LocalizedText
+from .session_id import SessionIDAuth
 from .web import Web, WebMessage, WebUser
 from .webhook import WebhookClient
 
@@ -2562,9 +2564,6 @@ class Bot:
                 device_auths = {}
             for num, config in enumerate(self.config['clients']):
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
-                if not device_auth_details:
-                    device_auth_details = await self.auth.authenticate(config['fortnite']['email'])
-                    self.store_device_auth_details(config['fortnite']['email'], device_auth_details)
                 party_meta = []
                 if config['fortnite']['party']['playlist']:
                     party_meta.append(partial(
@@ -2620,12 +2619,24 @@ class Bot:
                     if ',' in config['fortnite']['avatar_color'] else
                     getattr(fortnitepy.KairosBackgroundColorPreset, config['fortnite']['avatar_color'].upper())
                 )
+
+                async def sid():
+                    while True:
+                        text = self.l('session_id', config['fortnite']['email']).get_text()
+                        self.web_text = text
+                        data = await ainput(f'{text}\n')
+                        match = re.search(r'[a-z0-9]{32}', data)
+                        if match is not None:
+                            return match.group()
+
                 client = Client(
                     self,
                     config,
                     num,
-                    auth=fortnitepy.DeviceAuth(
-                        **device_auth_details
+                    auth=(
+                        fortnitepy.DeviceAuth(**device_auth_details)
+                        if device_auth_details else
+                        SessionIDAuth(sid)
                     ),
                     avatar=fortnitepy.Avatar(
                         asset=(
