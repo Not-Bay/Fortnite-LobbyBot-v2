@@ -20,6 +20,7 @@ from .commands import (Command, DummyMessage, DummyUser, FindUserMatchMethod,
 from .cosmetics import Searcher
 from .discord_client import DiscordClient
 from .localize import LocalizedText
+from .session_id import SessionIDAuth
 from .web import WebMessage, auth
 from .webhook import WebhookClient
 
@@ -2571,8 +2572,20 @@ class Client(fortnitepy.Client):
                 await self.send_presence(self.party.construct_presence())
             await asyncio.sleep(30)
 
+    async def generate_device_auth(self) -> None:
+        data = await self.auth.generate_device_auth()
+        details = {
+            'device_id': data['deviceId'],
+            'account_id': data['accountId'],
+            'secret': data['secret'],
+        }
+        self.bot.store_device_auth_details(self.email, details)
+
     # Events
     async def event_ready(self) -> None:
+        if isinstance(self.auth, SessionIDAuth):
+            self.loop.create_task(self.generate_device_auth())
+
         self._is_booting = False
         self.booted_at = datetime.datetime.now()
         if self.config['relogin_in']:
