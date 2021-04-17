@@ -81,6 +81,7 @@
         "update_finish": "Actualizado correctamente a la versión {0}",
         "updating": "Revisando actualizaciones de ítems...",
         "booting": "Iniciando bot...",
+        "session_id": "Abre\nhttps://www.epicgames.com/id/login?redirectUrl=https://www.epicgames.com/id/api/redirect&prompt=login\nE inicia sesión en '{1}' y copiar pegar texto",
         "confirm_authorization": "Abre\n{0}\nE inicia sesión en '{1}' y presiona el botón 'Confirmar'",
         "account_incorrect": "Esta cuenta ({0}) no es '{1}'",
         "device_auth_error": "device_auth de '{0}' es inválida. Reinicia el bot y haz la autorización de nuevo",

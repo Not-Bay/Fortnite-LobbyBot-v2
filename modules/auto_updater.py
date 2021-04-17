@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.2.2'
+__version__ = '1.2.3'
 
 
 class Updater:
@@ -58,6 +58,7 @@ class Updater:
             'modules/discord_client.py': ['backup'],
             'modules/encoder.py': ['backup'],
             'modules/localize.py': ['backup'],
+            'modules/session_id.py': ['backup'],
             'modules/web.py': ['backup'],
             'modules/webhook.py': ['backup'],
 
