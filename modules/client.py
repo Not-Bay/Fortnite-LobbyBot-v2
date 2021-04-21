@@ -508,10 +508,10 @@ class Client(fortnitepy.Client):
             'party_chat': []
         }
 
-        def _store_whisper(to, author, content):
+        async def _store_whisper(to, author, content):
             if to not in self.whisper:
-                self.whisper[to] = []
-            self.whisper[to].append({
+                self.whisper[to] = {'display_name': (await self.fetch_user(to, cache=True)).display_name, 'content': []}
+            self.whisper[to]['content'].append({
                 'author': {
                     'id': author.id,
                     'display_name': author.display_name
@@ -522,16 +522,17 @@ class Client(fortnitepy.Client):
             self.dispatch_event(
                 'store_whisper',
                 to,
-                self.whisper[to][-1]
+                self.whisper[to]['display_name'],
+                self.whisper[to]['content'][-1]
             )
 
         async def store_whisper(message):
-            _store_whisper(message.author.id, message.author, message.content)
+            await _store_whisper(message.author.id, message.author, message.content)
 
         self.add_event_handler('friend_message', store_whisper)
 
         async def store_sent_whisper(author, content):
-            _store_whisper(author.id, self.user, content)
+            await _store_whisper(author.id, self.user, content)
 
         self.add_event_handler('friend_message_send', store_sent_whisper)
 

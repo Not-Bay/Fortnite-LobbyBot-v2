@@ -11,6 +11,7 @@
 **I'll explain with the premise that you finished procedure above and opened web page**  
 May you can see config editor, put bot account's email address etc  
 Documentations of each settings are [here](config.md "config.md")  
+**If you are on repl and don't set `Password for web server`, other people can see your bot config**  
 
 If configuring has done, press Save button on bottom right and bot will reboot  
 After reboot check log and follow to log  

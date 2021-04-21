@@ -11,6 +11,7 @@
 **Explicaré asumiendo que ya abriste la página web**
 Deberías ver el editor de configuración, pon el email del bot, owner, etc...  
 Documentación de las configuraciónes están [aquí](config.md "config.md")  
+**Si usa repl y no establece la 'Contraseña para el servidor web`, otras personas pueden ver la configuración de su bot**  
 
 Una vez terminado de configurar, presiona el botón Guardar en la parte inferior derecha y el bot se reiniciará  
 Después de reiniciar, compruebe los logs y siga los pasos ahi.  
