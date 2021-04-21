@@ -91,7 +91,8 @@
         "login_failed": "'{0}' へのログインに失敗しました",
         "all_login": "全てのアカウントにログインしました",
         "web_running": "Webサーバーが '{0}' で起動中です",
-        "web_already_running": "他のWebサーバーが既に起動中です。IPかポートを変えるか、他のWebサーバーを閉じてください"
+        "web_already_running": "他のWebサーバーが既に起動中です。IPかポートを変えるか、他のWebサーバーを閉じてください",
+        "password_not_set": "Webサーバーのパスワードが設定されていません"
     },
     "client": {
         "bot": "ボット",

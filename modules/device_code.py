@@ -62,14 +62,14 @@ class HTTPClient:
 
 class Auth:
     def __init__(self, bot: 'Bot',
-                 http: HTTPClient,
-                 **kwargs: Any) -> None:
+                 http: HTTPClient) -> None:
         self.bot = bot
 
         fortnitepy_auth = fortnitepy.Auth()
         self._launcher_token = fortnitepy_auth.ios_token
         self._fortnite_token = fortnitepy_auth.fortnite_token
-        self._switch_token = kwargs.get('switch_token', 'NTIyOWRjZDNhYzM4NDUyMDhiNDk2NjQ5MDkyZjI1MWI6ZTNiZDJkM2UtYmY4Yy00ODU3LTllN2QtZjNkOTQ3ZDIyMGM3')  # noqa
+        self._dauntless_token = 'YjA3MGYyMDcyOWY4NDY5M2I1ZDYyMWM5MDRmYzViYzI6SEdAWEUmVEdDeEVKc2dUIyZfcDJdPWFSbyN+Pj0+K2M2UGhSKXpYUA=='
+        self._switch_token = 'NTIyOWRjZDNhYzM4NDUyMDhiNDk2NjQ5MDkyZjI1MWI6ZTNiZDJkM2UtYmY4Yy00ODU3LTllN2QtZjNkOTQ3ZDIyMGM3'
 
         self.http = http
 
@@ -96,7 +96,7 @@ class Auth:
         data = await self.http.post(
             OAUTH_TOKEN,
             headers={
-                'Authorization': f'basic {self._switch_token}'
+                'Authorization': f'basic {self._dauntless_token}'
             },
             data={
                 'grant_type': 'client_credentials',

@@ -91,7 +91,8 @@
         "login_failed": "Failed to login to '{0}'",
         "all_login": "Logged in to all accounts",
         "web_running": "Web server running on '{0}'",
-        "web_already_running": "Other web server is already running. Change IP or port, or close other web server"
+        "web_already_running": "Other web server is already running. Change IP or port, or close other web server",
+        "password_not_set": "Password for web server is not set"
     },
     "client": {
         "bot": "Bot",

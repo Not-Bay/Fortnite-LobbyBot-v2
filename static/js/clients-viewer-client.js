@@ -409,7 +409,7 @@ socket.addEventListener('message', function(ev) {
         element.appendChild(div);
     }
 
-    function constructWhisper(to, whisper) {
+    function constructWhisper(to, display_name, whisper) {
         const whisper_content = friend_message.firstElementChild.nextElementSibling;
         if (document.getElementById(`whisper_to_${to}`)) {
             const whisper_to = document.getElementById(`whisper_to_${to}`);
@@ -432,7 +432,7 @@ socket.addEventListener('message', function(ev) {
             whisper_to.classList.add('openable');
 
             const span = document.createElement('span');
-            span.textContent = whisper.author.display_name;
+            span.textContent = display_name;
             whisper_to.appendChild(span);
             
             const whisper_to_content = document.createElement('div');
@@ -551,9 +551,11 @@ socket.addEventListener('message', function(ev) {
         const whisper_content = friend_message.firstElementChild.nextElementSibling;
         whisper_content.innerHTML = '';
 
+        console.log(client.whisper)
         for (let [to, data] of Object.entries(client.whisper)) {
-            data.forEach(whisper => {
-                constructWhisper(to, whisper)
+            console.log(data);
+            data.content.forEach(whisper => {
+                constructWhisper(to, data.display_name, whisper)
             });
         };
 
@@ -668,7 +670,7 @@ socket.addEventListener('message', function(ev) {
     } else if (client.type == 'diff') {
         diffUpdate();
     } else if (client.type == 'friend_message') {
-        constructWhisper(client.to, client);
+        constructWhisper(client.to, client.display_name, client);
     } else if (client.type == 'party_message') {
         constructPartyChat(client);
     } else if (client.type == 'clear_party_message') {

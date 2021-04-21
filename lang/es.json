@@ -91,7 +91,8 @@
         "login_failed": "Error al iniciar sesión en '{0}'",
         "all_login": "Sesión iniciada en todas las cuentas",
         "web_running": "Servidor web corriendo en '{0}'",
-        "web_already_running": "Otro servidor web ya está corriendo. Cambia la IP o el puerto, o cierra el otro servidor web"
+        "web_already_running": "Otro servidor web ya está corriendo. Cambia la IP o el puerto, o cierra el otro servidor web",
+        "password_not_set": "Contraseña para el servidor web no conjunto"
     },
     "client": {
         "bot": "Bot",

@@ -2454,7 +2454,8 @@ class Bot:
                 self.l(
                     'not_recommended_version',
                     platform.python_version()
-                )
+                ),
+                color=yellow
             )
         python_64bit = sys.maxsize > 2 ** 32
         if sys.platform == 'win32':
@@ -2474,7 +2475,8 @@ class Bot:
                     'bit_mismatch',
                     '64' if python_64bit else '32',
                     '64' if os_64bit else '32'
-                )
+                ),
+                color=yellow
             )
 
         if self.config['check_update_on_startup']:
@@ -2546,6 +2548,12 @@ class Bot:
                     color=green,
                     add_p=self.time
                 )
+                if (self.mode == 'repl' and (not self.config['web']['login_required']
+                        or (self.config['web']['login_required'] and not self.config['web']['password']))):
+                    self.send(
+                        self.l('password_not_set'),
+                        color=yellow
+                    )
 
         if not self.is_error() and self.config['status'] == 1:
             self.fix_config_all()
@@ -2564,6 +2572,13 @@ class Bot:
                 device_auths = {}
             for num, config in enumerate(self.config['clients']):
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
+                if not device_auth_details:
+                    try:
+                        device_auth_details = await self.auth.authenticate(config['fortnite']['email'])                        
+                    except Exception as e:
+                        self.debug_print_exception(e)
+                    else:
+                        self.store_device_auth_details(config['fortnite']['email'], device_auth_details)
                 party_meta = []
                 if config['fortnite']['party']['playlist']:
                     party_meta.append(partial(
