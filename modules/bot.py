@@ -524,6 +524,7 @@ class Bot:
         }
         self.custom_commands_config_tags = {
             "['word']": [str],
+            "['allow_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['run']": [list, str, 'can_be_multiple']
         }
 
@@ -581,7 +582,12 @@ class Bot:
             client.add_command(command)
 
     def is_error(self) -> None:
-        return self.error_config or self.error_commands
+        return (
+            self.error_config
+            or self.error_commands
+            or self.error_custom_commands
+            or self.error_replies
+        )
 
     def get_device_auth_details(self) -> None:
         if self.isfile('device_auths'):
@@ -617,8 +623,7 @@ class Bot:
     def convert_td(self, td: datetime.timedelta) -> Tuple[int, int, int, int]:
         m, s = divmod(td.seconds, 60)
         h, m = divmod(m, 60)
-        d, h = divmod(h, 24)
-        return d, h, m, s
+        return td.days, h, m, s
 
     def isfile(self, key: str, force_file: Optional[bool] = False) -> bool:
         if self.mode == 'repl' and not force_file:

@@ -111,7 +111,7 @@
                                     {% elif multiple_select_tag != None %}
                                         <select id="{{prefix + raw_key}}" class="value" name="{{prefix + raw_key}}" multiple>
                                             {% for v in getattr(client.ctx.bot, multiple_select_tag) %}
-                                                {% if value != None and v['real_value'] in value %}
+                                                {% if value != None and v['real_value'] in (value or []) %}
                                                     <option value="{{v['value']}}" selected>{{str(v['display_value'])}}</option>
                                                 {% else %}
                                                     <option value="{{v['value']}}">{{str(v['display_value'])}}</option>

@@ -309,5 +309,6 @@ Discord内でのコマンドチャンネルは`example-bot01-command-channel`に
 |  id  |  ボットのID  |
 |  discord_name  |  Discordボットのディスプレイネーム  |
 |  discord_id  |  DiscordボットのID  |
+|  discord_nickname  |  Discordボットのニックネーム  |
 |  num  |  ボットの番号(コンフィグでの順番)  |
 |  all  |  全てのチャンネルをコマンドチャンネルにする  |

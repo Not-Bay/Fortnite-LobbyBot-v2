@@ -424,6 +424,7 @@ class DiscordClient(discord.Client):
                     'id': self.bot.user.id,
                     'discord_name': self.user.name,
                     'discord_id': self.user.id,
+                    'discord_nickname': getattr(message.guild, 'me', self.user).display_name,
                     'num': self.bot.num
                 }
                 if not any([message.channel.name == self.bot.cleanup_channel_name(c.format_map(mapping))
@@ -445,6 +446,7 @@ class DiscordClient(discord.Client):
                     'id': client.user.id,
                     'discord_name': self.user.name,
                     'discord_id': self.user.id,
+                    'discord_nickname': getattr(message.guild, 'me', self.user).display_name,
                     'num': client.num
                 }
                 if not any([message.channel.name == self.bot.cleanup_channel_name(c.format_map(mapping))
