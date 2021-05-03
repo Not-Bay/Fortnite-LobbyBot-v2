@@ -758,6 +758,7 @@
         "editor_custom_commands_commands": "コマンド",
         "editor_custom_commands_run_when": "いつ実行するか",
         "editor_custom_commands_word": "単語",
+        "editor_custom_commands_allow_for": "コマンドを許可",
         "editor_custom_commands_run": "実行するコマンド",
         "editor_replies_run_when": "いつ実行するか",
         "editor_replies_prefix_to_replies": "リプライにプレフィックスを適用",

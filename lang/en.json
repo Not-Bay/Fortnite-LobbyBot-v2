@@ -758,6 +758,7 @@
         "editor_custom_commands_commands": "Commands",
         "editor_custom_commands_run_when": "Run when",
         "editor_custom_commands_word": "Word",
+        "editor_custom_commands_allow_for": "Allow command for",
         "editor_custom_commands_run": "Run command",
         "editor_replies_run_when": "Run when",
         "editor_replies_prefix_to_replies": "Apply prefixes to replies",

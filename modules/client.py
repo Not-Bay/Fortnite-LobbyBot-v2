@@ -2332,7 +2332,7 @@ class Client(fortnitepy.Client):
         ]
         for item in items:
             conf = self.bot.convert_backend_type(item)
-            if not self.config['fortnite'][f'ng_{conf}s']:
+            if not self.config['fortnite'][f'ng_{conf}s'] or self.asset(item, member) is None:
                 continue
             ngs = [ng.lower() for ng in [
                 (self.bot.get_config_item_id(cosmetic)
@@ -3728,39 +3728,57 @@ class Client(fortnitepy.Client):
             if self.config['convert_kanji']:
                 arg = self.bot.converter.do(arg)
 
+            async def missing_permission():
+                await message.reply(
+                    self.l('missing_permission')
+                )
+                if not message.is_discord_message():
+                    functions = await self.get_permission_command_operation(user_id=message.author.id)
+                    for func in functions:
+                        try:
+                            if asyncio.iscoroutinefunction(func):
+                                await func()
+                            else:
+                                func()
+                        except Exception as e:
+                            self.print_exception(e)
+
             async def custom_commands():
                 for command in self.custom_commands['commands']:
                     if command['word'] == content:
-                        try:
-                            var = self.variables
-                            var.update({
-                                'message': message,
-                                'author': message.author,
-                                'author_display_name': message.author.display_name,
-                                'author_id': message.author.id
-                            })
-                            await self.bot.aexec('\n'.join(command['run']), var)
-                        except Exception as e:
-                            self.debug_print_exception(e)
-                            for line in command['run']:
-                                try:
-                                    var = self.variables
-                                    var.update({
-                                        'message': message,
-                                        'author': message.author,
-                                        'author_display_name': message.author.display_name,
-                                        'author_id': message.author.id
-                                    })
-                                    await self.bot.aexec(line, var)
-                                except Exception as e:
-                                    self.debug_print_exception(e)
-                                    mes = DummyMessage(self, message, content=line)
-                                    await self.process_command(MyMessage(self, mes), None)
-                                    if self.config['loglevel'] == 'debug':
-                                        self.send(
-                                            mes.result,
-                                            color=yellow
-                                        )
+                        if message.user_type in command['allow_for']:
+                            try:
+                                var = self.variables
+                                var.update({
+                                    'message': message,
+                                    'author': message.author,
+                                    'author_display_name': message.author.display_name,
+                                    'author_id': message.author.id
+                                })
+                                await self.bot.aexec('\n'.join(command['run']), var)
+                            except Exception as e:
+                                self.debug_print_exception(e)
+                                for line in command['run']:
+                                    try:
+                                        var = self.variables
+                                        var.update({
+                                            'message': message,
+                                            'author': message.author,
+                                            'author_display_name': message.author.display_name,
+                                            'author_id': message.author.id
+                                        })
+                                        await self.bot.aexec(line, var)
+                                    except Exception as e:
+                                        self.debug_print_exception(e)
+                                        mes = DummyMessage(self, message, content=line)
+                                        await self.process_command(MyMessage(self, mes), None)
+                                        if self.config['loglevel'] == 'debug':
+                                            self.send(
+                                                mes.result,
+                                                color=yellow
+                                            )
+                        else:
+                            await missing_permission()
                         return True
                 return False
 
@@ -3798,19 +3816,7 @@ class Client(fortnitepy.Client):
                                 stats['commands'][str(message.author.id)][identifier] = 0
                             stats['commands'][str(message.author.id)][identifier] += 1
                         else:
-                            await message.reply(
-                                self.l('missing_permission')
-                            )
-                            if not message.is_discord_message():
-                                functions = await self.get_permission_command_operation(user_id=message.author.id)
-                                for func in functions:
-                                    try:
-                                        if asyncio.iscoroutinefunction(func):
-                                            await func()
-                                        else:
-                                            func()
-                                    except Exception as e:
-                                        self.print_exception(e)
+                            await missing_permission()
                         break
                 except KeyError as e:
                     self.debug_print_exception(e)

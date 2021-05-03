@@ -312,5 +312,6 @@ El nombre del canal en Discord será "ejemplo-bot01-comandos
 |  id  |  ID de cuenta del bot  |
 |  discord_name  |  Nombre en pantalla del bot de Discord  |
 |  discord_id  |  ID de cuenta del bot de Discord  |
+|  discord_nickname  |  Apodo de cuenta del bot de Discord  |
 |  num  |  Número del bot (Orden en condiguración)  |
 |  all  |  Todos los canales como canal de comando  |

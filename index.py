@@ -21,7 +21,7 @@ except ModuleNotFoundError:
     print(
         'サードパーティーライブラリの読み込みに失敗しました。INSTALL を実行してください。問題が修正されない場合は\n'
         'Twitter @gomashio1596\n'
-        'Discord gomashio#4335\n'
+        'Discord gomashio#9683\n'
         'こちらか\n'
         'https://discord.gg/NEnka5N\n'
         'Discordのサーバーまでお願いします'
@@ -29,7 +29,7 @@ except ModuleNotFoundError:
     print(
         'Failed to load third party library. Please run INSTALL. If the issue is not resolved, contact me\n'
         'Twitter @gomashio1596\n'
-        'Discord gomashio#4335\n'
+        'Discord gomashio#9683\n'
         'or please join support Discord server\n'
         'https://discord.gg/NEnka5N'
     )
@@ -43,7 +43,7 @@ except ModuleNotFoundError:
     print(
         'モジュールの読み込みに失敗しました。Check Update.bat を実行してください。問題が修正されない場合は\n'
         'Twitter @gomashio1596\n'
-        'Discord gomashio#4335\n'
+        'Discord gomashio#9683\n'
         'こちらか\n'
         'https://discord.gg/NEnka5N\n'
         'Discordのサーバーまでお願いします'
@@ -51,7 +51,7 @@ except ModuleNotFoundError:
     print(
         'Failed to module. Please run Check Update.bat. If the issue is not resolved, contact me\n'
         'Twitter @gomashio1596\n'
-        'Discord gomashio#4335\n'
+        'Discord gomashio#9683\n'
         'or please join support Discord server\n'
         'https://discord.gg/NEnka5N'
     )

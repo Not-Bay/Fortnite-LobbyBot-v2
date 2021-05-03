@@ -758,6 +758,7 @@
         "editor_custom_commands_commands": "Comandos",
         "editor_custom_commands_run_when": "Ejecutar cuando",
         "editor_custom_commands_word": "Palabra",
+        "editor_custom_commands_allow_for": "Permitir comandos",
         "editor_custom_commands_run": "Ejecutar",
         "editor_replies_run_when": "Ejecutar cuando",
         "editor_replies_prefix_to_replies": "Aplicar prefijos a respuestas",
