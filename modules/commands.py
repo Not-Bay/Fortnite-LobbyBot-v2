@@ -642,6 +642,91 @@ async def set_config_operation(keys: List[str], command: Command,
     )
 
 
+async def set_mimic(attr: str, keys: List[str], command: Command,
+                    message: MyMessage) -> None:
+    client = message.client
+
+    if len(message.args) < 2:
+        await client.show_help(command, message)
+        return
+
+    if message.args[1] in [client.commands['add'], client.commands['remove']]:
+        users = client.find_users(
+            ' '.join(message.args[2:]),
+            mode=FindUserMode.NAME_ID,
+            method=FindUserMatchMethod.CONTAINS,
+            me=message.author
+        )
+
+        async def operation(user):
+            mimic = getattr(client, attr)
+            if message.args[1] == client.commands['add']:
+                if user.id in mimic:
+                    await message.reply(
+                        client.l(
+                            'already_in_list',
+                            client.l(attr),
+                            client.name(user)
+                        )
+                    )
+                    return
+                mimic.append(user.id)
+                key = 'add_to_list'
+            else:
+                if user.id not in mimic:
+                    await message.reply(
+                        client.l(
+                            'not_in_list',
+                            client.l(attr),
+                            client.name(user)
+                        )
+                    )
+                    return
+                mimic.remove(user.id)
+                key = 'remove_from_list'
+
+            await message.reply(
+                client.l(
+                    key,
+                    client.l(attr),
+                    client.name(user)
+                )
+            )
+
+        if client.config['search_max'] and len(users) > client.config['search_max']:
+            await message.reply(
+                client.l('too_many', client.l('user'), len(users))
+            )
+            return
+
+        if len(users) == 0:
+            await message.reply(
+                client.l(
+                    'not_found',
+                    client.l('user'),
+                    ' '.join(message.args[2:])
+                )
+            )
+        elif len(users) == 1:
+            await operation(users[0])
+        else:
+            client.select[message.author.id] = {
+                'exec': 'await operation(user)',
+                'globals': {**globals(), **locals()},
+                'variables': [
+                    {'user': user}
+                    for user in users
+                ]
+            }
+            await message.reply(
+                ('\n'.join([f'{num}: {client.name(user)}'
+                            for num, user in enumerate(users, 1)])
+                    + '\n' + client.l('enter_number_to_select', client.l('user')))
+            )
+    else:
+        await set_config_for(keys, command, message)
+
+
 class DefaultCommands:
     @command(
         name='exec',
@@ -1308,231 +1393,231 @@ class DefaultCommands:
 
     @command(
         name='ng_outfit_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_outfit_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_outfit_for'], command, message)
 
     @command(
         name='ng_outfit_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_outfit_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_outfit_operation'], command, message)
 
     @command(
         name='outfit_mimic_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.commands[add][0]}/{client.commands[remove][0]}/{client.l("user_types", **client.variables_without_self)}] ({client.l("name_or_id")})'
     )
     async def outfit_mimic_for(command: Command, client: 'Client', message: MyMessage) -> None:
-        await set_config_for(['fortnite', 'outfit_mimic_for'], command, message)
+        await set_mimic('outfit_mimic', ['fortnite', 'outfit_mimic_for'], command, message)
 
     @command(
         name='ng_backpack_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_backpack_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_backpack_for'], command, message)
 
     @command(
         name='ng_backpack_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_backpack_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_backpack_operation'], command, message)
 
     @command(
         name='backpack_mimic_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.commands[add][0]}/{client.commands[remove][0]}/{client.l("user_types", **client.variables_without_self)}] ({client.l("name_or_id")})'
     )
     async def backpack_mimic_for(command: Command, client: 'Client', message: MyMessage) -> None:
-        await set_config_for(['fortnite', 'backpack_mimic_for'], command, message)
+        await set_mimic('backpack_mimic', ['fortnite', 'backpack_mimic_for'], command, message)
 
     @command(
         name='ng_pickaxe_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_pickaxe_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_pickaxe_for'], command, message)
 
     @command(
         name='ng_pickaxe_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_pickaxe_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_pickaxe_operation'], command, message)
 
     @command(
         name='pickaxe_mimic_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.commands[add][0]}/{client.commands[remove][0]}/{client.l("user_types", **client.variables_without_self)}] ({client.l("name_or_id")})'
     )
     async def pickaxe_mimic_for(command: Command, client: 'Client', message: MyMessage) -> None:
-        await set_config_for(['fortnite', 'pickaxe_mimic_for'], command, message)
+        await set_mimic('pickaxe_mimic', ['fortnite', 'pickaxe_mimic_for'], command, message)
 
     @command(
         name='ng_emote_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_emote_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_emote_for'], command, message)
 
     @command(
         name='ng_emote_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_emote_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_emote_operation'], command, message)
 
     @command(
         name='emote_mimic_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.commands[add][0]}/{client.commands[remove][0]}/{client.l("user_types", **client.variables_without_self)}] ({client.l("name_or_id")})'
     )
     async def emote_mimic_for(command: Command, client: 'Client', message: MyMessage) -> None:
-        await set_config_for(['fortnite', 'emote_mimic_for'], command, message)
+        await set_mimic('emote_mimic', ['fortnite', 'emote_mimic_for'], command, message)
 
     @command(
         name='ng_platform_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_platform_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_platform_for'], command, message)
 
     @command(
         name='ng_platform_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_platform_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_platform_operation'], command, message)
 
     @command(
         name='ng_name_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_name_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'ng_name_for'], command, message)
 
     @command(
         name='ng_name_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_name_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_name_operation'], command, message)
 
     @command(
         name='accept_invite_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def accept_invite_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'accept_invite_for'], command, message)
 
     @command(
         name='decline_invite_when',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def decline_invite_when(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'decline_invite_when'], command, message)
 
     @command(
         name='invite_interval_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def invite_interval_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'invite_interval_for'], command, message)
 
     @command(
         name='accept_friend_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def accept_friend_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'accept_friend_for'], command, message)
 
     @command(
         name='whisper_enable_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def whisper_enable_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'whisper_enable_for'], command, message)
 
     @command(
         name='party_chat_enable_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def party_chat_enable_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'party_chat_enable_for'], command, message)
 
     @command(
         name='permission_command_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def permission_command_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'permission_command_operation'], command, message)
 
     @command(
         name='accept_join_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def accept_join_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'accept_join_for'], command, message)
 
     @command(
         name='chat_max_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def chat_max_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'chat_max_for'], command, message)
 
     @command(
         name='chat_max_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def chat_max_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'chat_max_operation'], command, message)
 
     @command(
         name='hide_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def hide_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'hide_for'], command, message)
 
     @command(
         name='blacklist_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def blacklist_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'blacklist_operation'], command, message)
 
     @command(
         name='botlist_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def botlist_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'botlist_operation'], command, message)
 
     @command(
         name='discord_chat_max_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def discord_chat_max_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'discord_chat_max_for'], command, message)
 
     @command(
         name='discord_command_enable_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def discord_command_enable_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['fortnite', 'discord_command_enable_for'], command, message)
 
     @command(
         name='ng_word_for',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("user_types", **client.variables_without_self)}]'
     )
     async def ng_word_for(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_for(['ng_word_for'], command, message)
 
     @command(
         name='ng_word_operation',
-        usage='{name} [{client.l("user_types")}]'
+        usage='{name} [{client.l("operations", **client.variables_without_self)}]'
     )
     async def ng_word_operation(command: Command, client: 'Client', message: MyMessage) -> None:
         await set_config_operation(['fortnite', 'ng_word_operation'], command, message)

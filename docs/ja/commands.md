@@ -37,16 +37,16 @@
 |  remove_invitelist  |  remove_invitelist [名前/ID]  |  ユーザーを招待リストから削除する  |
 |  ng_outfit_for  |  ng_outfit_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_outfit_for`の値を変更する  |
 |  ng_outfit_operation  |  ng_outfit_operation [chatban/remove/block/blacklist/null]  |  configの`ng_outfit_operation`の値を変更する  |
-|  outfit_mimic_for  |  outfit_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  configの`outfit_mimic_for`の値を変更する  |
+|  outfit_mimic_for  |  outfit_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (名前/ID)  |  configの`outfit_mimic_for`の値を変更する  |
 |  ng_backpack_for  |  ng_backpack_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_backpack_for`の値を変更する  |
 |  ng_backpack_operation  |  ng_backpack_operation [chatban/remove/block/blacklist/null]  |  configの`ng_backpack_operation`の値を変更する  |
-|  backpack_mimic_for  |  backpack_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  configの`backpack_mimic_for`の値を変更する  |
+|  backpack_mimic_for  |  backpack_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (名前/ID)  |  configの`backpack_mimic_for`の値を変更する  |
 |  ng_pickaxe_for  |  ng_pickaxe_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_pickaxe_for`の値を変更する  |
 |  ng_pickaxe_operation  |  ng_pickaxe_operation [chatban/remove/block/blacklist/null]  |  configの`ng_pickaxe_operation`の値を変更する  |
-|  pickaxe_mimic_for  |  pickaxe_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  configの`pickaxe_mimic_for`の値を変更する  |
+|  pickaxe_mimic_for  |  pickaxe_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (名前/ID)  |  configの`pickaxe_mimic_for`の値を変更する  |
 |  ng_emote_for  |  ng_emote_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_emote_for`の値を変更する  |
 |  ng_emote_operation  |  ng_emote_operation [chatban/remove/block/blacklist/null]  |  configの`ng_emote_operation`の値を変更する  |
-|  emote_mimic_for  |  emote_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  configの`emote_mimic_for`の値を変更する  |
+|  emote_mimic_for  |  emote_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (名前/ID)  |  configの`emote_mimic_for`の値を変更する  |
 |  ng_platform_for  |  ng_platform_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_platform_for`の値を変更する  |
 |  ng_platform_operation  |  ng_platform_operation [chatban/remove/block/blacklist/null]  |  configの`ng_platform_operation`の値を変更する  |
 |  ng_name_for  |  ng_name_for [user/whitelist/blacklist/owner/bot/null]  |  configの`ng_name_for`の値を変更する  |
@@ -189,6 +189,8 @@
 |  remove  |  操作、フレンド削除を意味する  |
 |  block  |  操作、ブロックを意味する  |
 |  blacklist  |  操作、ブラックリストを意味する  |
+|  add  |  outfit_mimic_for, backpack_mimic_for, pickaxe_mimic_for, emote_mimic_forコマンドで使う。追加を意味する  |
+|  remove  |  outfit_mimic_for, backpack_mimic_for, pickaxe_mimic_for, emote_mimic_forコマンドで使う。削除を意味する  |
 |  true  |  voice_chatコマンドで使う。オンを意味する  |
 |  false  |  voice_chatコマンドで使う。オフを意味する  |
 |  accept  |  incoming_pendingコマンドで使う。承諾を意味する  |

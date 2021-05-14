@@ -127,8 +127,7 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
 
         kwargs['variants'] = kwargs.get('variants', []) or []
         if asset is not None and 'banner' in asset.lower():
-            kwargs['variants'].append(self.create_variant(
-                item=item,
+            kwargs['variants'].extend(self.create_variant(
                 profile_banner='ProfileBanner'
             ))
         kwargs['enlightenment'] = kwargs.get('enlightenment') or None
@@ -493,10 +492,10 @@ class Client(fortnitepy.Client):
         self.invite_interval = False
         self.invite_interval_handle = None
 
-        self.ng_outfits = []
-        self.ng_backpacks = []
-        self.ng_pickaxes = []
-        self.ng_emotes = []
+        self.outfit_mimic = []
+        self.backpack_mimic = []
+        self.pickaxe_mimic = []
+        self.emote_mimic = []
         self._owner = {}
         self._whitelist = {}
         self._blacklist = {}
@@ -3391,7 +3390,8 @@ class Client(fortnitepy.Client):
             )
 
         attr = f'is_{self.bot.convert_backend_to_key(item)}_mimic_for'
-        if getattr(self, attr)(self.get_user_type(member.id)):
+        attr2 = f'{self.bot.convert_backend_to_key(item)}_mimic'
+        if getattr(self, attr)(self.get_user_type(member.id)) or member.id in getattr(self, attr2):
             if self.bot.convert_backend_to_key(item) == 'emote' and not asset:
                 return
 

@@ -494,6 +494,8 @@ class Bot:
                 "['operation_remove']": tags2,
                 "['operation_block']": tags2,
                 "['operation_blacklist']": tags2,
+                "['add']": tags2,
+                "['remove']": tags2,
                 "['true']": tags2,
                 "['false']": tags2,
                 "['accept']": tags2,
@@ -557,7 +559,7 @@ class Bot:
             r"tag='(?P<tag>.+)'>"
         )
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(headers={'User-Agent': 'Fortnite/++Fortnite+Release-16.40-CL-16227914 Android/9'})
         self.http = HTTPClient(self.session)
         self.auth = Auth(self, self.http)
         self.webhook = None
