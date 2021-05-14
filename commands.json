@@ -95,6 +95,12 @@
     "operation_blacklist": [
         "blacklist"
     ],
+    "add": [
+        "add"
+    ],
+    "remove": [
+        "remove"
+    ],
     "true": [
         "true"
     ],

@@ -37,16 +37,16 @@ Valores en [] son requeridos, valores en () son opcionales
 |  remove_invitelist  |  remove_invitelist [Nombre/ID]  |  Quita un usuario de la lisa de invitación  |
 |  ng_outfit_for  |  ng_outfit_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_outfit_for` en config  |
 |  ng_outfit_operation  |  ng_outfit_operation [chatban/remove/block/blacklist/null]  |  Cambia el valor `ng_outfit_operation` en config  |
-|  outfit_mimic_for  |  outfit_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `outfit_mimic_for` en config  |
+|  outfit_mimic_for  |  outfit_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (Nombre/ID)  |  Cambia el valor `outfit_mimic_for` en config  |
 |  ng_backpack_for  |  ng_backpack_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_backpack_for` en config  |
 |  ng_backpack_operation  |  ng_backpack_operation [chatban/remove/block/blacklist/null]  |  Cambia el valor `ng_backpack_operation` en config  |
-|  backpack_mimic_for  |  backpack_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `backpack_mimic_for` en config  |
+|  backpack_mimic_for  |  backpack_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (Nombre/ID)  |  Cambia el valor `backpack_mimic_for` en config  |
 |  ng_pickaxe_for  |  ng_pickaxe_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_pickaxe_for` en config  |
 |  ng_pickaxe_operation  |  ng_pickaxe_operation [chatban/remove/block/blacklist/null]  |  Cambia el valor `ng_pickaxe_operation` en config  |
-|  pickaxe_mimic_for  |  pickaxe_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `pickaxe_mimic_for` en config  |
+|  pickaxe_mimic_for  |  pickaxe_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (Nombre/ID)  |  Cambia el valor `pickaxe_mimic_for` en config  |
 |  ng_emote_for  |  ng_emote_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_emote_for` en config  |
 |  ng_emote_operation  |  ng_emote_operation [chatban/remove/block/blacklist/null]  |  Cambia el valor `ng_emote_operation` en config  |
-|  emote_mimic_for  |  emote_mimic_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `emote_mimic_for` en config  |
+|  emote_mimic_for  |  emote_mimic_for [add/remove/user/whitelist/blacklist/owner/bot/null] (Nombre/ID)  |  Cambia el valor `emote_mimic_for` en config  |
 |  ng_platform_for  |  ng_platform_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_platform_for` en config  |
 |  ng_platform_operation  |  ng_platform_operation [chatban/remove/block/blacklist/null]  |  Cambia el valor `ng_platform_operation` en config  |
 |  ng_name_for  |  ng_name_for [user/whitelist/blacklist/owner/bot/null]  |  Cambia el valor `ng_name_for` en config  |
@@ -189,6 +189,8 @@ Palabras a usar en comandos
 |  remove  |  Se refiere a la operación de remover de amigos  |
 |  block  |  Se refiere a la operación de bloquear  |
 |  blacklist  |  Se refiere a la operación de lista negra  |
+|  add   |  Usado en el comandos outfit_mimic_for, backpack_mimic_for, pickaxe_mimic_for, emote_mimic_for. Significa agregar  |
+|  remove  |  Usado en el comandos outfit_mimic_for, backpack_mimic_for, pickaxe_mimic_for, emote_mimic_for. Significa eliminar  |
 |  true  |  Usado en el comando voice_chat. Significa habilitado  |
 |  false  |  Usado en el comando voice_chat. Significa deshabilitado  |
 |  accept  |  Usado en el comando incoming_pending . Significa aceptar  |

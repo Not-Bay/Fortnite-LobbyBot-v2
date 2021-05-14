@@ -115,10 +115,11 @@ class WebhookClient:
             if self.bot.config.get('hide_webhook'):
                 clients = [self.bot, *self.bot.clients]
                 for client in clients:
-                    content = content.replace(
-                        client.config['discord_log'],
-                        len(client.config['discord_log']) * 'X'
-                    )
+                    if client.config['discord_log']:
+                        content = content.replace(
+                            client.config['discord_log'],
+                            len(client.config['discord_log']) * 'X'
+                        )
 
             if (len(self.messages) > 0
                     and (self.messages[-1]['username'] == user_name
