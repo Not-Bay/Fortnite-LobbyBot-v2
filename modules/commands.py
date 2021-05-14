@@ -650,7 +650,7 @@ async def set_mimic(attr: str, keys: List[str], command: Command,
         await client.show_help(command, message)
         return
 
-    if message.args[1] in [client.commands['add'], client.commands['remove']]:
+    if message.args[1] in [*client.commands['add'], *client.commands['remove']]:
         users = client.find_users(
             ' '.join(message.args[2:]),
             mode=FindUserMode.NAME_ID,
@@ -660,7 +660,7 @@ async def set_mimic(attr: str, keys: List[str], command: Command,
 
         async def operation(user):
             mimic = getattr(client, attr)
-            if message.args[1] == client.commands['add']:
+            if message.args[1] in client.commands['add']:
                 if user.id in mimic:
                     await message.reply(
                         client.l(
