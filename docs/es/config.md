@@ -135,13 +135,14 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Valor (Valor Raw)  |  Descripción  |
 | --- | --- |
 |  Ejecutar al estar listo (ready)  |  Programa a ejecutar cuando el bot está listo  |
+|  Ejecutar al enviar solicitud para unirse (party_join_request)  |  Programa a ejecutar al enviar solicitud para unirse  |
 |  Ejecutar al ser invitado a grupo (party_invite)  |  Programa a ejecutar cuando se recibe invitación de grupo  |
 |  Ejecutar al recibir solicitud de amistad (friend_request)  |  Programa a ejecutar al recibir una solicitud de amistad  |
 |  Ejecutar al añadir amigo (friend_add)  |  Programa a ejecutar al añadir un amigo  |
 |  Ejecutar al eliminar amigo (friend_remove)  |  Programa a ejecutar cuando se elimina un amigo  |
 |  Ejecutar cuando un miembro se une al grupo  (party_member_join)  |  Programa a ejecutar cuando alguien se une al grupo  |
 |  Ejecutar cuando un miembro abandona el grupo (party_member_leave)  |  Programa a ejecutar cuando alguien abandona el grupo  |
-|  Ejecutar al recibir solicitud para unirse (party_member_confirm)  |  Programa a ejecutar cuando alguien envia solicitud para unirse  |
+|  Ejecutar al recibir solicitud de confirmar miembro (party_member_confirm)  |  Programa a ejecutar cuando alguien envia solicitud de confirmar miembro  |
 |  Ejecutar al expulsar un miembro (party_member_kick)  |  Programa a ejecutar cuando se expulsa a un miembro del grupo  |
 |  Ejecutar al promover a líder  (party_member_promote)  |  Programa a ejecutar al promover a lider  |
 |  Ejecutar al actualizar la sala (party_update)  |  Programa a ejecutar cuando se actualiza la sala  |

@@ -2636,6 +2636,75 @@ class DefaultCommands:
                 )
 
     @command(
+        name='request_to_join',
+        usage='{name} [{client.l("name_or_id")}]'
+    )
+    async def request_to_join(command: Command, client: 'Client', message: MyMessage) -> None:
+        if len(message.args) < 2:
+            await client.show_help(command, message)
+            return
+
+        users = client.find_users(
+            ' '.join(message.args[1:]),
+            mode=FindUserMode.NAME_ID,
+            method=FindUserMatchMethod.CONTAINS,
+            users=client.friends,
+            me=message.author
+        )
+
+        async def request_to_join(user):
+            friend = client.get_friend(user.id)
+            if friend is None:
+                await message.reply(
+                    client.l(
+                        'not_friend_with_user',
+                        client.name(user)
+                    )
+                )
+                return
+            
+            ret = await client.send_join_request(friend, message)
+            if not isinstance(ret, Exception):
+                if client.config['loglevel'] == 'normal':
+                    await message.reply(
+                        client.l(
+                            'join_request_sent',
+                            client.name(friend)
+                        )
+                    )
+
+        if client.config['search_max'] and len(users) > client.config['search_max']:
+            await message.reply(
+                client.l('too_many', client.l('user'), len(users))
+            )
+            return
+
+        if len(users) == 0:
+            await message.reply(
+                client.l(
+                    'not_found',
+                    client.l('user'),
+                    ' '.join(message.args[1:])
+                )
+            )
+        elif len(users) == 1:
+            await request_to_join(users[0])
+        else:
+            client.select[message.author.id] = {
+                'exec': 'await request_to_join(user)',
+                'globals': {**globals(), **locals()},
+                'variables': [
+                    {'user': user}
+                    for user in users
+                ]
+            }
+            await message.reply(
+                ('\n'.join([f'{num}: {client.name(user)}'
+                            for num, user in enumerate(users, 1)])
+                    + '\n' + client.l('enter_number_to_select', client.l('user')))
+            )
+
+    @command(
         name='leave',
         usage='{name}'
     )

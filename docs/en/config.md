@@ -135,13 +135,14 @@ Usually please use web config editor to change configs
 |  Key (Raw value)  |  Description  |
 | --- | --- |
 |  Program when ready (ready)  |  Program which run when ready  |
+|  Program when party join request  |  Program which run when party join request  |
 |  Program when party invite (party_invite)  |  Program which run when received party invite  |
 |  Program when friend request (friend_request)  |  Program which run when received friend request  |
 |  Program when friend add (friend_add)  |  Program which run when friend add  |
 |  Program when friend remove (friend_remove)  |  Program which run when friend remove  |
 |  Program when member join (party_member_join)  |  Program which run when member join  |
 |  Program when member leave (party_member_leave)  |  Program which run when member leave  |
-|  Program when member join request (party_member_confirm)  |  Program which run when received party join request  |
+|  Program when member confirm request (party_member_confirm)  |  Program which run when received member confirm request  |
 |  Program when member kick (party_member_kick)  |  Program which run when member kick  |
 |  Program when member promote (party_member_promote)  |  Program which run when member promote  |
 |  Program when party update (party_update)  |  Program which run when party update  |

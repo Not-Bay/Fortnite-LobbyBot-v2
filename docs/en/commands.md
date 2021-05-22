@@ -94,6 +94,7 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  unblock_all_user  |  unblock_all_user  |  Unblock all users. Can be stopped with stop command<br>May this command will take a time  |
 |  join  |  join [Name/ID]  |  Join user's party  |
 |  join_id  |  join_id [Party ID]  |  Join party using party id  |
+|  request_to_join  |  request_to_join [Name/ID]  |  Send request to join to user  |
 |  leave  |  leave  |  Leave party  |
 |  invite  |  invite [Name/ID]  |  Invite user  |
 |  invite_list_users  |  invite_list_users  |  Invite users which in invitelist  |

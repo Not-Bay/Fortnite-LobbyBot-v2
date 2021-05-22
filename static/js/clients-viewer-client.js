@@ -6,10 +6,10 @@ Array.from(openables).forEach(openable => {
 });
 
 console.log('Connecting to websocket');
-const socket = new WebSocket(getWsAddr())
+const socket = new WebSocket(getWsAddr());
 
 function sendEvent(event, wait_event, user_id) {
-    socket.send(JSON.stringify({event: event, wait_event, user_id: user_id}));
+    socket.send(JSON.stringify({event: event, wait_event: wait_event, user_id: user_id}));
 }
 
 function acceptFriend(wait_event, user_id) {
@@ -38,6 +38,20 @@ function promoteMember(wait_event, user_id) {
 
 function kickMember(wait_event, user_id) {
     sendEvent('member_kick', wait_event, user_id);
+}
+
+function acceptJoinRequest(user_id) {
+    socket.send(JSON.stringify({
+        event: 'accept_join_request',
+        user_id: user_id
+    }));
+}
+
+function declineJoinRequest(user_id) {
+    socket.send(JSON.stringify({
+        event: 'decline_join_request',
+        user_id: user_id
+    }));
 }
 
 function sendWhisper(element) {
@@ -110,6 +124,7 @@ socket.addEventListener('message', function(ev) {
     const party = document.getElementById('party_name');
     const incoming_friend_request = document.getElementById('incoming_friend_request');
     const outgoing_friend_request = document.getElementById('outgoing_friend_request');
+    const join_request = document.getElementById('join_request');
     const friend = document.getElementById('friend');
     const blocked_user = document.getElementById('blocked_user');
     const member = document.getElementById('member');
@@ -121,6 +136,7 @@ socket.addEventListener('message', function(ev) {
         party.textContent = client.party;
         incoming_friend_request.firstElementChild.textContent = client.incoming_friend_request;
         outgoing_friend_request.firstElementChild.textContent = client.outgoing_friend_request;
+        join_request.firstElementChild.textContent = client.join_request
         friend.firstElementChild.textContent = client.friend;
         blocked_user.firstElementChild.textContent = client.blocked_user;
         member.firstElementChild.textContent = client.party_member;
@@ -190,6 +206,36 @@ socket.addEventListener('message', function(ev) {
         const span = document.createElement('span');
         span.classList.add('user');
         span.textContent = pending.name;
+        div.appendChild(span);
+
+        element.appendChild(div);
+    }
+
+    function constructJoinRequest(element, request) {
+        const div = document.createElement('div');
+        div.setAttribute('user_id', request.id);
+
+        const accept = document.createElement('input');
+        accept.type = 'button';
+        accept.classList.add('gray_button');
+        accept.value = texts.accept
+        accept.onclick = function () {
+            acceptJoinRequest(request.id);
+        }
+        div.appendChild(accept);
+
+        const decline = document.createElement('input');
+        decline.type = 'button';
+        decline.classList.add('red_button');
+        decline.value = texts.decline
+        decline.onclick = function () {
+            declineJoinRequest(request.id);
+        }
+        div.appendChild(decline);
+
+        const span = document.createElement('span');
+        span.classList.add('user');
+        span.textContent = request.name;
         div.appendChild(span);
 
         element.appendChild(div);
@@ -514,6 +560,12 @@ socket.addEventListener('message', function(ev) {
             constructOutgoingFriendRequest(outgoing_friend_request_content, pending);
         });
 
+        const join_request_content = join_request.firstElementChild.nextElementSibling;
+        join_request_content.innerHTML = '';
+        client.join_requests.forEach(request => {
+            constructJoinRequest(join_request_content, request);
+        });
+
         const online_friends =  client.friends.filter(
             friend => friend.is_online
         );
@@ -555,7 +607,7 @@ socket.addEventListener('message', function(ev) {
         for (let [to, data] of Object.entries(client.whisper)) {
             console.log(data);
             data.content.forEach(whisper => {
-                constructWhisper(to, data.display_name, whisper)
+                constructWhisper(to, data.author.display_name, whisper)
             });
         };
 
@@ -601,6 +653,19 @@ socket.addEventListener('message', function(ev) {
         });
         added_outgoing_friend_requests.forEach(pending => {
             constructOutgoingFriendRequest(outgoing_friend_request_content, pending);
+        });
+
+        const join_request_content = join_request.firstElementChild.nextElementSibling;
+        join_request_content.innerHTML = '';
+        client.removed.join_requests.forEach(request => {
+            Array.from(join_request_content.children).forEach(child => {
+                if (child.getAttribute('user_id') == request.id) {
+                    join_request_content.removeChild(child);
+                }
+            });
+        });
+        client.added.join_requests.forEach(request => {
+            constructJoinRequest(join_request_content, request);
         });
 
         const removed_online_friends =  client.removed.friends.filter(
@@ -670,7 +735,7 @@ socket.addEventListener('message', function(ev) {
     } else if (client.type == 'diff') {
         diffUpdate();
     } else if (client.type == 'friend_message') {
-        constructWhisper(client.to, client.display_name, client);
+        constructWhisper(client.to, client.author.display_name, client);
     } else if (client.type == 'party_message') {
         constructPartyChat(client);
     } else if (client.type == 'clear_party_message') {

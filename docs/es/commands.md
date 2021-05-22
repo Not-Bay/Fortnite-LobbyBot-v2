@@ -94,6 +94,7 @@ Valores en [] son requeridos, valores en () son opcionales
 |  unblock_all_user  |  unblock_all_user  |  Desbloquea todos los usuarios. Puede ser detenido con el comando "stop""<br>Este comando puede tardar un poco  |
 |  join  |  join [Nombre/ID]  |  Se une al grupo de un usuario  |
 |  join_id  |  join_id [Party ID]  |  Se une a un grupo usando ID  |
+|  request_to_join  |  request_to_join [Name/ID]  |  Enviar solicitud para unirse al usuario  |
 |  leave  |  leave  |  Abandona el grupo  |
 |  invite  |  invite [Nombre/ID]  |  Invita a un usuario  |
 |  invite_list_users  |  invite_list_users  |  Invita a usuarios de la lista de invitación  |

@@ -173,6 +173,7 @@
                 "prefix": null,
                 "exec": {
                     "ready": null,
+                    "party_join_request": null,
                     "party_invite": null,
                     "friend_request": null,
                     "friend_add": null,

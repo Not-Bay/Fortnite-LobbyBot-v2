@@ -390,6 +390,9 @@
         "join_id": [
             "join_id"
         ],
+        "request_to_join": [
+            "request_to_join"
+        ],
         "leave": [
             "leave"
         ],
