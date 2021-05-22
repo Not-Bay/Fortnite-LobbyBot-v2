@@ -642,9 +642,10 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
         return {
             'name': (
                 f'{client.config["fortnite"]["nickname"] or user.display_name}'
-                f' / {user.id}'
+                + ('' if client.config['loglevel'] == 'normal' else f' / {user.id}')
             ) if client.is_ready() else (
-                f'{client.config["fortnite"]["nickname"]} / {client.email}'
+                (f'{client.config["fortnite"]["nickname"]}'
+                 + ('' if client.config['loglevel'] == 'normal' else f' / {client.email}'))
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
@@ -660,21 +661,27 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             'num': client.num,
             'friend_requests': [
                 {
-                    'name': f'{pending.display_name} / {pending.id}',
+                    'name': client.name(pending),
                     'id': pending.id,
                     'type': 'outgoing' if pending.outgoing else 'incoming'
                 } for pending in client.pending_friends
             ],
+            'join_requests': [
+                {
+                    'name': client.name(request.requester),
+                    'id': request.requester.id
+                } for request in client.join_requests.values()
+            ],
             'friends': [
                 {
-                    'name': f'{friend.display_name} / {friend.id}',
+                    'name': client.name(friend),
                     'id': friend.id,
                     'is_online': friend.is_online()
                 } for friend in client.friends
             ],
             'blocked_users': [
                 {
-                    'name': f'{blocked.display_name} / {blocked.id}',
+                    'name': client.name(blocked),
                     'id': blocked.id
                 } for blocked in client.blocked_users
             ],
@@ -685,7 +692,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             },
             'party_members': [
                 {
-                    'name': f'{member.display_name} / {member.id}',
+                    'name': client.name(member),
                     'id': member.id,
                     'position': member.position,
                     'is_leader': member.leader,
@@ -746,7 +753,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 } for member in getattr(party, 'members', [])
             ],
             'client_party_member': {
-                'name': f'{party.me.display_name} / {party.me.id}',
+                'name': client.name(party.me),
                 'id': party.me.id,
                 'position': party.me.position,
                 'is_leader': party.me.leader,
@@ -817,9 +824,10 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
         return {
             'name': (
                 f'{client.config["fortnite"]["nickname"] or user.display_name}'
-                f' / {user.id}'
+                + ('' if client.config['loglevel'] == 'normal' else f' / {user.id}')
             ) if client.is_ready() else (
-                f'{client.config["fortnite"]["nickname"]} / {client.email}'
+                (f'{client.config["fortnite"]["nickname"]}'
+                 + ('' if client.config['loglevel'] == 'normal' else f' / {client.email}'))
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
@@ -915,6 +923,10 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
                     'outgoing_friend_request',
                     len(var['friend_requests']) - incoming
                 ).get_text(),
+                'join_request': app.l(
+                    'join_request',
+                    len(var['join_requests'])
+                ).get_text(),
                 'friend': app.l(
                     'online',
                     online,
@@ -949,6 +961,7 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
             'removed': {}
         }
         for key in ['friend_requests',
+                    'join_requests',
                     'friends',
                     'blocked_users',
                     'party_members']:
@@ -961,6 +974,7 @@ async def websocket_sender_client(request: Request, ws: WebSocketConnection,
                     'num',
                     'incoming_friend_request',
                     'outgoing_friend_request',
+                    'join_request',
                     'friend',
                     'blocked_user',
                     'party',
@@ -1093,6 +1107,10 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                     'outgoing_friend_request',
                     len(var['friend_requests']) - incoming
                 ).get_text(),
+                'join_request': app.l(
+                    'join_request',
+                    len(var['join_requests'])
+                ).get_text(),
                 'friend': app.l(
                     'online',
                     online,
@@ -1127,6 +1145,7 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
             'removed': {}
         }
         for key in ['friend_requests',
+                    'join_requests',
                     'friends',
                     'blocked_users',
                     'party_members']:
@@ -1139,6 +1158,7 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                     'num',
                     'incoming_friend_request',
                     'outgoing_friend_request',
+                    'join_request',
                     'friend',
                     'blocked_user',
                     'party',
@@ -1174,6 +1194,19 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
             except Exception as e:
                 client.debug_print_exception(e)
                 continue
+        elif data['event'] == 'accept_join_request':
+            request = client.join_requests.get(data['user_id'])
+            if request is not None:
+                try:
+                    await request.accept()
+                except Exception as e:
+                    client.bot.debug_print_exception(e)
+                else:
+                    if data['user_id'] in client.join_requests:
+                        client.join_requests.pop(data['user_id'])
+        elif data['event'] == 'decline_join_request':
+            if data['user_id'] in client.join_requests:
+                client.join_requests.pop(data['user_id'])
         elif data['event'] == 'command':
             mes = DummyMessage(
                 client,

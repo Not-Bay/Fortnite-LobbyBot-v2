@@ -120,6 +120,15 @@ class Bot:
         'AthenaToy': 'Toy',
         'AthenaConsumableEmote': 'EID',
     }
+    VARIANT_FORMATS = [
+        'Mat',
+        'Stage',
+        'Emissive',
+        'Stage',
+        'Particle'
+        'Numeric.',
+        'Color.'
+    ]
 
     def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False) -> None:
         self.mode = mode
@@ -421,6 +430,7 @@ class Bot:
             "['fortnite']['prefix']": [list, str, 'can_be_none'],
             "['fortnite']['exec']": [dict],
             "['fortnite']['exec']['ready']": [list, str, 'can_be_none'],
+            "['fortnite']['exec']['party_join_request']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_invite']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_request']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_add']": [list, str, 'can_be_none'],
@@ -1417,7 +1427,11 @@ class Bot:
                 'variants': [
                     {
                         'c': variant['channel'],
-                        'v': option['tag'],
+                        'v': (
+                            option['tag']
+                            if any([option['tag'].startswith(fmt) for fmt in self.VARIANT_FORMATS]) else
+                            f'Color.{option["tag"]}'
+                        ),
                         'dE': 0
                     }
                 ]

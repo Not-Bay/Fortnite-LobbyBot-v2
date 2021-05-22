@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.2.8'
+__version__ = '1.3.0'
 
 
 class Updater:
@@ -338,21 +338,7 @@ class Updater:
                 ),
                 add_p=self.bot.time
             )
-            tasks = [
-                self.bot.loop.create_task(self.check_update(uri, path))
-                for path in self.updates.keys()
-            ]
-            if self.bot.mode == 'pc':
-                tasks.extend([
-                    self.bot.loop.create_task(self.check_update(uri, path))
-                    for path in self.pc_updates.keys()
-                ])
-            elif self.bot.mode == 'repl':
-                tasks.extend([
-                    self.bot.loop.create_task(self.check_update(uri, path))
-                    for path in self.repl_updates.keys()
-                ])
-            await asyncio.wait(tasks)
+            await var['Updater'](self.bot).update(uri)
             self.bot.send(
                 self.l(
                     'update_finish',
@@ -366,3 +352,20 @@ class Updater:
             )
             return True
         return False
+
+    async def update(self, uri: str) -> None:
+        tasks = [
+            self.bot.loop.create_task(self.check_update(uri, path))
+            for path in self.updates.keys()
+        ]
+        if self.bot.mode == 'pc':
+            tasks.extend([
+                self.bot.loop.create_task(self.check_update(uri, path))
+                for path in self.pc_updates.keys()
+            ])
+        elif self.bot.mode == 'repl':
+            tasks.extend([
+                self.bot.loop.create_task(self.check_update(uri, path))
+                for path in self.repl_updates.keys()
+            ])
+        await asyncio.wait(tasks)

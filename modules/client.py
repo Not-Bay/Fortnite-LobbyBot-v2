@@ -21,7 +21,7 @@ from .cosmetics import Searcher
 from .discord_client import DiscordClient
 from .localize import LocalizedText
 from .session_id import SessionIDAuth
-from .web import WebMessage, auth
+from .web import auth
 from .webhook import WebhookClient
 
 if TYPE_CHECKING:
@@ -488,6 +488,7 @@ class Client(fortnitepy.Client):
         self.prev = {}
         self.select = {}
         self.party_hides = {}
+        self.join_requests = {}
         self.stoppable_tasks = []
         self.invite_interval = False
         self.invite_interval_handle = None
@@ -521,8 +522,7 @@ class Client(fortnitepy.Client):
             self.dispatch_event(
                 'store_whisper',
                 to,
-                self.whisper[to]['display_name'],
-                self.whisper[to]['content'][-1]
+                self.whisper[to]
             )
 
         async def store_whisper(message):
@@ -1223,6 +1223,62 @@ class Client(fortnitepy.Client):
                 text = self.l(
                     'error_while_joining_party_info',
                     party_id
+                )
+            self.send(
+                text,
+                add_p=self.time,
+                file=sys.stderr
+            )
+            if message is not None:
+                await message.reply(text)
+            return e
+
+    async def send_join_request(self, friend: fortnitepy.Friend,
+                                message: Optional[MyMessage] = None) -> Optional[Exception]:
+        try:
+            await friend.request_to_join()
+        except fortnitepy.PartyError as e:
+            self.debug_print_exception(e)
+            if self.party.get_member(friend.id) is not None:
+                if self.config['loglevel'] == 'normal':
+                    text = self.l(
+                        'already_member_of_this_party_friend',
+                        self.name(friend)
+                    )
+                else:
+                    text = self.l(
+                        'already_member_of_this_party_friend_info',
+                        self.name(friend),
+                        self.party.id
+                    )
+            else:
+                if self.config['loglevel'] == 'normal':
+                    text = self.l('party_full')
+                else:
+                    text = self.l(
+                        'party_full_info',
+                        self.party.id
+                    )
+            self.send(
+                text,
+                add_p=self.time,
+                file=sys.stderr
+            )
+            if message is not None:
+                await message.reply(text)
+            return e
+        except Exception as e:
+            self.print_exception(e)
+            if self.config['loglevel'] == 'normal':
+                text = self.l(
+                    'error_while_inviting_friend',
+                    self.name(friend)
+                )
+            else:
+                text = self.l(
+                    'error_while_inviting_friend_info',
+                    self.name(friend),
+                    self.party.id
                 )
             self.send(
                 text,
@@ -2642,6 +2698,51 @@ class Client(fortnitepy.Client):
             color=green,
             add_p=self.time
         )
+
+    async def event_party_join_request(self, request: fortnitepy.PartyJoinRequest) -> None:
+        if not self.is_ready():
+            await self.wait_until_ready()
+
+        self.join_requests[request.requester.id] = request
+
+        def remove():
+            if request.requester.id in self.join_requests:
+                self.join_requests.pop(request.requester.id)
+
+        self.loop.call_later((request.expires_at - datetime.datetime.utcnow()).total_seconds(), remove)
+
+        if not self.is_valid_party(request):
+            if self.config['loglevel'] == 'debug':
+                self.send(
+                    self.l(
+                        'ignoring_event_party_id_mismatch',
+                        'party_join_request',
+                        self.party_id,
+                        request.party.id
+                    ),
+                    color=yellow,
+                    add_p=self.time_party,
+                    add_d=[self.discord_party, self.debug_message]
+                )
+            return
+
+        self.send(
+            self.l(
+                'party_join_request',
+                self.name(request.requester)
+            ),
+            color=blue,
+            add_p=self.time_party,
+            add_d=self.discord_party
+        )
+
+        ret = await self.exec_event('party_join_request', {**locals(), **self.variables})
+        if ret is False:
+            return
+
+    async def event_party_join_request_expired(self, friend: fortnitepy.Friend) -> None:
+        if friend.id in self.join_requests:
+            self.join_requests.pop(friend.id)
 
     async def event_party_invite(self, invitation: fortnitepy.ReceivedPartyInvitation) -> None:
         if not self.is_ready():

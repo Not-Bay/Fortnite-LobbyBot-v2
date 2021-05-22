@@ -94,6 +94,7 @@
 |  unblock_all_user  |  unblock_all_user  |  全てのユーザーをブロック解除する。stopコマンドで停止可能<br>この操作には時間がかかる場合があります  |
 |  join  |  join [名前/ID]  |  ユーザーのパーティーに参加する  |
 |  join_id  |  join_id [パーティーID]  |  パーティーIDからパーティーに参加する  |
+|  request_to_join  |  request_to_join [名前/iD]  |  ユーザーに参加リクエストを送信する  |
 |  leave  |  leave  |  パーティーを離脱する  |
 |  invite  |  invite [名前/ID]  |  ユーザーを招待する  |
 |  invite_list_users  |  invite_list_users  |  招待リストのユーザーを招待する  |
