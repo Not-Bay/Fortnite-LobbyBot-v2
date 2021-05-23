@@ -607,7 +607,7 @@ socket.addEventListener('message', function(ev) {
         for (let [to, data] of Object.entries(client.whisper)) {
             console.log(data);
             data.content.forEach(whisper => {
-                constructWhisper(to, data.author.display_name, whisper)
+                constructWhisper(to, data.display_name, whisper)
             });
         };
 
