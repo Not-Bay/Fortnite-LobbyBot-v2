@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.3.1'
+__version__ = '1.3.2'
 
 
 class Updater:
@@ -121,9 +121,11 @@ class Updater:
 
     def add_new_key(self, data: dict, new: dict, overwrite: Optional[bool] = False) -> dict:
         result = data.copy()
-        for key,value in new.items():
+        for key, value in new.items():
             if isinstance(value, dict):
                 result[key] = self.add_new_key(result.get(key, {}), value, overwrite)
+            elif isinstance(value, list):
+                result[key] = [self.add_new_key(v, value[0], overwrite) for v in result.get(key, [])]
             if overwrite:
                 result[key] = value
             else:

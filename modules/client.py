@@ -522,7 +522,7 @@ class Client(fortnitepy.Client):
             self.dispatch_event(
                 'store_whisper',
                 to,
-                self.whisper[to]
+                self.whisper[to]['content'][-1]
             )
 
         async def store_whisper(message):
