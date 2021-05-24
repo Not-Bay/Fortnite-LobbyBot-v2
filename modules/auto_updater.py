@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.3.2'
+__version__ = '1.3.3'
 
 
 class Updater:
@@ -120,16 +120,26 @@ class Updater:
         return LocalizedText(self.bot, ['updater', key], default, *args, **kwargs)
 
     def add_new_key(self, data: dict, new: dict, overwrite: Optional[bool] = False) -> dict:
-        result = data.copy()
-        for key, value in new.items():
-            if isinstance(value, dict):
-                result[key] = self.add_new_key(result.get(key, {}), value, overwrite)
-            elif isinstance(value, list):
-                result[key] = [self.add_new_key(v, value[0], overwrite) for v in result.get(key, [])]
-            if overwrite:
-                result[key] = value
-            else:
-                result.setdefault(key, value)
+        if isinstance(new, dict):
+            result = data.copy()
+            for key, value in new.items():
+                if isinstance(value, dict):
+                    result[key] = self.add_new_key(result.get(key) or {}, value, overwrite)
+                elif isinstance(value, list):
+                    result[key] = self.add_new_key(result.get(key) or [], value, overwrite)
+                if overwrite:
+                    result[key] = value
+                else:
+                    result.setdefault(key, value)
+        else:
+            result = [
+                (self.add_new_key(self.bot.get_list_index(data or [], i, {}), self.bot.get_list_index(new or [], i, {}), overwrite)
+                 if isinstance(self.bot.get_list_index(data or [], i), dict) or isinstance(self.bot.get_list_index(new or [], i), dict) else
+                 self.add_new_key(self.bot.get_list_index(data or [], i, []), self.bot.get_list_index(new or [], i, []), overwrite)
+                 if isinstance(self.bot.get_list_index(data or [], i), list) or isinstance(self.bot.get_list_index(new or [], i), list) else
+                 self.bot.get_list_index(data or [], i, self.bot.get_list_index(new or [], i)))
+                for i in range(max(len(new), len(data or [])))
+            ]
         return result
 
     async def check_update(self, uri: str, path: str, save: Optional[str] = None,

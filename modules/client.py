@@ -1954,9 +1954,9 @@ class Client(fortnitepy.Client):
     def debug_message(self, text: str) -> str:
         return self.bot.debug_message(text)
 
-    def name(self, user: Optional[fortnitepy.User] = None) -> str:
+    def name(self, user: Optional[fortnitepy.User] = None, *, force_info: Optional[bool] = False) -> str:
         user = user or self.user
-        if self.config['loglevel'] == 'normal':
+        if self.config['loglevel'] == 'normal' and not force_info:
             return user.display_name
         else:
             append = ''
