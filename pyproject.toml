@@ -5,19 +5,22 @@ description = ""
 authors = ["gomashio", "pdf114514"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
-aiofiles = "*"
-colorama = "*"
-"discord.py" = "*"
+python = "3.8"
+aioconsole = "^0.3.1"
+aiofiles = "^0.7.0"
+aiohttp = "^3.7.3"
+colorama = "^0.4.4"
+"discord.py" = "^1.7.2"
 fortnitepy = { git = "https://github.com/gomashio1596/fortnitepy" }
-jaconv = "*"
-jinja2 = "*"
-pykakasi = "*"
+jaconv = "^0.3"
+jinja2 = "^2.3.0.1"
+pykakasi = "^2.1.1"
 replit = "*"
-sanic = "^21.3.0"  # Poetry is idiot
+sanic = "^21.3.0"
 "sanic-routing" = "0.4.1"
-uvloop = "*"
-websockets = "*"
+tzlocal = "^2.1"
+uvloop = "^0.15.2"
+websockets = "8.1"
 
 [tool.poetry.dev-dependencies]
 

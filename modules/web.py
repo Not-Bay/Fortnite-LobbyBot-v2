@@ -641,11 +641,9 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
         party = getattr(client, 'party', None)
         return {
             'name': (
-                f'{client.config["fortnite"]["nickname"] or user.display_name}'
-                + ('' if client.config['loglevel'] == 'normal' else f' / {user.id}')
+                f'{client.config["fortnite"]["nickname"] or user.display_name} / {user.id}'
             ) if client.is_ready() else (
-                (f'{client.config["fortnite"]["nickname"]}'
-                 + ('' if client.config['loglevel'] == 'normal' else f' / {client.email}'))
+                f'{client.config["fortnite"]["nickname"]} / {client.email}'
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
@@ -661,27 +659,27 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             'num': client.num,
             'friend_requests': [
                 {
-                    'name': client.name(pending),
+                    'name': client.name(pending, force_info=True),
                     'id': pending.id,
                     'type': 'outgoing' if pending.outgoing else 'incoming'
                 } for pending in client.pending_friends
             ],
             'join_requests': [
                 {
-                    'name': client.name(request.requester),
+                    'name': client.name(request.requester, force_info=True),
                     'id': request.requester.id
                 } for request in client.join_requests.values()
             ],
             'friends': [
                 {
-                    'name': client.name(friend),
+                    'name': client.name(friend, force_info=True),
                     'id': friend.id,
                     'is_online': friend.is_online()
                 } for friend in client.friends
             ],
             'blocked_users': [
                 {
-                    'name': client.name(blocked),
+                    'name': client.name(blocked, force_info=True),
                     'id': blocked.id
                 } for blocked in client.blocked_users
             ],
@@ -692,7 +690,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             },
             'party_members': [
                 {
-                    'name': client.name(member),
+                    'name': client.name(member, force_info=True),
                     'id': member.id,
                     'position': member.position,
                     'is_leader': member.leader,
@@ -753,7 +751,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 } for member in getattr(party, 'members', [])
             ],
             'client_party_member': {
-                'name': client.name(party.me),
+                'name': client.name(party.me, force_info=True),
                 'id': party.me.id,
                 'position': party.me.position,
                 'is_leader': party.me.leader,
@@ -823,11 +821,9 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
         user = getattr(client, 'user', None)
         return {
             'name': (
-                f'{client.config["fortnite"]["nickname"] or user.display_name}'
-                + ('' if client.config['loglevel'] == 'normal' else f' / {user.id}')
+                f'{client.config["fortnite"]["nickname"] or user.display_name} / {user.id}'
             ) if client.is_ready() else (
-                (f'{client.config["fortnite"]["nickname"]}'
-                 + ('' if client.config['loglevel'] == 'normal' else f' / {client.email}'))
+                f'{client.config["fortnite"]["nickname"]} / {client.email}'
                 if client.config['fortnite']['nickname'] else
                 client.email
             ),
