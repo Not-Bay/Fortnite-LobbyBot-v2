@@ -77,7 +77,9 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
         'HolidayCracker': ("AthenaDanceItemDefinition'/Game/Athena/Items/"
                            "Cosmetics/Dances/HolidayCracker/{0}.{0}'"),
         'PapayaComms': ("AthenaDanceItemDefinition'/Game/Athena/Items/"
-                        "Cosmetics/Dances/PapayaComms/{0}.{0}'")
+                        "Cosmetics/Dances/PapayaComms/{0}.{0}'"),
+        'Chugga': ("AthenaDanceItemDefinitionNNNNN'/Game/Athena/Items/"
+                   "Cosmetics/Dances/Chugga/{0}.{0}'")
     }
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -94,6 +96,20 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
             'AthenaConsumableEmote': self.set_emote
         }
 
+    @classmethod
+    def get_asset_path(cls, item: str, asset: Optional[str] = None) -> str:
+        if asset is not None:
+            if asset != '' and '.' not in asset:
+                if item == 'AthenaDance':
+                    if 'holidaycracker' in asset.lower():
+                        item = 'HolidayCracker'
+                    elif asset.lower().endswith('papayacomms'):
+                        item = 'PapayaComms'
+                    elif 'eid_chugga' in asset.lower():
+                        item = 'Chugga'
+                asset = cls.ASSET_PATH_CONVERTER[item].format(asset)
+        return asset
+
     def asset(self, item: str) -> Optional[str]:
         p = self.ASSET_CONVERTER.get(item)
         if p is None:
@@ -106,25 +122,11 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
             return []
         return p.fget(self)
 
-    def get_asset_path(self, item: str, asset: Optional[str] = None) -> str:
-        if asset is not None:
-            if asset != '' and '.' not in asset:
-                if item == 'AthenaDance':
-                    if 'holidaycracker' in asset.lower():
-                        item = 'HolidayCracker'
-                    elif asset.lower().endswith('papayacomms'):
-                        item = 'PapayaComms'
-                asset = self.ASSET_PATH_CONVERTER[item].format(asset)
-        else:
-            asset = self.asset(item)
-        return asset
-
     async def change_asset(self, item: str,
                            asset: Optional[str] = None,
                            keep: Optional[bool] = True,
                            do_point: Optional[bool] = True, **kwargs: Any) -> bool:
         asset = self.get_asset_path(item, asset)
-
         kwargs['variants'] = kwargs.get('variants', []) or []
         if asset is not None and 'banner' in asset.lower():
             kwargs['variants'].extend(self.create_variant(
@@ -1806,8 +1808,8 @@ class Client(fortnitepy.Client):
             self.config['fortnite']['blacklist'].append(self.get_user_str(user))
             self._blacklist[user.id] = user
 
-    def get_config_item_id(self, text: str) -> str:
-        return self.bot.get_config_item_id(text)
+    def get_config_item_path(self, text: str) -> str:
+        return self.bot.get_config_item_path(text)
 
     def get_config_playlist_id(self, text: str) -> str:
         return self.bot.get_config_playlist_id(text)
@@ -2390,7 +2392,7 @@ class Client(fortnitepy.Client):
             if not self.config['fortnite'][f'ng_{conf}s'] or self.asset(item, member) is None:
                 continue
             ngs = [ng.lower() for ng in [
-                (self.bot.get_config_item_id(cosmetic)
+                (self.bot.get_config_item_path(cosmetic)
                  or cosmetic)
                 for cosmetic in self.config['fortnite'][f'ng_{conf}s']
             ] if ng is not None]
@@ -2951,11 +2953,11 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
-        if (member.id == self.user.id and self.get_config_item_id(self.config['fortnite']['emote']) is not None
+        if (member.id == self.user.id and self.get_config_item_path(self.config['fortnite']['emote']) is not None
                 and self.emote is None and self.emote_section is None):
             await self.party.me.change_asset(
                 'AthenaDance',
-                self.get_config_item_id(self.config['fortnite']['emote']),
+                self.get_config_item_path(self.config['fortnite']['emote']),
                 section=self.config['fortnite']['emote_section']
             )
 
@@ -3102,7 +3104,7 @@ class Client(fortnitepy.Client):
             if flag:
                 await self.party.me.change_asset(
                     item,
-                    (self.get_config_item_id(self.config['fortnite'][f'join_{conf}'])
+                    (self.get_config_item_path(self.config['fortnite'][f'join_{conf}'])
                      or self.config['fortnite'][f'join_{conf}']),
                     variants=variants,
                     section=section,
@@ -3159,7 +3161,7 @@ class Client(fortnitepy.Client):
             if self.config['fortnite'][f'leave_{conf}_on'] == 'user':
                 await self.party.me.change_asset(
                     item,
-                    (self.get_config_item_id(self.config['fortnite'][f'leave_{conf}'])
+                    (self.get_config_item_path(self.config['fortnite'][f'leave_{conf}'])
                      or self.config['fortnite'][f'leave_{conf}']),
                     do_point=False
                 )
@@ -3203,7 +3205,7 @@ class Client(fortnitepy.Client):
             if self.config['fortnite'][f'leave_{conf}_on'] == 'me':
                 await self.party.me.change_asset(
                     item,
-                    (self.get_config_item_id(self.config['fortnite'][f'leave_{conf}'])
+                    (self.get_config_item_path(self.config['fortnite'][f'leave_{conf}'])
                      or self.config['fortnite'][f'leave_{conf}']),
                     variants=variants,
                     section=section,
@@ -4053,7 +4055,7 @@ class Client(fortnitepy.Client):
                             self.l('cosmetic_locked')
                         )
                         return
-                    await self.party.me.change_asset(item, cosmetic['id'])
+                    await self.party.me.change_asset(item, cosmetic['path'])
                     await message.reply(
                         self.l(
                             'set_to',
