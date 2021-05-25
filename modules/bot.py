@@ -557,7 +557,8 @@ class Bot:
 
         self.config_item_pattern = re.compile(
             r"<Item name='(?P<name>.+)' "
-            r"id='(?P<id>.+)'>"
+            r"id='(?P<id>.+)' "
+            r"path='(?P<path>.+)'>"
         )
         self.config_playlist_pattern = re.compile(
             r"<Playlist name='(?P<name>.+)' "
@@ -1439,7 +1440,7 @@ class Bot:
         ]
 
     def get_item_str(self, item: dict) -> str:
-        return '<Item name={0[name]!r} id={0[id]!r}>'.format(
+        return "<Item name='{0[name]}' id='{0[id]}' path='{0[path]}'>".format(
             item
         )
 
@@ -1463,6 +1464,14 @@ class Bot:
         if match is None:
             return None
         return match.group('id')
+
+    def get_config_item_path(self, text: str) -> str:
+        if text is None:
+            return None
+        match = self.config_item_pattern.match(text)
+        if match is None:
+            return None
+        return match.group('path')
 
     def get_config_playlist_id(self, text: str) -> str:
         if text is None:
@@ -1735,6 +1744,7 @@ class Bot:
         if mode == 'BenBot':
             return {
                 'id': data['id'],
+                'path': f"{self.convert_backend_type(data['backendType'])}ItemDefinition'{data['path'].replace('FortniteGame/Content', '/Game')}.{data['path'].split('/')[-1]}'",
                 'name': data['name'],
                 'url':  data['icons']['icon'],
                 'type': {
@@ -1748,6 +1758,7 @@ class Bot:
         elif mode == 'Fortnite-API':
             return {
                 'id': data['id'],
+                'path': f"{data['type']['backendValue']}ItemDefinition'{data['path'].replace('FortniteGame/Content', '/Game')}.{data['path'].split('/')[-1]}'",
                 'name': data['name'],
                 'url': data['images']['icon'],
                 'type': data['type'],
@@ -1757,6 +1768,7 @@ class Bot:
         elif mode == 'FortniteApi.io':
             return {
                 'id': data['id'],
+                'path': MyClientPartyMember.get_asset_path(self.convert_to_backend_type(data['type']), data['id']),
                 'name': data['name'],
                 'url': data['images']['icon'],
                 'type': {
@@ -2343,8 +2355,13 @@ class Bot:
                     fix_cosmetic_style_config()
                     continue
                 if config['fortnite'][key]:
+                    old = re.compile(
+                        r"<Item name='(?P<name>.+)' "
+                        r"id='(?P<id>.+)'>"
+                    )
+                    match = old.match(config['fortnite'][key])
                     cosmetic = self.searcher.get_item(
-                        config['fortnite'][key]
+                        match.group('id') if match is not None else config['fortnite'][key]
                     )
                     if cosmetic is None:
                         cosmetics = self.searcher.search_item_name_id(
@@ -2615,9 +2632,14 @@ class Bot:
                 member_meta = [
                     partial(
                         MyClientPartyMember.set_banner,
-                        config['fortnite']['banner_id'],
-                        config['fortnite']['banner_color'],
-                        config['fortnite']['level']
+                        icon=config['fortnite']['banner_id'],
+                        color=config['fortnite']['banner_color'],
+                        season_level=config['fortnite']['level']
+                    ),
+                    partial(
+                        MyClientPartyMember.set_battlepass_info,
+                        has_purchased=True,
+                        level=config['fortnite']['level']
                     )
                 ]
                 items = [
@@ -2640,7 +2662,7 @@ class Bot:
                     coro = fortnitepy.EditEntry(
                         MyClientPartyMember.change_asset,
                         item,
-                        (self.get_config_item_id(config['fortnite'][conf])
+                        (self.get_config_item_path(config['fortnite'][conf])
                          or config['fortnite'][conf]),
                         variants=variants,
                         section=section,

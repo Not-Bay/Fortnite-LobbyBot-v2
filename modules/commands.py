@@ -414,7 +414,7 @@ async def all_cosmetics(item: str, client: 'Client', message: MyMessage) -> None
 
             await client.party.me.change_asset(
                 cosmetic['type']['backendValue'],
-                cosmetic['id'],
+                cosmetic['path'],
                 keep=False
             )
             await message.reply(
@@ -439,14 +439,14 @@ async def cosmetic_search(item: Optional[str], mode: str, command: Command,
         return
 
     async def set_cosmetic(cosmetic):
-        item = cosmetic["type"]["backendValue"]
+        item = cosmetic['type']['backendValue']
         attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
         if getattr(client, attr)(message.user_type):
             await message.reply(
                 client.l('cosmetic_locked')
             )
             return
-        await client.party.me.change_asset(item, cosmetic['id'])
+        await client.party.me.change_asset(item, cosmetic['path'])
         await message.reply(
             client.l(
                 'set_to',
@@ -1062,8 +1062,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_config),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -1113,7 +1113,7 @@ class DefaultCommands:
                             variants.extend(variant['variants'])
                 coro = client.party.me.change_asset(
                     item,
-                    (client.get_config_item_id(client.config['fortnite'][conf])
+                    (client.get_config_item_path(client.config['fortnite'][conf])
                      or client.config['fortnite'][conf]),
                     variants=variants
                 )
@@ -1135,8 +1135,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_commands),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -1161,8 +1161,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_custom_commands),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -1196,8 +1196,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_config),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -1239,7 +1239,7 @@ class DefaultCommands:
                                     variants.extend(variant['variants'])
                         coro = c.party.me.change_asset(
                             item,
-                            (c.get_config_item_id(c.config['fortnite'][conf])
+                            (c.get_config_item_path(c.config['fortnite'][conf])
                              or c.config['fortnite'][conf]),
                             variants=variants
                         )
@@ -1269,8 +1269,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_commands),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -1297,8 +1297,8 @@ class DefaultCommands:
                     'error_keys',
                     '\n'.join(error_custom_commands),
                     default=(
-                        "以下のキーに問題がありました\n{0}\n"
-                        "There was an error on keys\n{0}\n"
+                        '以下のキーに問題がありました\n{0}\n'
+                        'There was an error on keys\n{0}\n'
                     )
                 ),
                 file=sys.stderr
@@ -3008,7 +3008,7 @@ class DefaultCommands:
             client.l(
                 'set_to',
                 client.l('banner'),
-                f"{message.args[1]}, {message.args[2]}"
+                f'{message.args[1]}, {message.args[2]}'
             )
         )
 
