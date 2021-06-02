@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.3.5'
+__version__ = '1.3.6'
 
 
 class Updater:
@@ -159,7 +159,7 @@ class Updater:
         )
 
         async def backup():
-            if 'backup' in tags:
+            if os.path.isfile(path) and 'backup' in tags:
                 try:
                     if os.path.isfile(f'{dirs}{key}_old.{extension}'):
                         await aremove(f'{dirs}{key}_old.{extension}')
