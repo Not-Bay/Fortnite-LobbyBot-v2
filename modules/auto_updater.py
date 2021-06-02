@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.3.4'
+__version__ = '1.3.5'
 
 
 class Updater:
@@ -57,6 +57,7 @@ class Updater:
             'modules/device_code.py': ['backup'],
             'modules/discord_client.py': ['backup'],
             'modules/encoder.py': ['backup'],
+            'modules/formatter.py': ['backup'],
             'modules/localize.py': ['backup'],
             'modules/session_id.py': ['backup'],
             'modules/web.py': ['backup'],

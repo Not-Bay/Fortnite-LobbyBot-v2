@@ -274,32 +274,20 @@ class MyClientParty(fortnitepy.ClientParty):
         if member.id in self._members.keys():
             await self.refresh_squad_assignments()
 
-    async def refresh_squad_assignments(self,
-                                        new_positions: Dict[str, int] = {},
-                                        could_be_edit: bool = False) -> None:
-        self.construct_squad_assignments(new_positions=new_positions)
-
-        members = []
+    def _convert_squad_assignments(self, assignments):
+        results = []
         sub = 0
-        for m in self.meta.squad_assignments:
-            if m['memberId'] in self._hides:
+        for member, assignment in assignments.items():
+            if assignment.hidden or member.id in self._hides:
                 sub += 1
                 continue
 
-            members.append({
-                'memberId': m['memberId'],
-                'absoluteMemberIdx': m['absoluteMemberIdx'] - sub
+            results.append({
+                'memberId': member.id,
+                'absoluteMemberIdx': assignment.position - sub,
             })
 
-        prop_final = {
-            'Default:RawSquadAssignments_j': json.dumps({
-                'RawSquadAssignments': members
-            })
-        }
-
-        check = not self.edit_lock.locked() if could_be_edit else True
-        if check:
-            return await self.patch(updated=prop_final)
+        return results
 
     async def disable_voice_chat(self) -> None:
         if self.me is not None and not self.me.leader:
@@ -411,8 +399,13 @@ class Client(fortnitepy.Client):
     PLATFORM_CONVERTER = {
         fortnitepy.Platform.WINDOWS: "Windows",
         fortnitepy.Platform.MAC: "Mac",
-        fortnitepy.Platform.PLAYSTATION: "PlayStation",
-        fortnitepy.Platform.XBOX: "Xbox",
+        fortnitepy.Platform.PLAYSTATION: "PlayStation 4",
+        fortnitepy.Platform.PLAYSTATION_5: "PlayStation 5",
+        fortnitepy.Platform.XBOX: "Xbox One",
+        fortnitepy.Platform.XBOX_X: "Xbox One X",
+        fortnitepy.Platform.XBOX_S: "Xbox One S",
+        fortnitepy.Platform.XBOX_SERIES_X: "Xbox Series X",
+        fortnitepy.Platform.XBOX_SERIES_S: "Xbox Series S",
         fortnitepy.Platform.SWITCH: "Switch",
         fortnitepy.Platform.IOS: "IOS",
         fortnitepy.Platform.ANDROID: "Android"
@@ -491,6 +484,7 @@ class Client(fortnitepy.Client):
         self.select = {}
         self.party_hides = {}
         self.join_requests = {}
+        self.invites = {}
         self.stoppable_tasks = []
         self.invite_interval = False
         self.invite_interval_handle = None
@@ -1057,30 +1051,38 @@ class Client(fortnitepy.Client):
             return await friend.join_party()
         except fortnitepy.PartyError as e:
             self.debug_print_exception(e)
-            if self.party.get_member(friend.id) is not None:
-                if self.config['loglevel'] == 'normal' or party is None:
-                    text = self.l(
-                        'already_member_of_this_party_friend',
-                        self.name(friend)
-                    )
-                else:
-                    text = self.l(
-                        'already_member_of_this_party_friend_info',
-                        self.name(friend),
-                        party.id
-                    )
+            if self.config['loglevel'] == 'normal' or party is None:
+                text = self.l(
+                    'already_member_of_this_party_friend',
+                    self.name(friend)
+                )
             else:
-                if self.config['loglevel'] == 'normal' or party is None:
-                    text = self.l(
-                        'party_full_friend',
-                        self.name(friend)
-                    )
-                else:
-                    text = self.l(
-                        'party_full_friend_info',
-                        self.name(friend),
-                        party.id
-                    )
+                text = self.l(
+                    'already_member_of_this_party_friend_info',
+                    self.name(friend),
+                    party.id
+                )
+            self.send(
+                text,
+                add_p=self.time,
+                file=sys.stderr
+            )
+            if message is not None:
+                await message.reply(text)
+            return e
+        except fortnitepy.PartyIsFull as e:
+            self.debug_print_exception(e)
+            if self.config['loglevel'] == 'normal' or party is None:
+                text = self.l(
+                    'party_full_friend',
+                    self.name(friend)
+                )
+            else:
+                text = self.l(
+                    'party_full_friend_info',
+                    self.name(friend),
+                    party.id
+                )
             self.send(
                 text,
                 add_p=self.time,
@@ -1159,22 +1161,30 @@ class Client(fortnitepy.Client):
             return await self.join_party(party_id=party_id)
         except fortnitepy.PartyError as e:
             self.debug_print_exception(e)
-            if self.party.id == party_id:
-                if self.config['loglevel'] == 'normal':
-                    text = self.l('already_member_of_this_party')
-                else:
-                    text = self.l(
-                        'already_member_of_this_party_info',
-                        party_id
-                    )
+            if self.config['loglevel'] == 'normal':
+                text = self.l('already_member_of_this_party')
             else:
-                if self.config['loglevel'] == 'normal':
-                    text = self.l('party_full')
-                else:
-                    text = self.l(
-                        'party_full_info',
-                        party_id
-                    )
+                text = self.l(
+                    'already_member_of_this_party_info',
+                    party_id
+                )
+            self.send(
+                text,
+                add_p=self.time,
+                file=sys.stderr
+            )
+            if message is not None:
+                await message.reply(text)
+            return e
+        except fortnitepy.PartyIsFull as e:
+            self.debug_print_exception(e)
+            if self.config['loglevel'] == 'normal':
+                text = self.l('party_full')
+            else:
+                text = self.l(
+                    'party_full_info',
+                    party_id
+                )
             self.send(
                 text,
                 add_p=self.time,
@@ -1241,26 +1251,17 @@ class Client(fortnitepy.Client):
             await friend.request_to_join()
         except fortnitepy.PartyError as e:
             self.debug_print_exception(e)
-            if self.party.get_member(friend.id) is not None:
-                if self.config['loglevel'] == 'normal':
-                    text = self.l(
-                        'already_member_of_this_party_friend',
-                        self.name(friend)
-                    )
-                else:
-                    text = self.l(
-                        'already_member_of_this_party_friend_info',
-                        self.name(friend),
-                        self.party.id
-                    )
+            if self.config['loglevel'] == 'normal':
+                text = self.l(
+                    'already_member_of_this_party_friend',
+                    self.name(friend)
+                )
             else:
-                if self.config['loglevel'] == 'normal':
-                    text = self.l('party_full')
-                else:
-                    text = self.l(
-                        'party_full_info',
-                        self.party.id
-                    )
+                text = self.l(
+                    'already_member_of_this_party_friend_info',
+                    self.name(friend),
+                    self.party.id
+                )
             self.send(
                 text,
                 add_p=self.time,
@@ -2095,10 +2096,11 @@ class Client(fortnitepy.Client):
                 flag = True
                 break
         try:
-            await self.bot.aexec(body, variables)
+            _, o, _ = await self.bot.aexec(body, variables)
+            print(o)
             if flag:
                 return False
-        except Exception:
+        except Exception as e:
             def cleanup(code_context):
                 return ''.join([i.strip('\n ') for i in code_context])
 
@@ -2108,7 +2110,8 @@ class Client(fortnitepy.Client):
                  'Traceback\n'
                  + '\n'.join([(f'  File "{stack.filename}", line {stack.lineno}, in {stack.function}'
                                + (f'\n    {cleanup(stack.code_context)}' if stack.code_context else ''))
-                              for stack in reversed(inspect.stack()[1:])])),
+                              for stack in reversed(inspect.stack()[1:])])
+                 + f'{e.__class__.__name__}: {e}'),
                 file=sys.stderr
             )
             return None
@@ -2705,11 +2708,11 @@ class Client(fortnitepy.Client):
         if not self.is_ready():
             await self.wait_until_ready()
 
-        self.join_requests[request.requester.id] = request
+        self.join_requests[request.friend.id] = request
 
         def remove():
-            if request.requester.id in self.join_requests:
-                self.join_requests.pop(request.requester.id)
+            if request.friend.id in self.join_requests:
+                self.join_requests.pop(request.friend.id)
 
         self.loop.call_later((request.expires_at - datetime.datetime.utcnow()).total_seconds(), remove)
 
@@ -2731,7 +2734,7 @@ class Client(fortnitepy.Client):
         self.send(
             self.l(
                 'party_join_request',
-                self.name(request.requester)
+                self.name(request.friend)
             ),
             color=blue,
             add_p=self.time_party,
@@ -2742,13 +2745,15 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
-    async def event_party_join_request_expired(self, friend: fortnitepy.Friend) -> None:
+    async def event_party_join_request_expire(self, friend: fortnitepy.Friend) -> None:
         if friend.id in self.join_requests:
             self.join_requests.pop(friend.id)
 
     async def event_party_invite(self, invitation: fortnitepy.ReceivedPartyInvitation) -> None:
         if not self.is_ready():
             await self.wait_until_ready()
+
+        self.invites[invitation.sender.id] = invitation
 
         ret = await self.exec_event('party_invite', {**locals(), **self.variables})
         if ret is False:
@@ -2800,6 +2805,8 @@ class Client(fortnitepy.Client):
                 client=self
             )))
             await invitation.decline()
+            if invitation.sender.id in self.invites:
+                self.invites.pop(invitation.sender.id)
             return
 
         if self.is_accept_invite_for(self.get_user_type(invitation.sender.id)):
@@ -2832,6 +2839,16 @@ class Client(fortnitepy.Client):
                 add_p=self.time
             )
             await invitation.decline()
+            if invitation.sender.id in self.invites:
+                self.invites.pop(invitation.sender.id)
+
+    async def event_party_invite_decline(self, friend: fortnitepy.Friend) -> None:
+        if friend.id in self.invites:
+            self.invites.pop(friend.id)
+
+    async def event_party_invite_cancel(self, friend: fortnitepy.Friend) -> None:
+        if friend.id in self.invites:
+            self.invites.pop(friend.id)
 
     async def event_friend_request(self, request: Union[fortnitepy.IncomingPendingFriend, fortnitepy.OutgoingPendingFriend]) -> None:
         if not self.is_ready():
@@ -2920,6 +2937,15 @@ class Client(fortnitepy.Client):
         if not self.is_ready():
             await self.wait_until_ready()
 
+        inviter = None
+        if member.id == self.user.id:
+            invite = discord.utils.find(
+                lambda i: i.sender in self.party.members and i.party.id == self.party.id,
+                self.invites.values()
+            )
+            if invite is not None:
+                inviter = invite.sender
+
         if not self.is_valid_party(member):
             if self.config['loglevel'] == 'debug':
                 self.send(
@@ -2973,6 +2999,8 @@ class Client(fortnitepy.Client):
         if self.party.me.leader:
             self.loop.create_task(self.init_party())
 
+        local = locals()
+
         async def send_messages():
             muc_party_id = None
             if self.xmpp.muc_room is not None:
@@ -2981,6 +3009,7 @@ class Client(fortnitepy.Client):
                 await self.wait_for('muc_enter', timeout=5)
 
             var = self.variables
+            var.update(local)
             var.update({
                 'member': member,
                 'member_display_name': member.display_name,
@@ -3254,6 +3283,7 @@ class Client(fortnitepy.Client):
                 self.party_hides[self.party.id] = []
             if self.party.me.leader and self.is_hide_for(self.get_user_type(confirmation.user.id)):
                 self.party_hides[self.party.id].append(confirmation.user.id)
+            self.party.update_hide_users(self.party_hides[self.party.id])
 
             try:
                 await confirmation.confirm()

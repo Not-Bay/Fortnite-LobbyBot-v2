@@ -269,6 +269,14 @@
 #### パーティー参加時のメッセージで使える追加変数
 |  名前  |  説明  |
 | --- | --- |
+|  member  |  参加したメンバーのインスタンス<br>fortnitepy.PartyMember  |
+|  member_display_name  |  参加したメンバーのディスプレイネーム  |
+|  member_id  |  参加したメンバーのID  |
+|  inviter  |  招待したユーザーのインスタンス (ボット自身が招待されて参加した場合のみ)<br>Optional[fortnitepy.Friend]  |
+
+#### カスタムコマンド/リプライで使える追加変数
+|  名前  |  説明  |
+| --- | --- |
 |  message  |  メッセージのインスタンス<br>Union[fortnitepy.FriendMessage, fortnitepy.PartyMessage, discord.Message, DummyMessage]  |
 |  author  |  メッセージの送り主のインスタンス<br>Union[fortnitepy.User, discord.User, WebUser]  |
 |  author_display_name  |  メッセージの送り主のディスプレイネーム  |

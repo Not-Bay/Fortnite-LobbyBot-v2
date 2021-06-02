@@ -32,6 +32,7 @@ from .cosmetics import CaseInsensitiveDict, Searcher
 from .device_code import Auth, HTTPClient
 from .discord_client import DiscordClient
 from .encoder import MyJSONEncoder
+from .formatter import EvalFormatter
 from .localize import LocalizedText
 from .session_id import SessionIDAuth
 from .web import Web, WebMessage, WebUser
@@ -148,10 +149,10 @@ class Bot:
         self.email_pattern = re.compile(
             r'[a-zA-Z0-9.+-_]+@[a-zA-Z0-9-_]+\.[a-zA-Z0-9]+'
         )
-        self.format_pattern = re.compile(r'\{(.*?)\}')
         self.return_pattern = re.compile(
             r'(?P<space>\s*)(return|return\s+(?P<text>.*))\s*'
         )
+        self.formatter = EvalFormatter()
         self.kakasi = kakasi()
         self.kakasi.setMode('J', 'H')
         self.converter = self.kakasi.getConverter()
@@ -851,15 +852,7 @@ class Bot:
         return data[index] if data[index:index + 1] else default
 
     def eval_format(self, text: str, variables: dict) -> str:
-        for match in self.format_pattern.finditer(text):
-            match_text = match.group()
-            try:
-                text = text.replace(match_text, match_text.format_map(variables), 1)
-            except Exception as e:
-                self.debug_print_exception(e)
-                result = eval(match_text[1:-1], globals(), variables)
-                text = text.replace(match_text, str(result), 1)
-        return text
+        return self.formatter.format(text, **variables)
 
     def eval_dict(self, data: dict, keys: list) -> str:
         text = ''
@@ -1801,7 +1794,7 @@ class Bot:
     async def get_item_data(self, lang: str) -> list:
         if self.config['api'] == 'BenBot':
             return self.format_items(await self.http.get(
-                'http://benbotfn.tk/api/v1/cosmetics/br',
+                'http://benbot.app/api/v1/cosmetics/br',
                 params={'lang': lang}
             ), self.config['api'])
         elif self.config['api'] == 'Fortnite-API':
@@ -1856,7 +1849,7 @@ class Bot:
     async def get_new_item_data(self, lang: str) -> list:
         if self.config['api'] == 'BenBot':
             return self.format_items((await self.http.get(
-                'http://benbotfn.tk/api/v1/newCosmetics',
+                'http://benbot.app/api/v1/newCosmetics',
                 params={'lang': lang}
             ))['items'], self.config['api'])
         elif self.config['api'] == 'Fortnite-API':
@@ -1952,13 +1945,13 @@ class Bot:
     async def get_banner_data(self) -> dict:
         if self.config['api'] == 'BenBot':
             data = await self.http.get(
-                'https://benbotfn.tk/api/v1/files/search',
+                'https://benbot.app/api/v1/files/search',
                 params={
                     'matchMethod': 'starts',
                     'path': 'FortniteGame/Content/Items/BannerIcons/'
                 }
             )
-            url = 'https://benbotfn.tk/api/v1/exportAsset?path={}&rawIcon=true'
+            url = 'https://benbot.app/api/v1/exportAsset?path={}&rawIcon=true'
             return {
                 banner[39:-7]: url.format(banner) for banner in data
             }
@@ -2709,6 +2702,7 @@ class Bot:
                     ),
                     status=config['fortnite']['status'],
                     platform=config['fortnite']['platform'],
+                    wait_for_member_meta_in_events=False,
                     loop=self.loop
                 )
 
