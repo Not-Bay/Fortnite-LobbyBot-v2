@@ -272,6 +272,14 @@ When writing, enclose the name in {} and use it (Example: Battle Royale Lobby - 
 #### Variables can be used in party join message
 |  Name  |  Description  |
 | --- | --- |
+|  member  |  Instance of joined member<br>fortnitepy.PartyMember  |
+|  member_display_name  |  Display name of joined member  |
+|  member_id  |  Account ID of joined member  |
+|  inviter  |  Instance of invited friend (Only available when bot joined by invite)<br>Optional[fortnitepy.Friend]  |
+
+#### Variables can be used in custom commands/replies
+|  Name  |  Description  |
+| --- | --- |
 |  message  |  Instance of Message<br>Union[fortnitepy.FriendMessage, fortnitepy.PartyMessage, discord.Message, DummyMessage]  |
 |  author  |  Instance of Message's author<br>Union[fortnitepy.User, discord.User, WebUser]  |
 |  author_display_name  |  Display name of Message's author  |

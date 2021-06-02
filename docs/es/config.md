@@ -272,6 +272,14 @@ Al escribir, incluya el nombre de la variable en {} (Ejemplo: Sala de Battle Roy
 #### Variables utilizables en mensaje al unirse al grupo
 |  Nombre  |  Descripción  |
 | --- | --- |
+|  member  |  Instancia de miembro unido<br>fortnitepy.PartyMember  |
+|  member_display_name  |  Display name of joined member  |
+|  member_id  |  Nombre en pantalla del miembro unido  |
+|  inviter  |  Instancia de amigo que invitó miembro (Solo disponible cuando el bot se une por invitación)<br>Optional[fortnitepy.Friend]  |
+
+#### Variables utilizables en mensaje al unirse al grupo
+|  Nombre  |  Descripción  |
+| --- | --- |
 |  message  |  Instancia de mensaje<br>Union[fortnitepy.FriendMessage, fortnitepy.PartyMessage, discord.Message, DummyMessage]  |
 |  author  |  Instancia del autor del mensaje<br>Union[fortnitepy.User, discord.User, WebUser]  |
 |  author_display_name  |  Nombre en pantalla del autor del mensaje  |

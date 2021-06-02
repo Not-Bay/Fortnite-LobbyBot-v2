@@ -3391,7 +3391,7 @@ class DefaultCommands:
         if len(message.args) < 2:
             count = 0
             for member in client.party.members:
-                if client.is_hide_for(member.id):
+                if client.is_hide_for(client.get_user_type(member.id)):
                     if client.party.add_hide_user(member.id):
                         count += 1
             try:
