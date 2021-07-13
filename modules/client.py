@@ -185,7 +185,7 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
                 )
             else:
                 await func(asset=asset, **kwargs)
-            if item == 'AthenaPickaxe' and do_point:
+            if item == 'AthenaPickaxe' and do_point and self.client.do_point:
                 await self.change_asset(
                     'AthenaDance',
                     'EID_IceKing',
@@ -441,6 +441,7 @@ class Client(fortnitepy.Client):
         self.booted_at = None
         self.emote = None
         self.emote_section = None
+        self.do_point = self.config['fortnite']['do_point']
 
         self.email = self.config['fortnite']['email']
         self.config_user_pattern = re.compile(
@@ -1805,7 +1806,7 @@ class Client(fortnitepy.Client):
         return match.group('id')
 
     def add_to_blacklist(self, user: fortnitepy.User) -> None:
-        if self._blacklist.get(user.id) is not None:
+        if user.id not in self._blacklist:
             self.config['fortnite']['blacklist'].append(self.get_user_str(user))
             self._blacklist[user.id] = user
 
@@ -1832,6 +1833,8 @@ class Client(fortnitepy.Client):
             d, h, m, s = self.bot.convert_td(uptime)
         else:
             d = h = m = s = None
+        online_friends = [f for f in self.friends if f.is_online()]
+        offline_friends = [f for f in self.friends if not f.is_online()]
         return {
             **globals(),
             'self': self,
@@ -1843,6 +1846,10 @@ class Client(fortnitepy.Client):
             'party_max_size': getattr(party, 'config', {}).get('max_size'),
             'friends': self.friends,
             'friend_count': len(self.friends),
+            'online_friend_count': len(online_friends),
+            'online_friends': online_friends,
+            'offline_friends': offline_friends,
+            'offline_friend_count': len(offline_friends),
             'pending_friends': self.pending_friends,
             'pending_count': len(self.pending_friends),
             'incoming_pending_friends': self.incoming_pending_friends,
@@ -2989,14 +2996,13 @@ class Client(fortnitepy.Client):
 
         if self.party_hides.get(self.party.id) is None:
             self.party_hides[self.party.id] = []
-        for m in self.party.members:
-            if self.party.me.leader and self.is_hide_for(self.get_user_type(m.id)):
-                self.party_hides[self.party.id].append(m.id)
+        if self.party.me.leader and self.is_hide_for(self.get_user_type(member.id)):
+            self.party_hides[self.party.id].append(member.id)
         self.party.update_hide_users(self.party_hides[self.party.id])
 
         await self.ng_check(member)
 
-        if self.party.me.leader:
+        if self.party.me.leader and member.id == self.user.id:
             self.loop.create_task(self.init_party())
 
         local = locals()
@@ -3963,6 +3969,13 @@ class Client(fortnitepy.Client):
 
             self.prev[message.author.id] = message
 
+        execute_item_search = False
+        if self.commands['prefix_to_item_search']:
+            if execute:
+                execute_item_search = True
+        else:
+            execute_item_search = True
+        if execute_item_search:
             select = self.select.get(message.author.id)
             if select is not None and content.isdigit():
                 executed = True
@@ -3982,17 +3995,7 @@ class Client(fortnitepy.Client):
             if await replies():
                 return
 
-        if not executed:
-            flag = False
-            if self.commands['prefix_to_item_search']:
-                if execute:
-                    flag = True
-            else:
-                flag = True
-
-            if not flag:
-                return
-
+        if not executed and execute_item_search:
             for item, prefix in self.bot.BACKEND_TO_ID_CONVERTER.items():
                 if args[0].lower().startswith(f'{prefix}_'.lower()):
                     if (message.user_type == 'owner'

@@ -155,7 +155,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Iniciar bot de Discord (enabled)  |  Determina si se inicia o no el bot de Discord  |
 |  Token del bot de Discord (token)  | Token del bot de Discord  |
 |  Owner (owner)  |  ID del usuario para ser dueño<br>Actualmente no afecta en nada, únicamente se utiliza para identificar<br>Si no sabes como conseguir el ID de usuario de discord revisa [aquí](https://support.discord.com/hc/en-us/articles/206346498)  |
-|  Canales de comandos (channels)  |  Nombres de canales a usar como canales de comando<br>Para más información revisa [aquí](#Command-channel)  |
+|  Canales de comandos (channels)  |  Nombres de canales a usar como canales de comando<br>Para más información revisa [aquí](#Canales-de-comando)  |
 |  Status (status)  |  Texto a mostrar en el estado<br>Puedes utilizar [variables](#Variables)  |
 |  Tipo de status (status_type)  |  Tipo de status a mostrar  |
 |  Carácteres máximos para el chat (chat_max)  |  Máximos carácteres permitidos en el chat  |
@@ -248,6 +248,10 @@ Al escribir, incluya el nombre de la variable en {} (Ejemplo: Sala de Battle Roy
 |  party_max_size  |  Tamaño máximo del grupo del cliente  |
 |  friends  |  Instancia de amigos del cliente<br>List\[fortnitepy.Friend\]  |
 |  friend_count  |  Número de amigos del cliente  |
+|  online_friends  |  Instancia de en línea amigos del cliente<br>List\[fortnitepy.Friend\]  |
+|  online_friend_count  |  Número de en línea amigos del cliente  |
+|  offline_friends  |  Instancia de desconectado amigos del cliente<br>List\[fortnitepy.Friend\]  |
+|  offline_friend_count  |  Número de desconectado amigos del cliente  |
 |  pending_friends  |  Instancia de solicitudes de amistad enviadas / recibidas<br>List\[Union\[fortnitepy.IncomingPendingFriend, fortnitepy.OutgoingPendingFriend\]\]  |
 |  pending_count  |  Número de solicitudes de amistad recibidas / enviadas  |
 |  incoming_pending_friends  |  Instancia de solicitudes de amistad recibidas<br>List\[fortnitepy.IncomingPendingFriend\]  |

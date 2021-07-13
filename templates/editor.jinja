@@ -84,12 +84,12 @@
                                         <input type="hidden" name="{{prefix + raw_key}}[{{num}}]">
                                         <div id="{{keys[-1]}}_{{num}}" num="{{num}}" class="openable" style="left: {{15 * len(keys)}}px;">
                                             <span>{{client.l(keys[-1][:-1], num + 1)}}</span>
-                                            <div class="content">
-                                                {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.ctx.bot, config_tag + '_tags'))}}
-                                            </div>
                                             <input class="remove_button" type="button" value="{{client.l('remove')}}" onclick="removeElement(this, `{{prefix + raw_key}}`)">
                                             <input class="copy_button" type="button" value="{{client.l('copy')}}" onclick="copy(this)">
                                             <input class="paste_button" type="button" value="{{client.l('paste')}}" onclick="paste(this, `{{prefix + raw_key}}`)">
+                                            <div class="content">
+                                                {{construct_part(config, prefix + raw_key + "[" + str(num) + "]", getattr(client.ctx.bot, config_tag + '_tags'))}}
+                                            </div>
                                         </div>
                                         <br>
                                     {% endfor %}

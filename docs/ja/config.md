@@ -245,6 +245,10 @@
 |  party_max_size  |  クライアントのパーティーの最大サイズ  |
 |  friends  |  クライアントのフレンドのインスタンス<br>List\[fortnitepy.Friend\]  |
 |  friend_count  |  クライアントのフレンド数  |
+|  online_friends  |  クライアントのオンラインのフレンドのインスタンス<br>List\[fortnitepy.Friend\]  |
+|  online_friend_count  |  クランとのオンラインのフレンドの数  |
+|  offline_friends  |  クライアントのオフラインのフレンドのインスタンス<br>List\[fortnitepy.Friend\]  |
+|  offline_friend_count  |  クランとのオフラインのフレンドの数  |
 |  pending_friends  |  クライアントの送信/受信したフレンドリクエストのインスタンス<br>List\[Union\[fortnitepy.IncomingPendingFriend, fortnitepy.OutgoingPendingFriend\]\]  |
 |  pending_count  |  クライアントの送信/受信したフレンドリクエスト数  |
 |  incoming_pending_friends  |  クライアントの受信したフレンドリクエストのインスタンス<br>List\[fortnitepy.IncomingPendingFriend\]  |

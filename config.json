@@ -45,6 +45,7 @@
                 "backpack_lock_for": null,
                 "pickaxe": "",
                 "pickaxe_style": null,
+                "do_point": true,
                 "ng_pickaxes": null,
                 "ng_pickaxe_for": [
                     "user",

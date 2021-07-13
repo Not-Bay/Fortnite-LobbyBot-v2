@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 from typing import TYPE_CHECKING, Any, List, Optional
 
 import jaconv
@@ -79,6 +80,9 @@ class Searcher:
     def get_item(self, id: str, default: Optional[Any] = None) -> Optional[dict]:
         return self.main_items.get(id, default)
 
+    def random_item(self, item: Optional[str] = None) -> dict:
+        return random.choice([i for i in self.main_items.values() if not item or i['type']['backendValue'] in item.split(',')])
+
     def search_item(self, mode: str, text: str,
                     item: Optional[str] = None) -> List[dict]:
         if self.case_insensitive:
@@ -157,9 +161,11 @@ class Searcher:
 
         return result
 
-
     def get_playlist(self, id: str, default: Optional[Any] = None) -> Optional[dict]:
         return self.main_playlists.get(id, default)
+
+    def random_playlist(self) -> dict:
+        return random.choice([i for i in self.main_items.values()])
 
     def search_playlist(self, mode: str, text: str) -> List[dict]:
         if self.case_insensitive:

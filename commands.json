@@ -522,14 +522,23 @@
         "outfit": [
             "outfit"
         ],
+        "random_outfit": [
+            "random_outfit"
+        ],
         "clear_outfit": [
             "clear_outfit"
         ],
         "backpack": [
             "backpack"
         ],
+        "random_backpack": [
+            "random_backpack"
+        ],
         "pet": [
             "pet"
+        ],
+        "random_pet": [
+            "random_pet"
         ],
         "clear_backpack": [
             "clear_backpack",
@@ -538,17 +547,29 @@
         "pickaxe": [
             "pickaxe"
         ],
+        "random_pickaxe": [
+            "random_pickaxe"
+        ],
         "clear_pickaxe": [
             "clear_pickaxe"
         ],
         "emote": [
             "emote"
         ],
+        "random_emote": [
+            "random_emote"
+        ],
         "emoji": [
             "emoji"
         ],
+        "random_emoji": [
+            "random_emoji"
+        ],
         "toy": [
             "toy"
+        ],
+        "random_toy": [
+            "random_toy"
         ],
         "clear_emote": [
             "clear_emote",
@@ -557,6 +578,9 @@
         ],
         "item": [
             "item"
+        ],
+        "random_item": [
+            "random_item"
         ],
         "playlist_id": [
             "playlist_id"

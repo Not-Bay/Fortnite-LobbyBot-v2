@@ -138,17 +138,25 @@
 |  toy_id  |  toy_id [ID]  |  IDでおもちゃを検索し、そのおもちゃに変更する  |
 |  id  |  id [ID]  |  IDでアイテムを検索し、そのアイテムに変更する  |
 |  outfit  |  outfit [名前]  |  コスチュームを検索し、そのコスチュームに変更する  |
+|  random_outfit |  random_outfit  |  ランダムなコスチュームに変更する  |
 |  clear_outfit  |  clear_outfit  |  コスチュームをクリアする  |
 |  backpack  |  backpack [名前]  |  バックパックを検索し、そのバックパックに変更する  |
+|  random_backpack |  random_backpack  |  ランダムなバックパックに変更する  |
 |  pet  |  pet [名前]  |  ペットを検索し、そのペットに変更する  |
+|  random_pet |  random_pet  |  ランダムなペットに変更する  |
 |  clear_backpack  |  clear_backpack  |  バックパックをクリアする  |
-|  pickaxe  |  pickaxe [名前]  |  収集ツールを検索し、その収集ツールに変更する  |
+|  pickaxe  |  pickaxe [名前]  |  収集ツールを検索し、その収集ツールに変更する  
+|  random_pickaxe |  random_pickaxe |  ランダムなコ収集ツールに変更する  ||
 |  clear_pickaxe  |  clear_pickaxe  |  収集ツールをクリアする  |
 |  emote  |  emote [名前]  |  エモートを検索し、そのエモートに変更する  |
+|  random_emote |  random_emote  |  ランダムなエモートに変更する  |
 |  emoji  |  emoji [名前]  |  エモートアイコンを検索し、そのエモートアイコンに変更する  |
+|  random_emoji |  random_emoji  |  ランダムなエモートアイコンに変更する  |
 |  toy  |  toy [名前]  |  おもちゃを検索し、そのおもちゃに変更する  |
+|  random_toy |  random_toy  |  ランダムなおもちゃに変更する  |
 |  clear_emote  |  clear_emote  |  エモートをクリアする  |
 |  item  |  item [名前]  |  アイテムを検索し、そのアイテムに検索する  |
+|  random_item |  random_item  |  ランダムなアイテムに変更する  |
 |  playlist_id  |  playlist_id [ID]  |  IDでプレイリストを検索し、そのプレイリストに変更する  |
 |  playlist  |  playlist [名前]  |  プレイリストを検索し、そのプレイリストに変更する  |
 |  set  |  set [名前]  |  セット名でアイテムを検索し、そのアイテムに変更する  |

@@ -491,6 +491,25 @@ async def cosmetic_search(item: Optional[str], mode: str, command: Command,
         )
 
 
+async def random_cosmetic(item: Optional[str], command: Command, client: 'Client',
+                          message: MyMessage) -> None:
+    attr = f'is_{client.bot.convert_backend_to_key(item)}_lock_for'
+    if not getattr(client, attr)(message.user_type):
+        cosmetic = client.bot.searcher.random_item(item)
+        await client.party.me.change_asset(cosmetic['type']['backendValue'], cosmetic['path'])
+        await message.reply(
+            client.l(
+                'set_to',
+                cosmetic['type']['displayValue'],
+                client.name_cosmetic(cosmetic)
+            )
+        )
+    else:
+        await message.reply(
+            client.l('cosmetic_locked')
+        )
+
+
 async def playlist_search(mode: str, command: Command,
                           client: 'Client', message: MyMessage) -> None:
     if len(message.args) < 2:
@@ -4051,6 +4070,13 @@ class DefaultCommands:
         await cosmetic_search('AthenaCharacter', 'name', command, client, message)
 
     @command(
+        name='random_outfit',
+        usage='{name}'
+    )
+    async def random_outfit(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaCharacter', command, client, message)
+
+    @command(
         name='clear_outfit',
         usage='{name}'
     )
@@ -4071,11 +4097,25 @@ class DefaultCommands:
         await cosmetic_search('AthenaBackpack', 'name', command, client, message)
 
     @command(
+        name='random_backpack',
+        usage='{name}'
+    )
+    async def random_backpack(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaBackpack', command, client, message)
+
+    @command(
         name='pet',
         usage='{name} [{client.l("name")}]'
     )
     async def pet(command: Command, client: 'Client', message: MyMessage) -> None:
         await cosmetic_search('AthenaPet,AthenaPetCarrier', 'name', command, client, message)
+
+    @command(
+        name='random_pet',
+        usage='{name}'
+    )
+    async def random_pet(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaPet,AthenaPerCarrier', command, client, message)
 
     @command(
         name='clear_backpack',
@@ -4098,6 +4138,13 @@ class DefaultCommands:
         await cosmetic_search('AthenaPickaxe', 'name', command, client, message)
 
     @command(
+        name='random_pickaxe',
+        usage='{name}'
+    )
+    async def random_pickaxe(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaPickaxe', command, client, message)
+
+    @command(
         name='clear_pickaxe',
         usage='{name}'
     )
@@ -4118,6 +4165,13 @@ class DefaultCommands:
         await cosmetic_search('AthenaDance', 'name', command, client, message)
 
     @command(
+        name='random_emote',
+        usage='{name}'
+    )
+    async def random_emote(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaDance', command, client, message)
+
+    @command(
         name='emoji',
         usage='{name} [{client.l("name")}]'
     )
@@ -4125,11 +4179,25 @@ class DefaultCommands:
         await cosmetic_search('AthenaEmoji', 'name', command, client, message)
 
     @command(
+        name='random_emoji',
+        usage='{name}'
+    )
+    async def random_emoji(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaEmoji', command, client, message)
+
+    @command(
         name='toy',
         usage='{name} [{client.l("name")}]'
     )
     async def toy(command: Command, client: 'Client', message: MyMessage) -> None:
         await cosmetic_search('AthenaToy', 'name', command, client, message)
+
+    @command(
+        name='random_toy',
+        usage='{name}'
+    )
+    async def random_toy(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic('AthenaToy', command, client, message)
 
     @command(
         name='clear_emote',
@@ -4150,6 +4218,13 @@ class DefaultCommands:
     )
     async def item(command: Command, client: 'Client', message: MyMessage) -> None:
         await cosmetic_search(None, 'name', command, client, message)
+
+    @command(
+        name='random_item',
+        usage='{name}'
+    )
+    async def random_item(command: Command, client: 'Client', message: MyMessage) -> None:
+        await random_cosmetic(None, command, client, message)
 
     @command(
         name='playlist_id',

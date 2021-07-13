@@ -1214,7 +1214,7 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
                 user_name=client.name(message.author),
                 add_p=[lambda x: f'{client.name(message.author)} | {x}', client.time]
             )
-            await client.process_command(message, None)
+            await client.process_command(message, client.bot.config['web']['prefix'])
             await ws.send(json.dumps({
                 'type': 'response',
                 'response': mes.result
@@ -1336,7 +1336,7 @@ class Web(sanic.Sanic):
             else:
                 if tags[1] in [str, list]:
                     if multiple_select_tag is None:
-                        value = [i.replace('\\n', '\n') for i in re.split(r'\r\n|\n', value)]
+                        value = [i.replace('\\\\', '\\') for i in re.split(r'\r\n|\n', value)]
                 elif tags[1] is int:
                     value = [int(i) for i in re.split(r'\r\n|\n', value)]
         elif tags[0] is str:

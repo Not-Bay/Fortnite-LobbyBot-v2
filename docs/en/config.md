@@ -248,6 +248,10 @@ When writing, enclose the name in {} and use it (Example: Battle Royale Lobby - 
 |  party_max_size  |  Max size of Client's party  |
 |  friends  |  Instance of Client's friend<br>List\[fortnitepy.Friend\]  |
 |  friend_count  |  Friend count of Client  |
+|  online_friends  |  Instance of Client's online friend<br>List\[fortnitepy.Friend\]  |
+|  online_friend_count  |  Online friend count of Client  |
+|  offline_friends  |  Instance of Client's offline friend<br>List\[fortnitepy.Friend\]  |
+|  offline_friend_count  |  Offline friend count of Client  |
 |  pending_friends  |  Instance of received / sent friend requests<br>List\[Union\[fortnitepy.IncomingPendingFriend, fortnitepy.OutgoingPendingFriend\]\]  |
 |  pending_count  |  Received / Sent friend request count  |
 |  incoming_pending_friends  |  Instance of received friend requests<br>List\[fortnitepy.IncomingPendingFriend\]  |
