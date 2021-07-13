@@ -40,6 +40,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Bloquear mochila para (backpack_lock_for)  |  Tipos de usuario para bloquear mochila  |
 |  Pico (pickaxe)  |  Nombre o ID del pico por defecto del bot  |
 |  Estilo del pico (pickaxe_style)  |  Nombre o ID del estilo del pico por defecto del bot  |
+|  Mostrado pico (do_point)  |  Hacer Sí se señala cuando cambia el pico  |
 |  Picos NG (ng_pickaxes)  |  Nomrbe o ID de picos NG<br>Actualmente no afecta en nada, únicamente se utiliza para identificar  |
 |  Picos NG para (ng_pickaxe_for)  |  Tipos de usuario para picos NG  |
 |  Operación de pico NG (ng_pickaxe_operation)  |  Operaciónes a ejecutar cuando se detecta un pico NG  |
