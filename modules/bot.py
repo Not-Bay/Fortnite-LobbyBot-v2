@@ -131,10 +131,11 @@ class Bot:
         'Color.'
     ]
 
-    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False) -> None:
+    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False, force_sid: Optional[bool] = False) -> None:
         self.mode = mode
         self.loop = loop
         self.dev = dev
+        self.force_sid = force_sid
 
         self.clients = []
         self.updater = Updater(self)
@@ -278,15 +279,15 @@ class Bot:
             "['discord']": [dict],
             "['discord']['enabled']": [bool, 'select_bool'],
             "['discord']['token']": [str],
-            "['discord']['owner']": [list, int, 'can_be_none'],
+            "['discord']['owner']": [list, str, 'can_be_none'],
             "['discord']['channels']": [list, str],
             "['discord']['status']": [str],
             "['discord']['status_type']": [str, 'select_status'],
             "['discord']['chat_max']": [int, 'can_be_none'],
             "['discord']['chat_max_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['discord']['command_enable_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
-            "['discord']['blacklist']": [list, int],
-            "['discord']['whitelist']": [list, int],
+            "['discord']['blacklist']": [list, str],
+            "['discord']['whitelist']": [list, str],
             "['discord']['prefix']": [list, str, 'can_be_none'],
             "['discord']['exec']": [dict],
             "['discord']['exec']['ready']": [list, str, 'can_be_none', 'accept_empty'],
@@ -319,7 +320,7 @@ class Bot:
         }
         self.client_config_tags = {
             "['fortnite']": [dict],
-            "['fortnite']['email']": [str, 'lambda x: x is not None and self.email_pattern.match(x) is not None'],
+            "['fortnite']['email']": [str, 'lambda x: x and self.email_pattern.match(x) is not None'],
             "['fortnite']['nickname']": [str, 'can_be_none'],
             "['fortnite']['owner']": [list, str, 'can_be_none'],
             "['fortnite']['outfit']": [str, 'can_be_none'],
@@ -352,6 +353,7 @@ class Bot:
             "['fortnite']['backpack_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['pickaxe']": [str, 'can_be_none'],
             "['fortnite']['pickaxe_style']": [list, str, 'can_be_none'],
+            "['fortnite']['do_point']": [bool, 'can_be_none'],
             "['fortnite']['ng_pickaxes']": [list, str, 'can_be_none'],
             "['fortnite']['ng_pickaxe_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_pickaxe_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
@@ -388,7 +390,7 @@ class Bot:
             "['fortnite']['party']['playlist']": [str],
             "['fortnite']['party']['disable_voice_chat']": [bool, 'select_bool'],
             "['fortnite']['avatar_id']": [str, 'can_be_none'],
-            "['fortnite']['avatar_color']": [str, 'can_be_multiple', 'can_be_none', 'lambda x: x != "" and (len(x.split(",")) >= 3) if "," in x else (getattr(fortnitepy.KairosBackgroundColorPreset, x.upper(), None) is not None)'],  # noqa
+            "['fortnite']['avatar_color']": [str, 'can_be_multiple', 'lambda x: x and (len(x.split(",")) >= 3) if "," in x else (getattr(fortnitepy.KairosBackgroundColorPreset, x.upper(), None) is not None)'],  # noqa
             "['fortnite']['banner_id']": [str],
             "['fortnite']['banner_color']": [str],
             "['fortnite']['level']": [int],
@@ -447,15 +449,15 @@ class Bot:
             "['discord']": [dict],
             "['discord']['enabled']": [bool, 'select_bool'],
             "['discord']['token']": [str],
-            "['discord']['owner']": [list, int, 'can_be_none'],
+            "['discord']['owner']": [list, str, 'can_be_none'],
             "['discord']['channels']": [list, str],
             "['discord']['status']": [str],
             "['discord']['status_type']": [str, 'select_status'],
             "['discord']['chat_max']": [int, 'can_be_none'],
             "['discord']['chat_max_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['discord']['command_enable_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
-            "['discord']['blacklist']": [list, int],
-            "['discord']['whitelist']": [list, int],
+            "['discord']['blacklist']": [list, str],
+            "['discord']['whitelist']": [list, str],
             "['discord']['prefix']": [list, str, 'can_be_none'],
             "['discord']['exec']": [dict],
             "['discord']['exec']['ready']": [list, str, 'can_be_none'],
@@ -2444,7 +2446,7 @@ class Bot:
         if self.mode == 'glitch':
             url = f'https://{os.getenv("PROJECT_DOMAIN")}.glitch.me'
         elif self.mode == 'repl':
-            url = f'https://{os.getenv("REPL_SLUG")}--{os.getenv("REPL_OWNER")}.repl.co'
+            url = f'https://{os.getenv("REPL_SLUG")}.{os.getenv("REPL_OWNER")}.repl.co'
         await self.http.post('https://PublicPinger.gomashio1596.repl.co/api/add', json={'url': url})
         while True:
             await asyncio.sleep(300)
@@ -2603,9 +2605,9 @@ class Bot:
                 device_auths = {}
             for num, config in enumerate(self.config['clients']):
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
-                if not device_auth_details:
+                if not self.force_sid and not device_auth_details:
                     try:
-                        device_auth_details = await self.auth.authenticate(config['fortnite']['email'])                        
+                        device_auth_details = await self.auth.authenticate(config['fortnite']['email'])
                     except Exception as e:
                         self.debug_print_exception(e)
                     else:

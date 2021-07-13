@@ -138,17 +138,25 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  toy_id  |  toy_id [ID]  |  Search toy with ID and change emote  |
 |  id  |  id [ID]  |  Search item with ID and change ID  |
 |  outfit  |  outfit [Name]  |  Search outfit and change outfit  |
+|  random_outfit  |  random_outfit  |  Change to random outfit  |
 |  clear_outfit  |  clear_outfit  |  Clear outfit  |
 |  backpack  |  backpack [Name]  |  Search backpack and change backpack  |
+|  random_backpack  |  random_backpack  |  Change to random backpack  |
 |  pet  |  pet [Name]  |  Search pet and change backpack  |
+|  random_pet  |  random_pet  |  Change to random pet  |
 |  clear_backpack  |  clear_backpack  |  Clear backpack  |
 |  pickaxe  |  pickaxe [Name]  |  Search pickaxe and change pickaxe  |
+|  random_pickaxe  |  random_pickaxe  |  Change to random pickaxe  |
 |  clear_pickaxe  |  clear_pickaxe  |  Clear pickaxe  |
 |  emote  |  emote [Name]  |  Search emote and change emote  |
+|  random_emote  |  random_emote  |  Change to random emote  |
 |  emoji  |  emoji [Name]  |  Search emote icon and change emote  |
+|  random_emoji  |  random_emoji  |  Change to random emoji  |
 |  toy  |  toy [Name]  |  Search toy and change emote  |
+|  random_toy  |  random_toy  |  Change to random toy  |
 |  clear_emote  |  clear_emote  |  Clear emote  |
 |  item  |  item [Name]  |  Search item and change item  |
+|  random_item  |  random_item  |  Change to random item  |
 |  playlist_id  |  playlist_id [ID]  |  Search playlist with ID and change playlist  |
 |  playlist  |  playlist [Name]  |  Search playlist and change playlist  |
 |  set  |  set [Name]  |  Search item with set name and change item  |

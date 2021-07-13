@@ -459,7 +459,7 @@ socket.addEventListener('message', function(ev) {
         const whisper_content = friend_message.firstElementChild.nextElementSibling;
         if (document.getElementById(`whisper_to_${to}`)) {
             const whisper_to = document.getElementById(`whisper_to_${to}`);
-            const whisper_to_content = whisper_to.firstElementChild.nextElementSibling;
+            const whisper_to_content = whisper_to.lastElementChild;
             const container = document.createElement('pre');
             const span1 = document.createElement('span');
             span1.classList.add('whisper_date');
@@ -481,6 +481,16 @@ socket.addEventListener('message', function(ev) {
             span.textContent = display_name;
             whisper_to.appendChild(span);
             
+            const delete_button = document.createElement('input');
+            delete_button.classList.add('gray_button');
+            delete_button.style = 'margin-left: 5px;';
+            delete_button.type = 'button';
+            delete_button.value = texts.remove
+            delete_button.onclick = function () {
+                whisper_content.removeChild(whisper_to);
+            }
+            whisper_to.appendChild(delete_button);
+
             const whisper_to_content = document.createElement('div');
             whisper_to_content.classList.add('whisper');
             whisper_to_content.classList.add('content');

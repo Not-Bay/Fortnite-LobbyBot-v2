@@ -138,17 +138,25 @@ Valores en [] son requeridos, valores en () son opcionales
 |  toy_id  |  toy_id [ID]  |  Busca un juguete por ID y lo coloca  |
 |  id  |  id [ID]  |  Busca un item por ID y lo coloca  |
 |  outfit  |  outfit [Nombre]  |  Busca una skin y la coloca  |
+|  random_outfit  |  random_outfit  |  Cambiar a skin aleatorio  |
 |  clear_outfit  |  clear_outfit  |  Remueve skin  |
 |  backpack  |  backpack [Nombre]  |  Busca una mochila y la coloca  |
+|  random_backpack  |  random_backpack  |  Cambiar a mochila aleatorio  |
 |  pet  |  pet [Nombre]  |  Busca una mascota y la coloca  |
+|  random_pet  |  random_pet  |  Cambiar a mascota aleatorio  |
 |  clear_backpack  |  clear_backpack  |  Remueve la mochila  |
 |  pickaxe  |  pickaxe [Nombre]  |  Busca un pico y lo coloca  |
+|  random_pickaxe  |  random_pickaxe  |  Cambiar a pico aleatorio  |
 |  clear_pickaxe  |  clear_pickaxe  |  Remueve el pico  |
 |  emote  |  emote [Nombre]  |  Busca un emote y lo coloca  |
+|  random_emote  |  random_emote  |  Cambiar a emote aleatorio  |
 |  emoji  |  emoji [Nombre]  |  Busca un emoji y lo coloca  |
+|  random_emoji  |  random_emoji  |  Cambiar a emoji aleatorio  |
 |  toy  |  toy [Nombre]  |  Busca un juguete y lo coloca  |
+|  random_toy  |  random_toy  |  Cambiar a juguete aleatorio  |
 |  clear_emote  |  clear_emote  |  Remueve el emote  |
 |  item  |  item [Nombre]  |  Busca un item y cambia al item  |
+|  random_item  |  random_item  |  Cambiar a item aleatorio  |
 |  playlist_id  |  playlist_id [ID]  |  Busca una playlist por ID y la coloca  |
 |  playlist  |  playlist [Nombre]  |  Busca una playlist y la coloca  |
 |  set  |  set [Nombre]  |  Busca un item por conjunto y lo coloca  |
