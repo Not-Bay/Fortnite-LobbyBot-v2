@@ -40,6 +40,7 @@ Usually please use web config editor to change configs
 |  Backpack lock for (backpack_lock_for)  |  User types which apply backpack lock  |
 |  Pickaxe (pickaxe)  |  Name or ID of pickaxe which will use as bot's default pickaxe  |
 |  Pickaxe's style (pickaxe_style)  |  Name or ID of pickaxe style which will use as bot's default pickaxe style  |
+|  Show pickaxe (do_point)  |  Do Point It Out when pickaxe changes  |
 |  NG pickaxes (ng_pickaxes)  |  Name or ID of pickaxe which will set as NG<br>Actually this itself won't affect to anything, just used for identification  |
 |  NG pickaxe for (ng_pickaxe_for)  |  User types which apply NG pickaxe  |
 |  NG pickaxe operation (ng_pickaxe_operation)  |  Operations which run when NG pickaxe has triggered  |

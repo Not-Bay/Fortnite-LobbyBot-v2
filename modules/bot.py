@@ -353,7 +353,7 @@ class Bot:
             "['fortnite']['backpack_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['pickaxe']": [str, 'can_be_none'],
             "['fortnite']['pickaxe_style']": [list, str, 'can_be_none'],
-            "['fortnite']['do_point']": [bool, 'can_be_none'],
+            "['fortnite']['do_point']": [bool, 'select_bool'],
             "['fortnite']['ng_pickaxes']": [list, str, 'can_be_none'],
             "['fortnite']['ng_pickaxe_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['ng_pickaxe_operation']": [list, str, 'multiple_select_user_operation', 'can_be_none'],
