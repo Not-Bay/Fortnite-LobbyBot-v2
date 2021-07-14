@@ -232,7 +232,7 @@ function fixId(items, id_before, id_after) {
             Array.from(item.children).forEach(child => {
                 if (child.tagName == 'DIV') {
                     // child = openable
-                    const item_items = Array.from(child.children[1].children).filter(
+                    const item_items = Array.from(child.lastElementChild.children).filter(
                         child => child.tagName == 'DIV'
                     );
                     fixId(item_items, id_before, id_after);
@@ -393,14 +393,14 @@ function addElement(element, prefix) {
             kwargs: {}
         }));
         request.onload = function () {
-            newElement.children[0].textContent = request.responseText;
+            newElement.firstElementChild.textContent = request.responseText;
         }
 
-        newElement.children[0].onclick = function () {
+        newElement.firstElementChild.onclick = function () {
             newElement.classList.toggle('open');
         }
 
-        const items = Array.from(newElement.children[1].children).filter(
+        const items = Array.from(newElement.lastElementChild.children).filter(
             child => child.tagName == 'DIV'
         );
         items.forEach(item => {
@@ -463,14 +463,14 @@ function paste(element, prefix) {
             kwargs: {}
         }));
         request.onload = function () {
-            child.children[0].textContent = request.responseText;
+            child.firstElementChild.textContent = request.responseText;
         }
 
         child.firstElementChild.onclick = function () {
             child.classList.toggle('open');
         }
 
-        const items = Array.from(child.children[1].children).filter(
+        const items = Array.from(child.lastElementChild.children).filter(
             child => child.tagName == 'DIV'
         );
         fixId(items, id_before, id_after);
