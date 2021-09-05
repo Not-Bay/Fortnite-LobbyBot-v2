@@ -78,8 +78,10 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
                            "Cosmetics/Dances/HolidayCracker/{0}.{0}'"),
         'PapayaComms': ("AthenaDanceItemDefinition'/Game/Athena/Items/"
                         "Cosmetics/Dances/PapayaComms/{0}.{0}'"),
-        'Chugga': ("AthenaDanceItemDefinitionNNNNN'/Game/Athena/Items/"
-                   "Cosmetics/Dances/Chugga/{0}.{0}'")
+        'Chugga': ("AthenaDanceItemDefinition'/Game/Athena/Items/"
+                   "Cosmetics/Dances/Chugga/{0}.{0}'"),
+        'PatPat': ("AthenaDanceItemDefinition'/Game/Athena/Items/"
+                   "Cosmetics/Dances/PatPat/{0}.{0}'")
     }
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -101,12 +103,14 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
         if asset is not None:
             if asset != '' and '.' not in asset:
                 if item == 'AthenaDance':
-                    if 'holidaycracker' in asset.lower():
+                    if asset.lower().startswith('eid_holidaycracker'):
                         item = 'HolidayCracker'
                     elif asset.lower().endswith('papayacomms'):
                         item = 'PapayaComms'
-                    elif 'eid_chugga' in asset.lower():
+                    elif  asset.lower().startswith('eid_chugga'):
                         item = 'Chugga'
+                    elif  asset.lower().startswith('eid_patpat'):
+                        item = 'PatPat'
                 asset = cls.ASSET_PATH_CONVERTER[item].format(asset)
         return asset
 

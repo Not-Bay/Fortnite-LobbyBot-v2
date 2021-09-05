@@ -487,7 +487,7 @@ async def config_editor_add_client(request: Request) -> HTTPResponse:
     for raw_key, tags in app.ctx.bot.client_config_tags.items():
         keys = raw_key[2:-2].split("']['")
         app.ctx.bot.set_dict_key(data, keys, tags[0]())
-    if app.ctx.bot.get_dict_key_default(config, ['clients']) is None:
+    if app.ctx.bot.get_dict_key_default(config, ['clients'], None) is None:
         app.ctx.bot.set_dict_key(config, ['clients'], [])
     app.ctx.bot.get_dict_key(config, ['clients']).append(data)
     app.ctx.bot.save_json('config', config)
