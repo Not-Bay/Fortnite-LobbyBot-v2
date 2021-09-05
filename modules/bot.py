@@ -131,11 +131,11 @@ class Bot:
         'Color.'
     ]
 
-    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False, force_sid: Optional[bool] = False) -> None:
+    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False, use_device_code: Optional[bool] = False) -> None:
         self.mode = mode
         self.loop = loop
         self.dev = dev
-        self.force_sid = force_sid
+        self.use_device_code = use_device_code
 
         self.clients = []
         self.updater = Updater(self)
@@ -2605,7 +2605,7 @@ class Bot:
                 device_auths = {}
             for num, config in enumerate(self.config['clients']):
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
-                if not self.force_sid and not device_auth_details:
+                if self.use_device_code and not device_auth_details:
                     try:
                         device_auth_details = await self.auth.authenticate(config['fortnite']['email'])
                     except Exception as e:

@@ -23,6 +23,7 @@ class SessionIDAuth(fortnitepy.ExchangeCodeAuth):
 
     async def ios_authenticate(self) -> dict:
         self.resolved_code = await self.resolve(self.code)
+        self.client.http._jar.update_cookies({'EPIC_COUNTRY': 'US'})
 
         try:
             await self.set_sid(self.resolved_code)
