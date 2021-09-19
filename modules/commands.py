@@ -484,11 +484,18 @@ async def cosmetic_search(item: Optional[str], mode: str, command: Command,
                 for cosmetic in cosmetics
             ]
         }
-        await message.reply(
-            ('\n'.join([f'{num}: {client.name_cosmetic(cosmetic)}'
-                        for num, cosmetic in enumerate(cosmetics, 1)])
-                + '\n' + client.l('enter_number_to_select', client.l('item')))
-        )
+        if item is None:
+            await message.reply(
+                ('\n'.join([f'{num}: {client.name_cosmetic(cosmetic)} ({cosmetic["type"]["displayValue"]})'
+                            for num, cosmetic in enumerate(cosmetics, 1)])
+                    + '\n' + client.l('enter_number_to_select', client.l('item')))
+            )
+        else:
+            await message.reply(
+                ('\n'.join([f'{num}: {client.name_cosmetic(cosmetic)}'
+                            for num, cosmetic in enumerate(cosmetics, 1)])
+                    + '\n' + client.l('enter_number_to_select', client.l('item')))
+            )
 
 
 async def random_cosmetic(item: Optional[str], command: Command, client: 'Client',
