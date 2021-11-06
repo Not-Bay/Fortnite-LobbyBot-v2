@@ -83,7 +83,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 | --- | --- |
 |  ID de avatar (avatar_id)  |  ID de avatar<br>Usa la variable `{bot}` para cambiar el avatar al de la skin del bot (Existen skins no soportadas por esto)  |
 |  Color del avatar (avatar_color)  |  Color del avatar<br>Para más información revisa [aquí](#Color)  |
-|  ID de banner (banner_id)  |  ID del banner><br>Puedes ver una lista de ellos [aquí](https://fnitems.pdfweb.tk/banner)  |
+|  ID de banner (banner_id)  |  ID del banner><br>Puedes ver una lista de ellos [aquí](https://fnitems.hyperserver.xyz/banners)  |
 |  Color del banner (banner_color)  |  Color del banner  |
 |  Nivel (level)  |  Nivel  |
 |  Plataforma (platform)  |  Plataforma  |
