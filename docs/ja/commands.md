@@ -102,7 +102,7 @@
 |  party_message  |  party_message [メッセージ]  |  パーティーにメッセージを送信する  |
 |  avatar  |  avatar [ID] (色)  |  アバターを設定する<br>色の設定方法は[こちら](config.md#色)  |
 |  status  |  status [メッセージ]  |  ステータスを設定する  |
-|  banner  |  banner [バナーID] [バナーの色]  |  バナーを設定する<br>バナーIDは[こちら](https://fnitems.pdfweb.tk/banner)  |
+|  banner  |  banner [バナーID] [バナーの色]  |  バナーを設定する<br>バナーIDは[こちら](https://fnitems.hyperserver.xyz/banners)  |
 |  level  |  level [数値]  |  レベルを設定する  |
 |  privacy  |  privacy [public, friends_allow_friends_of_friends, friends, private_allow_friends_of_friends, private]  |  パーティーのプライバシーを設定する  |
 |  voice_chat  |  voice_chat [true/false]  |  ボイスチャットを有効/無効化する。このコマンドを実行する前にいたメンバーには効果がない  |
