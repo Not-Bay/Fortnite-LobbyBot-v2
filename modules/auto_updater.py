@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.4.4'
+__version__ = '1.5.0'
 
 
 class Updater:
@@ -48,18 +48,18 @@ class Updater:
             'lang/ja.json': [],
 
             'modules/__init__.py': ['backup'],
+            'modules/auth.py': ['backup'],
             'modules/auto_updater.py': ['backup'],
             'modules/bot.py': ['backup'],
             'modules/client.py': ['backup'],
             'modules/colors.py': ['backup'],
             'modules/commands.py': ['backup'],
             'modules/cosmetics.py': ['backup'],
-            'modules/device_code.py': ['backup'],
             'modules/discord_client.py': ['backup'],
             'modules/encoder.py': ['backup'],
             'modules/formatter.py': ['backup'],
+            'modules/http.py': ['backup'],
             'modules/localize.py': ['backup'],
-            'modules/session_id.py': ['backup'],
             'modules/web.py': ['backup'],
             'modules/webhook.py': ['backup'],
 

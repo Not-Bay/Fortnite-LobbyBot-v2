@@ -4,7 +4,6 @@ import datetime
 import importlib
 import inspect
 import io
-import json
 import random
 import re
 import sys
@@ -20,7 +19,6 @@ from .commands import (Command, DummyMessage, DummyUser, FindUserMatchMethod,
 from .cosmetics import Searcher
 from .discord_client import DiscordClient
 from .localize import LocalizedText
-from .session_id import SessionIDAuth
 from .web import auth
 from .webhook import WebhookClient
 
@@ -818,7 +816,7 @@ class Client(fortnitepy.Client):
         self._is_booting = True
         try:
             tasks = [super().start(*args, **kwargs)]
-            if self.discord_client is not None:
+            if self.discord_client is not None and self.discord_client.config['discord']['token']:
                 tasks.append(self.discord_client.start(self.discord_client.config['discord']['token']))
             await asyncio.gather(*tasks)
         finally:
@@ -2655,7 +2653,7 @@ class Client(fortnitepy.Client):
 
     # Events
     async def event_ready(self) -> None:
-        if isinstance(self.auth, SessionIDAuth):
+        if self.bot.use_device_auth and not isinstance(self.auth, (fortnitepy.AdvancedAuth, fortnitepy.DeviceAuth)):
             self.loop.create_task(self.generate_device_auth())
 
         self._is_booting = False
@@ -2714,6 +2712,9 @@ class Client(fortnitepy.Client):
             color=green,
             add_p=self.time
         )
+
+    async def event_refresh_token_generate(self, details: dict) -> None:
+        self.bot.store_refresh_token(self.email, details['refresh_token'])
 
     async def event_party_join_request(self, request: fortnitepy.PartyJoinRequest) -> None:
         if not self.is_ready():

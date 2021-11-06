@@ -17,8 +17,12 @@ from sanic import exceptions as exc
 from sanic import response as res
 from sanic.request import Request
 from sanic.response import HTTPResponse
-from sanic.websocket import WebSocketConnection
 from websockets.exceptions import ConnectionClosedOK
+
+if sanic.__version__ >= '21.9.0':
+    from sanic.server.websockets.connection import WebSocketConnection
+else:
+    from sanic.websocket import WebSocketConnection
 
 from .colors import yellow
 from .commands import DummyMessage, MyMessage
@@ -674,7 +678,12 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
                 {
                     'name': client.name(friend, force_info=True),
                     'id': friend.id,
-                    'is_online': friend.is_online()
+                    'is_online': friend.is_online(),
+                    'is_joinable': (
+                        False
+                        if friend.last_presence is None or friend.last_presence.party is None else
+                        not friend.last_presence.party.private
+                    )
                 } for friend in client.friends
             ],
             'blocked_users': [
@@ -691,6 +700,7 @@ def client_variables(client: 'Client', full: Optional[bool] = False) -> dict:
             'party_members': [
                 {
                     'name': client.name(member, force_info=True),
+                    'display_name': member.display_name,
                     'id': member.id,
                     'position': member.position,
                     'is_leader': member.leader,
@@ -1203,6 +1213,11 @@ async def clients_viewer_client_ws(request: Request, ws: WebSocketConnection, nu
         elif data['event'] == 'decline_join_request':
             if data['user_id'] in client.join_requests:
                 client.join_requests.pop(data['user_id'])
+        elif data['event'] == 'join_friend':
+            try:
+                await client.get_friend(data['user_id']).join_party()
+            except Exception as e:
+                client.bot.debug_print_exception(e)
         elif data['event'] == 'command':
             mes = DummyMessage(
                 client,
