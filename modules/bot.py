@@ -2632,6 +2632,19 @@ class Bot:
                         self.remove('refresh_tokens')
                     except Exception as e:
                         self.debug_print_exception(e)
+
+            def session_id(email):
+                async def _session_id():
+                    while True:
+                        text = self.l('session_id', email).get_text()
+                        self.web_text = text
+                        data = await ainput(f'{text}\n')
+                        match = re.search(r'[a-z0-9]{32}', data)
+                        if match is not None:
+                            return match.group()
+
+                return _session_id
+
             for num, config in enumerate(self.config['clients']):
                 refresh_token = refresh_tokens.get(config['fortnite']['email'].lower(), None)
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
@@ -2697,15 +2710,6 @@ class Bot:
                     getattr(fortnitepy.KairosBackgroundColorPreset, config['fortnite']['avatar_color'].upper())
                 )
 
-                async def session_id():
-                    while True:
-                        text = self.l('session_id', config['fortnite']['email']).get_text()
-                        self.web_text = text
-                        data = await ainput(f'{text}\n')
-                        match = re.search(r'[a-z0-9]{32}', data)
-                        if match is not None:
-                            return match.group()
-
                 auth = None
                 if self.use_device_auth and device_auth_details:
                     auth = fortnitepy.DeviceAuth(**device_auth_details)
@@ -2713,7 +2717,7 @@ class Bot:
                     if self.use_device_code:
                         auth = MyAdvancedAuth(refresh_token)
                     else:
-                        auth = MyAdvancedAuth(refresh_token, session_id)
+                        auth = MyAdvancedAuth(refresh_token, session_id(config['fortnite']['email']))
 
                 client = Client(
                     self,
