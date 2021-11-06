@@ -102,7 +102,7 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  party_message  |  party_message [Message]  |  Send message to party  |
 |  avatar  |  avatar [ID] (Color)  |  Set avatar<br>Information of color setting is [here](config.md#Colors)  |
 |  status  |  status [Message]  |  Set status  |
-|  banner  |  banner [Banner ID] [Banner color]  |  Set banner<br>Banner ids is [here](https://fnitems.pdfweb.tk/banner)  |
+|  banner  |  banner [Banner ID] [Banner color]  |  Set banner<br>Banner ids is [here](https://fnitems.hyperserver.xyz/banners)  |
 |  level  |  level [Number]  |  Set level  |
 |  privacy  |  privacy [public, friends_allow_friends_of_friends, friends, private_allow_friends_of_friends, private]  |  Set party's privacy  |
 |  voice_chat  |  voice_chat [true/false]  |  Enable/Disable voice chat. This won't affect to members which joined before run this command  |
