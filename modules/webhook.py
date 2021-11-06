@@ -3,7 +3,7 @@ import asyncio
 import re
 from typing import Union, TYPE_CHECKING
 
-from .device_code import HTTPClient
+from .http import HTTPClient
 
 if TYPE_CHECKING:
     from .bot import Bot

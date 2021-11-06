@@ -762,7 +762,7 @@ class DefaultCommands:
         var = globals()
         var.update(locals())
         var.update(client.variables)
-        result, out, err = await client.bot.aexec(' '.join(message.args[1:]), var)
+        result, out, err = await client.bot.aexec(' '.join(message.content.split(' ')[1:]), var)
         if out:
             client.send(out)
         if err:
@@ -3071,6 +3071,36 @@ class DefaultCommands:
         )
 
     @command(
+        name='battlepass',
+        usage='{name} [{client.l("number")}]'
+    )    
+    async def battlepass(command: Command, client: 'Client', message: MyMessage) -> None:
+        if len(message.args) < 2:
+            await client.show_help(command, message)
+            return
+
+        try:
+            tier = int(message.args[1])
+        except ValueError as e:
+            client.debug_print_exception(e)
+            await message.reply(
+                client.l('please_enter_valid_value')
+            )
+            return
+        await client.party.me.edit_and_keep(partial(
+            client.party.me.set_battlepass_info,
+            has_purchased=True,
+            level=tier
+        ))
+        await message.reply(
+            client.l(
+                'set_to',
+                client.l('tier'),
+                tier
+            )
+        )
+
+    @command(
         name='privacy',
         usage='{name} [{client.l("privacy")}]'
     )
@@ -4246,6 +4276,40 @@ class DefaultCommands:
     )
     async def playlist(command: Command, client: 'Client', message: MyMessage) -> None:
         await playlist_search('name', command, client, message)
+
+    @command(
+        name='island_code',
+        usage='{name} [{client.l("island_code")}]'
+    )
+    async def island_code(command: Command, client: 'Client', message: MyMessage) -> None:
+        if not client.party.leader:
+            await message.reply(
+                client.l('not_a_party_leader')
+            )
+            return
+        meta = client.party.meta
+        data = (meta.get_prop('Default:PlaylistData_j'))['PlaylistData']
+        data['playlistName'] = 'Playlist_PlaygroundV2'
+        data['mnemonic'] = message.args[1]
+
+        final = {'PlaylistData': data}
+        key = 'Default:PlaylistData_j'
+        prop = {key: meta.set_prop(key, final)}
+
+        try:
+            await client.party.patch(updated=prop)
+        except fortnitepy.Forbidden:
+            await message.reply(
+                client.l('not_a_party_leader')
+            )
+            return
+        await message.reply(
+            client.l(
+                'set_to',
+                client.bot.l('playlist'),
+                message.args[1]
+            )
+        )
 
     @command(
         name='set',

@@ -24,17 +24,17 @@ from aiofiles import open as aopen
 from aiofiles.os import remove as aremove
 from tzlocal import get_localzone
 
+from .auth import MyAdvancedAuth
 from .auto_updater import Updater
 from .client import Client, MyClientParty, MyClientPartyMember
 from .colors import cyan, green, yellow
 from .commands import Command, DefaultCommands, MyMessage, PartyPrivacy
 from .cosmetics import CaseInsensitiveDict, Searcher
-from .device_code import Auth, HTTPClient
 from .discord_client import DiscordClient
 from .encoder import MyJSONEncoder
 from .formatter import EvalFormatter
+from .http import HTTPClient
 from .localize import LocalizedText
-from .session_id import SessionIDAuth
 from .web import Web, WebMessage, WebUser
 from .webhook import WebhookClient
 
@@ -131,11 +131,15 @@ class Bot:
         'Color.'
     ]
 
-    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop, dev: Optional[bool] = False, use_device_code: Optional[bool] = False) -> None:
+    def __init__(self, mode: str, loop: asyncio.AbstractEventLoop,
+                 dev: Optional[bool] = False,
+                 use_device_code: Optional[bool] = False,
+                 use_device_auth: Optional[bool] = False) -> None:
         self.mode = mode
         self.loop = loop
         self.dev = dev
         self.use_device_code = use_device_code
+        self.use_device_auth = use_device_auth
 
         self.clients = []
         self.updater = Updater(self)
@@ -394,6 +398,7 @@ class Bot:
             "['fortnite']['banner_id']": [str],
             "['fortnite']['banner_color']": [str],
             "['fortnite']['level']": [int],
+            "['fortnite']['tier']": [int],
             "['fortnite']['platform']": [str, 'select_platform'],
             "['fortnite']['ng_platforms']": [list, str, 'multiple_select_platform', 'can_be_none'],
             "['fortnite']['ng_platform_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
@@ -573,9 +578,7 @@ class Bot:
             r"tag='(?P<tag>.+)'>"
         )
 
-        self.session = aiohttp.ClientSession(headers={'User-Agent': 'Fortnite/++Fortnite+Release-16.40-CL-16227914 Android/9'})
-        self.http = HTTPClient(self.session)
-        self.auth = Auth(self, self.http)
+        self.http = HTTPClient(aiohttp.ClientSession())
         self.webhook = None
         self.discord_client = None
 
@@ -597,7 +600,7 @@ class Bot:
         for client in self.clients:
             client.add_command(command)
 
-    def is_error(self) -> None:
+    def is_error(self) -> bool:
         return (
             self.error_config
             or self.error_commands
@@ -605,7 +608,7 @@ class Bot:
             or self.error_replies
         )
 
-    def get_device_auth_details(self) -> None:
+    def get_device_auth_details(self) -> dict:
         if self.isfile('device_auths'):
             return self.load_json('device_auths')
         else:
@@ -616,7 +619,18 @@ class Bot:
         existing[email.lower()] = details
         self.save_json('device_auths', existing)
 
-    def get_cosmetic_presets(self) -> None:
+    def get_refresh_tokens(self) -> dict:
+        if self.isfile('refresh_tokens'):
+            return self.load_json('refresh_tokens')
+        else:
+            return {}
+
+    def store_refresh_token(self, email: str, refresh_token: str) -> None:
+        existing = self.get_refresh_tokens()
+        existing[email.lower()] = refresh_token
+        self.save_json('refresh_tokens', existing)
+
+    def get_cosmetic_presets(self) -> dict:
         if self.isfile('cosmetic_presets'):
             return self.load_json('cosmetic_presets')
         else:
@@ -627,7 +641,7 @@ class Bot:
         existing[account_id] = details
         self.save_json('cosmetic_presets', existing)
 
-    def get_command_stats(self) -> None:
+    def get_command_stats(self) -> dict:
         if self.isfile('command_stats'):
             return self.load_json('command_stats')
         else:
@@ -2431,6 +2445,7 @@ class Bot:
         await fortnitepy.close_multiple(
             [client for client in self.clients if client.is_ready() or client.is_booting()]
         )
+        await self.http.close()
 
     async def rebooter(self) -> None:
         await asyncio.sleep(self.config['restart_in'])
@@ -2591,27 +2606,36 @@ class Bot:
         if not self.is_error() and self.config['status'] == 1:
             self.fix_config_all()
             self.save_json('config', self.config)
-            try:
-                device_auths = self.get_device_auth_details()
-            except (json.decoder.JSONDecodeError, UnicodeDecodeError) as e:
-                self.debug_print_exception(e)
-                if self.isfile('device_auths_old'):
-                    self.remove('device_auths_old')
-                self.rename('device_auths', 'device_auths_old')
+            refresh_tokens = {}
+            device_auths = {}
+            if self.use_device_auth:
                 try:
-                    self.remove('device_auths')
-                except Exception as e:
+                    device_auths = self.get_device_auth_details()
+                except (json.decoder.JSONDecodeError, UnicodeDecodeError) as e:
                     self.debug_print_exception(e)
-                device_auths = {}
-            for num, config in enumerate(self.config['clients']):
-                device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
-                if self.use_device_code and not device_auth_details:
+                    if self.isfile('device_auths_old'):
+                        self.remove('device_auths_old')
+                    self.rename('device_auths', 'device_auths_old')
                     try:
-                        device_auth_details = await self.auth.authenticate(config['fortnite']['email'])
+                        self.remove('device_auths')
                     except Exception as e:
                         self.debug_print_exception(e)
-                    else:
-                        self.store_device_auth_details(config['fortnite']['email'], device_auth_details)
+            else:
+                try:
+                    refresh_tokens = self.get_refresh_tokens()
+                except (json.decoder.JSONDecodeError, UnicodeDecodeError) as e:
+                    self.debug_print_exception(e)
+                    if self.isfile('refresh_tokens_old'):
+                        self.remove('refresh_tokens_old')
+                    self.rename('refresh_tokens', 'refresh_tokens_old')
+                    try:
+                        self.remove('refresh_tokens')
+                    except Exception as e:
+                        self.debug_print_exception(e)
+            for num, config in enumerate(self.config['clients']):
+                refresh_token = refresh_tokens.get(config['fortnite']['email'].lower(), None)
+                device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
+
                 party_meta = []
                 if config['fortnite']['party']['playlist']:
                     party_meta.append(partial(
@@ -2634,7 +2658,7 @@ class Bot:
                     partial(
                         MyClientPartyMember.set_battlepass_info,
                         has_purchased=True,
-                        level=config['fortnite']['level']
+                        level=config['fortnite']['tier']
                     )
                 ]
                 items = [
@@ -2673,7 +2697,7 @@ class Bot:
                     getattr(fortnitepy.KairosBackgroundColorPreset, config['fortnite']['avatar_color'].upper())
                 )
 
-                async def sid():
+                async def session_id():
                     while True:
                         text = self.l('session_id', config['fortnite']['email']).get_text()
                         self.web_text = text
@@ -2682,15 +2706,20 @@ class Bot:
                         if match is not None:
                             return match.group()
 
+                auth = None
+                if self.use_device_auth and device_auth_details:
+                    auth = fortnitepy.DeviceAuth(**device_auth_details)
+                if auth is None:
+                    if self.use_device_code:
+                        auth = MyAdvancedAuth(refresh_token)
+                    else:
+                        auth = MyAdvancedAuth(refresh_token, session_id)
+
                 client = Client(
                     self,
                     config,
                     num,
-                    auth=(
-                        fortnitepy.DeviceAuth(**device_auth_details)
-                        if device_auth_details else
-                        SessionIDAuth(sid)
-                    ),
+                    auth=auth,
                     avatar=fortnitepy.Avatar(
                         asset=(
                             config['fortnite']['avatar_id']
@@ -2736,7 +2765,7 @@ class Bot:
                         all_ready_callback=self.all_ready_callback
                     )
                 ]
-                if self.discord_client is not None:
+                if self.discord_client is not None and self.config['discord']['token']:
                     tasks.append(self.discord_client.start(self.config['discord']['token']))
 
                 try:

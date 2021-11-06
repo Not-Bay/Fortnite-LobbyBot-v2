@@ -40,6 +40,13 @@ function kickMember(wait_event, user_id) {
     sendEvent('member_kick', wait_event, user_id);
 }
 
+function joinFriend(user_id) {
+    socket.send(JSON.stringify({
+        event: 'join_friend',
+        user_id: user_id
+    }));
+}
+
 function acceptJoinRequest(user_id) {
     socket.send(JSON.stringify({
         event: 'accept_join_request',
@@ -119,6 +126,7 @@ socket.addEventListener('close', function (ev) {
 
 socket.addEventListener('message', function(ev) {
     const client = JSON.parse(ev.data);
+    console.log(client);
 
     const name = document.getElementById('name');
     const party = document.getElementById('party_name');
@@ -245,6 +253,26 @@ socket.addEventListener('message', function(ev) {
         const div = document.createElement('div');
         div.setAttribute('user_id', friend.id);
 
+        if (friend.is_joinable) {
+            const join = document.createElement('input');
+            join.type = 'button';
+            join.classList.add('gray_button');
+            join.value = texts.join;
+            join.onclick = function () {
+                joinFriend(friend.id);
+            }
+            div.appendChild(join);
+        }
+
+        const whisper = document.createElement('input');
+        whisper.type = 'button';
+        whisper.classList.add('gray_button');
+        whisper.value = texts.whisper;
+        whisper.onclick = function () {
+            constructWhisper(member.id, null);
+        }
+        div.appendChild(whisper);
+
         const remove = document.createElement('input');
         remove.type = 'button';
         remove.classList.add('red_button');
@@ -329,7 +357,7 @@ socket.addEventListener('message', function(ev) {
             const accept = document.createElement('input');
             accept.type = 'button';
             accept.classList.add('gray_button');
-            accept.value = texts.accept
+            accept.value = texts.accept;
             accept.onclick = function () {
                 acceptFriend('friend_add', member.id);
             }
@@ -338,7 +366,7 @@ socket.addEventListener('message', function(ev) {
             const decline = document.createElement('input');
             decline.type = 'button';
             decline.classList.add('red_button');
-            decline.value = texts.decline
+            decline.value = texts.decline;
             decline.onclick = function () {
                 removeOrDeclineFriend('friend_request_decline', member.id);
             }
@@ -347,7 +375,7 @@ socket.addEventListener('message', function(ev) {
             const block = document.createElement('input');
             block.type = 'button';
             block.classList.add('red_button');
-            block.value = texts.block
+            block.value = texts.block;
             block.onclick = function () {
                 blockUser('user_block', member.id);
             }
@@ -356,7 +384,7 @@ socket.addEventListener('message', function(ev) {
             const cancel = document.createElement('input');
             cancel.type = 'button';
             cancel.classList.add('red_button');
-            cancel.value = texts.cancel
+            cancel.value = texts.cancel;
             cancel.onclick = function () {
                 removeOrDeclineFriend('friend_request_abort', member.id);
             }
@@ -365,16 +393,25 @@ socket.addEventListener('message', function(ev) {
             const block = document.createElement('input');
             block.type = 'button';
             block.classList.add('red_button');
-            block.value = texts.block
+            block.value = texts.block;
             block.onclick = function () {
                 blockUser('user_block', member.id);
             }
             div.appendChild(block);
         } else if (member.is_friend) {
+            const whisper = document.createElement('input');
+            whisper.type = 'button';
+            whisper.classList.add('gray_button');
+            whisper.value = texts.whisper;
+            whisper.onclick = function () {
+                constructWhisper(member.id, member.display_name, null);
+            }
+            div.appendChild(whisper);
+
             const remove = document.createElement('input');
             remove.type = 'button';
             remove.classList.add('red_button');
-            remove.value = texts.remove
+            remove.value = texts.remove;
             remove.onclick = function () {
                 removeOrDeclineFriend('friend_remove', member.id);
             }
@@ -383,7 +420,7 @@ socket.addEventListener('message', function(ev) {
             const block = document.createElement('input');
             block.type = 'button';
             block.classList.add('red_button');
-            block.value = texts.block
+            block.value = texts.block;
             block.onclick = function () {
                 blockUser('user_block', member.id);
             }
@@ -392,7 +429,7 @@ socket.addEventListener('message', function(ev) {
             const unblock = document.createElement('input');
             unblock.type = 'button';
             unblock.classList.add('gray_button');
-            unblock.value = texts.unblock
+            unblock.value = texts.unblock;
             unblock.onclick = function () {
                 unblockUser('user_unblock', member.id);
             }
@@ -458,6 +495,10 @@ socket.addEventListener('message', function(ev) {
     function constructWhisper(to, display_name, whisper) {
         const whisper_content = friend_message.firstElementChild.nextElementSibling;
         if (document.getElementById(`whisper_to_${to}`)) {
+            if (whisper == null) {
+                return;
+            }
+
             const whisper_to = document.getElementById(`whisper_to_${to}`);
             const whisper_to_content = whisper_to.lastElementChild;
             const container = document.createElement('pre');
@@ -485,7 +526,7 @@ socket.addEventListener('message', function(ev) {
             delete_button.classList.add('gray_button');
             delete_button.style = 'margin-left: 5px;';
             delete_button.type = 'button';
-            delete_button.value = texts.remove
+            delete_button.value = texts.remove;
             delete_button.onclick = function () {
                 whisper_content.removeChild(whisper_to);
             }
@@ -494,18 +535,21 @@ socket.addEventListener('message', function(ev) {
             const whisper_to_content = document.createElement('div');
             whisper_to_content.classList.add('whisper');
             whisper_to_content.classList.add('content');
-            whisper_to.appendChild(whisper_to_content);
 
-            const container = document.createElement('pre');
-            const span1 = document.createElement('span');
-            span1.classList.add('whisper_date');
-            span1.textContent = `${whisper.received_at} ${whisper.author.display_name}: `;
-            container.appendChild(span1);
-            const span2 = document.createElement('span');
-            span2.classList.add('whisper_content');
-            span2.textContent = whisper.content;
-            container.appendChild(span2);
-            whisper_to_content.appendChild(container);
+            if (whisper != null) {
+                const container = document.createElement('pre');
+                const span1 = document.createElement('span');
+                span1.classList.add('whisper_date');
+                span1.textContent = `${whisper.received_at} ${whisper.author.display_name}: `;
+                container.appendChild(span1);
+                const span2 = document.createElement('span');
+                span2.classList.add('whisper_content');
+                span2.textContent = whisper.content;
+                container.appendChild(span2);
+                whisper_to_content.appendChild(container);
+            }
+
+            whisper_to.appendChild(whisper_to_content);
             whisper_content.appendChild(whisper_to);
 
             const input = document.createElement('input');
@@ -613,9 +657,7 @@ socket.addEventListener('message', function(ev) {
         const whisper_content = friend_message.firstElementChild.nextElementSibling;
         whisper_content.innerHTML = '';
 
-        console.log(client.whisper)
         for (let [to, data] of Object.entries(client.whisper)) {
-            console.log(data);
             data.content.forEach(whisper => {
                 constructWhisper(to, data.display_name, whisper)
             });
