@@ -97,6 +97,7 @@
                 "banner_id": "",
                 "banner_color": "",
                 "level": 9999,
+                "tier": 100,
                 "platform": "WIN",
                 "ng_platforms": null,
                 "ng_platform_for": [
