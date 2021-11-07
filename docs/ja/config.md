@@ -83,9 +83,10 @@
 | --- | --- |
 |  アバターID (avatar_id)  |  アバターのID<br>`{bot}`とすることで現在使用しているコスチュームのアイコンになる(非対応の物も多い)  |
 |  アバターの色 (avatar_color)  |  アバターの色<br>詳細は[こちら](#色)  |
-|  バナーのID (banner_id)  |  バナーのID<br>一覧は[こちら](https://fnitems.pdfweb.tk/banner)  |
+|  バナーのID (banner_id)  |  バナーのID<br>一覧は[こちら](https://fnitems.hyperserver.xyz/banners)  |
 |  バナーの色 (banner_color)  |  バナーの色  |
 |  レベル (level)  |  レベル  |
+|  ティア (tier)  |  ティア  |
 |  プラットフォーム (platform)  |  プラットフォーム  |
 |  NGプラットフォーム (ng_platforms)  |  NGに指定するプラットフォーム  |
 |  NGプラットフォームの適用先 (ng_platform_for)  |  NGプラットフォームを適用するユーザーの種類  |

@@ -83,7 +83,7 @@ Usually please use web config editor to change configs
 | --- | --- |
 |  Avatar ID (avatar_id)  |  Avatar ID<br>Use `{bot}` to change avatar to bot's outfit (There are many unsupported outfits)  |
 |  Avatar color (avatar_color)  |  Avatar color<br>For more information see [here](#Color)  |
-|  Banner ID (banner_id)  |  Banner ID><br>List of ids are [here](https://fnitems.pdfweb.tk/banner)  |
+|  Banner ID (banner_id)  |  Banner ID><br>List of ids are [here](https://fnitems.hyperserver.xyz/banners)  |
 |  Banner color (banner_color)  |  Banner color  |
 |  Level (level)  |  Level  |
 |  Platform (platform)  |  Platform  |
