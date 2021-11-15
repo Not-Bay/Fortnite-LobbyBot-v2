@@ -102,8 +102,9 @@
 |  party_message  |  party_message [メッセージ]  |  パーティーにメッセージを送信する  |
 |  avatar  |  avatar [ID] (色)  |  アバターを設定する<br>色の設定方法は[こちら](config.md#色)  |
 |  status  |  status [メッセージ]  |  ステータスを設定する  |
-|  banner  |  banner [バナーID] [バナーの色]  |  バナーを設定する<br>バナーIDは[こちら](https://fnitems.pdfweb.tk/banner)  |
+|  banner  |  banner [バナーID] [バナーの色]  |  バナーを設定する<br>バナーIDは[こちら](https://fnitems.hyperserver.xyz/banners)  |
 |  level  |  level [数値]  |  レベルを設定する  |
+|  battlepass  |  battlepass [数値]  |  ティアを設定する  |
 |  privacy  |  privacy [public, friends_allow_friends_of_friends, friends, private_allow_friends_of_friends, private]  |  パーティーのプライバシーを設定する  |
 |  voice_chat  |  voice_chat [true/false]  |  ボイスチャットを有効/無効化する。このコマンドを実行する前にいたメンバーには効果がない  |
 |  promote  |  promote [名前/ID]  |  ユーザーにパーティーリーダーを譲渡する  |
@@ -159,6 +160,7 @@
 |  random_item |  random_item  |  ランダムなアイテムに変更する  |
 |  playlist_id  |  playlist_id [ID]  |  IDでプレイリストを検索し、そのプレイリストに変更する  |
 |  playlist  |  playlist [名前]  |  プレイリストを検索し、そのプレイリストに変更する  |
+|  island_code  |  island_code [島コード]  |  モードをその島に変更する  |
 |  set  |  set [名前]  |  セット名でアイテムを検索し、そのアイテムに変更する  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  現在使用しているアイテムのスタイル一覧を表示し、指定したスタイルに設定する  |
 |  add_style  |  add_style [outfit/backpack/pickaxe]  |  現在使用しているアイテムのスタイル一覧を表示し、指定したスタイルを現在のスタイルに統合する<br>例: ステージ1のスタイルにadd_styleで青を追加  |

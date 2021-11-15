@@ -102,7 +102,7 @@ Valores en [] son requeridos, valores en () son opcionales
 |  party_Mensaje  |  party_Mensaje [Mensaje]  |  Envía un mensaje a la sala  |
 |  avatar  |  avatar [ID] (Color)  |  Configura el avatar<br>Puedes ver los colores utilizables [aquí](config.md#Color)  |
 |  status  |  status [Mensaje]  |  Configura el status  |
-|  banner  |  banner [ID de banner] [Color del banner]  |  Configura el banner<br>Los ids puedes encontrarlos [aquí](https://fnitems.pdfweb.tk/banner)  |
+|  banner  |  banner [ID de banner] [Color del banner]  |  Configura el banner<br>Los ids puedes encontrarlos [aquí](https://fnitems.hyperserver.xyz/banners)  |
 |  level  |  level [Number]  |  Configura el nivel  |
 |  privacy  |  privacy [public, friends_allow_friends_of_friends, friends, private_allow_friends_of_friends, private]  |  Configura la privacidad de la sala  |
 |  voice_chat  |  voice_chat [true/false]  |  Activa/desactiva el chat de voz de la sala. Esto no afecta a miembros que se unieron antes de unirse a la sala  |

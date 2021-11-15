@@ -3,8 +3,6 @@ import importlib
 from typing import Any, Optional
 from aioconsole import aprint
 
-from fortnitepy.errors import HTTPException
-
 fortnitepy = importlib.import_module('fortnitepy')
 
 
@@ -82,7 +80,7 @@ class MyAdvancedAuth(fortnitepy.Auth):
         if self.refresh_token_ready():
             try:
                 data = await self.run_refresh_token_authenticate()
-            except HTTPException as e:
+            except fortnitepy.HTTPException as e:
                 m = 'errors.com.epicgames.account.auth_token.invalid_refresh_token'
                 if e.message_code != m:
                     raise
