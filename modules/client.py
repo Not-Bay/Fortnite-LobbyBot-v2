@@ -129,6 +129,8 @@ class MyClientPartyMember(fortnitepy.ClientPartyMember):
                            keep: Optional[bool] = True,
                            do_point: Optional[bool] = True, **kwargs: Any) -> bool:
         asset = self.get_asset_path(item, asset)
+        if item == 'AthenaPickaxe' and not asset:
+            asset = 'DefaultPickaxe'
         kwargs['variants'] = kwargs.get('variants', []) or []
         if asset is not None and 'banner' in asset.lower():
             kwargs['variants'].extend(self.create_variant(
