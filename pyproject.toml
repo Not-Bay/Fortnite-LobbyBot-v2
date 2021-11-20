@@ -15,7 +15,7 @@ fortnitepy = { git = "https://github.com/gomashio1596/fortnitepy" }
 jaconv = "^0.3"
 jinja2 = "^2.3.0.1"
 pykakasi = "^2.1.1"
-replit = "*"
+replit = "^3.0.0"
 sanic = "^21.3.0"
 "sanic-routing" = "0.4.1"
 tzlocal = "^2.1"
