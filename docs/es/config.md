@@ -77,6 +77,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  Tamaño del grupo (max_size)  |  Número máximo de miembros del grupo  |
 |  Permitir intercambiar posición (allow_swap)  |  Permitir intercambiar posiciónes con miembros del grupo  |
 |  Playlist (playlist)  |  Playlist del grupo (Modo de juego)  |
+|  Código de isla (island_code)  |  Cambia el modo seleccionado al código de isla  |
 |  Deshabilitar chat de voz (disable_voice_chat)  | Deshabilita el chat de voz de la sala  |
 
 |  Valor (Valor Raw)  |  Descripción  |
@@ -86,6 +87,7 @@ Utiliza el editor de configuración web para cambiar configuraciones
 |  ID de banner (banner_id)  |  ID del banner><br>Puedes ver una lista de ellos [aquí](https://fnitems.hyperserver.xyz/banners)  |
 |  Color del banner (banner_color)  |  Color del banner  |
 |  Nivel (level)  |  Nivel  |
+|  Nivel de pase (tier)  |  Nivel de pase de batalla  |
 |  Plataforma (platform)  |  Plataforma  |
 |  Plataformas NG (ng_platforms)  |  Plataformas NG  |
 |  Plataformas NG para (ng_platform_for)  |  Tipos de usuario para plataformas NG  |

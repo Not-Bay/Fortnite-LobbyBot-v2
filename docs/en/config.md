@@ -77,6 +77,7 @@ Usually please use web config editor to change configs
 |  Max party size (max_size)  |  Max party size  |
 |  Allow swap (allow_swap)  |  Allow swap (Squad formation)  |
 |  Playlist (playlist)  |  Party playlist (Game mode)  |
+|  Island code (island_code)  |  Changes the game mode to the island code  |
 |  Disable voice chat (disable_voice_chat)  |  Disable party voice chat  |
 
 |  Key (Raw value)  |  Description  |
@@ -86,6 +87,7 @@ Usually please use web config editor to change configs
 |  Banner ID (banner_id)  |  Banner ID><br>List of ids are [here](https://fnitems.hyperserver.xyz/banners)  |
 |  Banner color (banner_color)  |  Banner color  |
 |  Level (level)  |  Level  |
+|  Tier (tier)  |  Battle pass tier  |
 |  Platform (platform)  |  Platform  |
 |  NG platforms (ng_platforms)  |  Platforms which will set as NG  |
 |  NG platform for (ng_platform_for)  |  User types which apply NG platform  |
