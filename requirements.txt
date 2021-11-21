@@ -4,5 +4,5 @@ git+https://github.com/gomashio1596/fortnitepy
 jaconv
 jinja2
 pykakasi
-sanic
-tzlocal
+sanic==21.6.2
+tzlocal 
