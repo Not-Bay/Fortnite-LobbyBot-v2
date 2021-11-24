@@ -17,6 +17,11 @@
 設定が終わったら右下の保存ボタン(Save)を押すことでボットが再起動されます  
 再起動されたらログを確認して、出ている指示の通りに進めてください  
 (この操作を認証と呼びます)  
+### sid(デフォルト)の場合
+![log](https://user-images.githubusercontent.com/77221405/142764834-f0ba24c9-b0b3-4416-b1fe-0df232bc6486.png)  
+![sid](https://user-images.githubusercontent.com/77221405/142764921-2884199e-0d01-4f47-ad63-ffa233290134.png)
+
+### Device Code(非推奨)の場合
 ![log](https://user-images.githubusercontent.com/53356872/103288750-f84ee780-4a28-11eb-9fc3-386e6cc33425.png)  
 
 認証が終わればボットが起動するはずです  
