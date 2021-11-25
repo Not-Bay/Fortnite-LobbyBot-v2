@@ -45,7 +45,7 @@ request.open('GET', '/readme');
 request.send(null);
 request.onload = function (ev) {
     const readme = document.getElementById('readme');
-    readme.innerHTML = marked(request.responseText);
+    readme.innerHTML = marked.parse(request.responseText);
 }
 </script>
 </html>
