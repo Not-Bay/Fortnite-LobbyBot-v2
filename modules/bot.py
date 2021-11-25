@@ -141,6 +141,7 @@ class Bot:
         self.use_device_code = use_device_code
         self.use_device_auth = use_device_auth
 
+        self.input_lock = asyncio.Lock(loop=loop)
         self.clients = []
         self.updater = Updater(self)
         self.web = Web(self, __name__)
@@ -2638,7 +2639,8 @@ class Bot:
                     while True:
                         text = self.l('session_id', email).get_text()
                         self.web_text = text
-                        data = await ainput(f'{text}\n')
+                        async with self.input_lock:
+                            data = await ainput(f'{text}\n')
                         match = re.search(r'[a-z0-9]{32}', data)
                         if match is not None:
                             return match.group()
