@@ -2693,7 +2693,7 @@ class Client(fortnitepy.Client):
                     self.email
                 ),
                 color=green,
-                add_p=self.time
+                add_p=lambda x: f'[{self.now()}] [{self.email}] {x}'
             )
         else:
             self.send(
