@@ -463,9 +463,6 @@ class Client(fortnitepy.Client):
         self.return_pattern = re.compile(
             r"(?P<space>\s*)(return|return\s+(?P<text>.*))\s*"
         )
-        self.muc_pattern = re.compile(
-            r"Party-(?P<party_id>.+)@muc.prod.ol.epicgames.com"
-        )
         self._members = {}
 
         _events = [
