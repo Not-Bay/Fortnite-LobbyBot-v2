@@ -22,7 +22,7 @@ class WebhookClient:
 
         self.url_pattern = re.compile(
             r'https://(ptb\.|canary\.)?discord(app)?\.com/api/webhooks'
-            r'/\d{18}/.+'
+            r'/\d+/.+'
         )
 
     def start(self) -> None:
@@ -44,7 +44,7 @@ class WebhookClient:
                     has_avatar = data['avatar'] is not None
 
                 removed = []
-                for num, message in enumerate(self.messages):
+                for message in self.messages:
                     flag = False
                     if len(self.messages) >= 20 and self.client.config['skip_if_overflow']:
                         message = {
@@ -52,8 +52,8 @@ class WebhookClient:
                             'Logs.txt': '\n'.join([mes['content'] for mes in self.messages])
                         }
                         flag = True
-                        for num in enumerate(self.messages):
-                            removed.append(num)
+                        for m in self.messages:
+                            removed.append(m)
                     if not has_avatar:
                         message['avatar_url'] = 'https://cdn.discordapp.com/icons/718709023427526697/8353f50201fcfde80b8fcc9d806e7046.webp'
                     messages = [
@@ -85,10 +85,10 @@ class WebhookClient:
                             break
                     if flag:
                         break
-                    removed.append(num)
+                    removed.append(message)
 
-                for num in reversed(removed):
-                    del self.messages[num]
+                for m in removed:
+                    self.messages.remove(m)
             await asyncio.sleep(1)
 
     def send(self, content: str, user_name: str) -> None:
