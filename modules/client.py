@@ -401,6 +401,7 @@ class Client(fortnitepy.Client):
         'AthenaConsumableEmote': None
     }
     PLATFORM_CONVERTER = {
+        fortnitepy.Platform.PC: "PC",
         fortnitepy.Platform.WINDOWS: "Windows",
         fortnitepy.Platform.MAC: "Mac",
         fortnitepy.Platform.PLAYSTATION: "PlayStation 4",
