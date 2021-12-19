@@ -114,6 +114,7 @@ class Updater:
             'RUN.bat': []
         }
         self.repl_updates = {
+            '.replit': [],
             'pyproject.toml': []
         }
 
