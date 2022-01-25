@@ -404,6 +404,9 @@ class DiscordClient(discord.Client):
         if not self.is_ready():
             await self.wait_until_ready()
 
+        if (message.content == '' and message.attachments):
+            return
+
         if (self.config['discord']['chat_max'] is not None
                 and self.is_chat_max_for(message.author.id)
                 and len(message.content) > self.config['discord']['chat_max']):

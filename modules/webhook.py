@@ -55,7 +55,7 @@ class WebhookClient:
                         for m in self.messages:
                             removed.append(m)
                     if not has_avatar:
-                        message['avatar_url'] = 'https://cdn.discordapp.com/icons/718709023427526697/8353f50201fcfde80b8fcc9d806e7046.webp'
+                        message['avatar_url'] = 'https://pbs.twimg.com/media/EYiSR8cUYAAd86c.png'
                     messages = [
                         message['content'][i:i + self.text_max]
                         for i in range(0, len(message['content']), self.text_max)

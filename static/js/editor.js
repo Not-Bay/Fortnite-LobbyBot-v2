@@ -535,3 +535,26 @@ function applyToAll(element, prefix_keys, keys) {
         }
     });
 }
+
+function OpenReadme(lang, name, key) {
+    if (key == 'fortniteparty') {
+        key = 'party';
+    } else if (key == 'fortniteng_names') {
+        key = 'ng_names';
+    } else if (key == 'fortniteexec') {
+        key = 'exec';
+    } else if (name == 'ボット' || name == 'Bots') {
+        if (lang == 'ja') {
+            name = 'クライアント';
+        } else if (lang == 'es') {
+            name = 'clientes';
+        } else {
+            name = 'clients';
+        }
+    }
+
+    open('/docs/' + lang + '/config.md','readme');
+    setTimeout(function() {
+        open('/docs/' + lang + '/config.md#' + name + '-' + key, 'readme');
+    }, 150);
+}

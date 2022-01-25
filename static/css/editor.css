@@ -18,6 +18,7 @@
 
 #visual_editor h1 {
     position: relative;
+    display: inline;
     font-weight: normal;
     font-size: 16px;
 }
@@ -46,6 +47,16 @@
     resize: vertical;
 }
 
+#visual_editor option:checked {
+    color: #303339;
+    background-color: #DCDDDE;
+}
+
+#visual_editor option:p {
+    color: #DCDDDE;
+    background-color: #303339;
+}
+
 #visual_editor select {
     background-color: #303339;
 }
@@ -60,6 +71,10 @@
 #visual_editor textarea:focus,
 #visual_editor select:focus {
     border-color: #7289DA;
+}
+
+#visual_editor .info_button {
+    position: relative;
 }
 
 #visual_save,
@@ -120,6 +135,7 @@
 
 .openable span,
 .openable .content *,
+.openable .info_button,
 .openable .add_button,
 .openable .remove_button,
 .openable .copy_button,
