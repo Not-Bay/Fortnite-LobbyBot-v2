@@ -385,6 +385,8 @@
         "apply_to_all": "全てに適用",
         "info": "詳細",
         "password": "パスワード",
+        "pass_hide": "非表示",
+        "pass_show": "表示",
         "submit": "決定",
         "incorrect_password": "パスワードが違います",
         "account": "アカウント",

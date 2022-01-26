@@ -385,6 +385,8 @@
         "apply_to_all": "Apply to all",
         "info": "Detail",
         "password": "Password",
+        "pass_hide": "Hide",
+        "pass_show": "Show",
         "submit": "Submit",
         "incorrect_password": "Incorrect password",
         "account": "Account",

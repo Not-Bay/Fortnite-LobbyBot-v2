@@ -385,6 +385,8 @@
         "apply_to_all": "Aplicar a todo",
         "info": "Detalles",
         "password": "Contraseña",
+        "pass_hide": "escondido",
+        "pass_show": "mostrado",
         "submit": "Enviar",
         "incorrect_password": "Contraseña incorrecta",
         "account": "Cuenta",

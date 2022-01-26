@@ -340,7 +340,7 @@ function removeElement(element, prefix) {
                         child.children[0].textContent = request.responseText;
                     }
 
-                    const items = Array.from(child.children[1].children).filter(
+                    const items = Array.from(child.children[4].children).filter(
                         child => child.tagName == 'DIV'
                     );
                     fixId(items, id_before, id_after);
