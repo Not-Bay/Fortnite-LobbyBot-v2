@@ -195,6 +195,12 @@
         "remove_whitelist": [
             "remove_whitelist"
         ],
+        "add_botlist": [
+            "add_botlist"
+        ],
+        "remove_botlist": [
+            "remove_botlist"
+        ],
         "discord_add_blacklist": [
             "discord_add_blacklist"
         ],
