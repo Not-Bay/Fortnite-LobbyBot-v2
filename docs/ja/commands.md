@@ -29,7 +29,7 @@
 |  remove_blacklist  |  remove_blacklist [名前/ID]  |  ユーザーをブラックリストから削除する  |
 |  add_whitelist  |  add_whitelist [名前/ID]  |  ユーザーをホワイトリストに追加する  |
 |  remove_whitelist  |  remove_whitelist [名前/ID]  |  ユーザーをホワイトリストから削除する  |
-|  add_botlist  |  add_botlist [名前/ID]  |  ユーザーをボットリストから追加する  |
+|  add_botlist  |  add_botlist [名前/ID]  |  ユーザーをボットリストに追加する  |
 |  remove_botlist  |  remove_botlist [名前/ID]  |  ユーザーをボットリストから削除する  |
 |  discord_add_blacklist  |  discord_add_blacklist [名前/ID]  |  ユーザーをDiscordのブラックリストに追加する  |
 |  discord_remove_blacklist  |  discord_remove_blacklist [ID]  |  ユーザーをDiscordのブラックリストから削除する  |
