@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import os
 import re
 from typing import Union, TYPE_CHECKING
 
@@ -120,6 +121,17 @@ class WebhookClient:
                             client.config['discord_log'],
                             len(client.config['discord_log']) * 'X'
                         )
+            if self.bot.config.get('hide_weburl'):
+                if self.bot.mode == 'glitch':
+                    url = f'https://{os.getenv("PROJECT_DOMAIN")}.glitch.me'
+                elif self.bot.mode == 'repl':
+                    url = f'https://{os.getenv("REPL_SLUG")}--{os.getenv("REPL_OWNER")}.repl.co'
+                else:
+                    url = f"http://{self.bot.config['web']['ip']}:{self.bot.config['web']['port']}"
+                content = content.replace(
+                    url,
+                    len(url) * 'X'
+                )
 
             if (len(self.messages) > 0
                     and (self.messages[-1]['username'] == user_name

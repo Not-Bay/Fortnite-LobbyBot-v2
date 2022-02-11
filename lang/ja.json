@@ -596,6 +596,7 @@
         "editor_config_hide_password": "パスワードを隠す",
         "editor_config_hide_token": "トークンを隠す",
         "editor_config_hide_webhook": "Webhookを隠す",
+        "editor_config_hide_weburl": "weburlを隠す",
         "editor_config_debug": "デバッグ情報を表示",
         "editor_commands_whitelist_commands": "ホワイトリストコマンド",
         "editor_commands_user_commands": "ユーザーコマンド",

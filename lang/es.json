@@ -596,6 +596,7 @@
         "editor_config_hide_password": "Esconder contraseña",
         "editor_config_hide_token": "Esconder token",
         "editor_config_hide_webhook": "Esconder webhook",
+        "editor_config_hide_weburl": "Esconder weburl",
         "editor_config_debug": "Mostrar información de debug",
         "editor_commands_whitelist_commands": "Comandos de lista blanca",
         "editor_commands_user_commands": "Comandos de usuario",
