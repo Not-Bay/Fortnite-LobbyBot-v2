@@ -229,6 +229,7 @@ Revisa Discord arriba
 |  Esconder contraseña  |  Esconder contraseña en logs de Discord  |
 |  Esconder token  |  Esconder token del bot de Discord en los logs de Discord  |
 |  Esconder webhook  |  Esconder URL de webhook en los logs de Discord  |
+|  Esconder weburl  |  Esconder URL de WebServer en los logs de Discord  |
 |  Deshabilitar logs (no_logs)  |  Desactiva los logs  |
 |  Nivel de logs (loglevel)  |  Nivel de información a mostrar en los logs  |
 |  Mostrar información de debug (debug)  |  Mostrar información de debug de fortnitepy  |
