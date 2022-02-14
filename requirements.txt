@@ -3,6 +3,7 @@ discord
 git+https://github.com/gomashio1596/fortnitepy
 jaconv
 jinja2
+packaging
 pykakasi
 sanic==21.6.2
 tzlocal 
