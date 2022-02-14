@@ -27,11 +27,20 @@ class DiscordClient(discord.Client):
 
         super().__init__(loop=loop, **options)
 
+        self.is_error = False
         self.booted_at = None
 
         self._owner = {}
         self._whitelist = {}
         self._blacklist = {}
+
+    async def start(self, *args, **kwargs) -> None:
+        self.is_error = False
+        try:
+            await super().start(*args, **kwargs)
+        except Exception:
+            self.is_error = True
+            raise
 
     # Config controls
     def fix_config(self) -> None:

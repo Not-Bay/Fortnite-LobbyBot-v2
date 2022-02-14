@@ -89,6 +89,7 @@
         "get_playlist_failed": "Failed to get playlist data. Please try again later",
         "no_clients": "There is not bots to boot. Please add bots in config",
         "login_failed": "Failed to login to '{0}'",
+        "discord_login_failed": "Failed to login to Discord bot '{0}'. May token is invalid",
         "all_login": "Logged in to all accounts",
         "web_running": "Web server running on '{0}'",
         "web_already_running": "Other web server is already running. Change IP or port, or close other web server",

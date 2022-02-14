@@ -89,6 +89,7 @@
         "get_playlist_failed": "Error al obtener datos de las playlists. Intente después",
         "no_clients": "No hay bots para iniciar. Agrega bots en configuración",
         "login_failed": "Error al iniciar sesión en '{0}'",
+        "discord_login_failed": "Error al iniciar sesión en bot de Discord '{0}'. El token de mayo no es válido",
         "all_login": "Sesión iniciada en todas las cuentas",
         "web_running": "Servidor web corriendo en '{0}'",
         "web_already_running": "Otro servidor web ya está corriendo. Cambia la IP o el puerto, o cierra el otro servidor web",

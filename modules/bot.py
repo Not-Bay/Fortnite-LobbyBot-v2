@@ -2004,6 +2004,18 @@ class Bot:
 
 
     async def error_callback(self, client: Client, e: Exception):
+        if client.discord_client is not None and client.discord_client.is_error:
+            self.print_exception(e)
+            self.send(
+                self.l(
+                    'discord_login_failed',
+                    self.config['discord']['token']
+                ),
+                add_p=self.time,
+                file=sys.stderr
+            )
+            return
+
         if isinstance(e, fortnitepy.AuthException):
             if 'Invalid device auth details passed.' in e.args[0]:
                 self.debug_print_exception(e)
@@ -2771,8 +2783,23 @@ class Bot:
                         all_ready_callback=self.all_ready_callback
                     )
                 ]
+
+                async def starter():
+                    try:
+                        await self.discord_client.start(self.config['discord']['token'])
+                    except Exception as e:
+                        self.print_exception(e)
+                        self.send(
+                            self.l(
+                                'discord_login_failed',
+                                self.config['discord']['token']
+                            ),
+                            add_p=self.time,
+                            file=sys.stderr
+                        )
+
                 if self.discord_client is not None and self.config['discord']['token']:
-                    tasks.append(self.discord_client.start(self.config['discord']['token']))
+                    tasks.append(starter())
 
                 try:
                     await asyncio.gather(*tasks)
