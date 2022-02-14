@@ -112,13 +112,13 @@ function saveVisual(reload = false) {
             const valueElement = document.getElementById(key);
             if (valueElement) {
                 valueElement.style.backgroundColor = '#F04747';
-            }
-            valueElement.ontransitionend = function() {
-                setTimeout(function () {
-                    if (valueElement) {
-                        valueElement.style.backgroundColor = '';
-                    }
-                }, 700);
+                valueElement.ontransitionend = function() {
+                    setTimeout(function () {
+                        if (valueElement) {
+                            valueElement.style.backgroundColor = '';
+                        }
+                    }, 700);
+                }
             }
             const label = valueElement.previousElementSibling;
             if (label) {
@@ -310,24 +310,27 @@ function removeElement(element, prefix) {
     // prefix = "['clients']"
     // id_prefix = clients
     const id_prefix = element.parentElement.parentElement.getAttribute('id');
+    const element_num = parseInt(element.parentElement.getAttribute('num'));  // Number of client which trying to remove
     const parent = element.parentElement.parentElement;  // clients
     const element_count = Array.from(parent.children).filter(
         child => child.tagName == 'DIV'
     ).length;  // Total count of clients
-    const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));  // Number of client which trying to remove
-    parent.removeChild(element.parentElement.nextElementSibling);  // br
-    parent.removeChild(element.parentElement);  // client
+    element.parentElement.previousElementSibling.remove();  // input
+    element.parentElement.nextElementSibling.remove();  // br
+    element.parentElement.remove();  // client
     if (element_count != element_num) {
         let current_num = 0;
         Array.from(parent.children).forEach(child => {
             // child = client
             if (child.tagName == 'DIV') {
                 if (element_count >= current_num) {
-                    const num = parseInt(child.id.slice(id_prefix.length + 1));
+                    const num = parseInt(child.getAttribute('num'));
                     child.id = `${id_prefix}_${current_num}`;
                     const id_before = `${prefix}[${num}]`;
                     const id_after = `${prefix}[${current_num}]`;
-    
+                    replaceAttr(child, 'num', num.toString(), current_num.toString());
+                    replaceAttr(child.previousElementSibling, 'name', id_before, id_after);
+
                     const request = new XMLHttpRequest();
                     request.open('POST', '/l');
                     request.setRequestHeader('Content-Type', 'application/json');
@@ -340,7 +343,7 @@ function removeElement(element, prefix) {
                         child.children[0].textContent = request.responseText;
                     }
 
-                    const items = Array.from(child.children[1].children).filter(
+                    const items = Array.from(child.children[child.children.length - 1].children).filter(
                         child => child.tagName == 'DIV'
                     );
                     fixId(items, id_before, id_after);
@@ -378,7 +381,7 @@ function addElement(element, prefix) {
         }
     } else {
         const newElement = copyElement.cloneNode(true);
-        const num = parseInt(newElement.id.slice(id_prefix.length + 1));
+        const num = parseInt(newElement.getAttribute('num'));
         newElement.setAttribute('id', `${id_prefix}_${num + 1}`);
         newElement.setAttribute('num', `${num + 1}`);
         const id_before = `${prefix}[${num}]`;
@@ -442,8 +445,8 @@ function paste(element, prefix) {
     if (copied_element) {
         const parent = element.parentElement.parentElement;  // clients
         const next_element = element.parentElement.nextElementSibling.nextElementSibling;  // next client
-        const element_num = parseInt(element.parentElement.id.slice(id_prefix.length + 1));
-        const copied_element_num = parseInt(copied_element.id.slice(id_prefix.length + 1));
+        const element_num = parseInt(element.parentElement.getAttribute('num'));
+        const copied_element_num = parseInt(copied_element.getAttribute('num'));
         const element_open = element.parentElement.classList.contains('open');
         const copied_element_open = copied_element.classList.contains('open');
         parent.removeChild(element.parentElement.nextElementSibling);
