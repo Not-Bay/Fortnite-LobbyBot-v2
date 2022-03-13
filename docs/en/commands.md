@@ -159,6 +159,7 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  random_item  |  random_item  |  Change to random item  |
 |  playlist_id  |  playlist_id [ID]  |  Search playlist with ID and change playlist  |
 |  playlist  |  playlist [Name]  |  Search playlist and change playlist  |
+|  crowns  |  crowns [Number]  |  Set the crowns count  |
 |  set  |  set [Name]  |  Search item with set name and change item  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  Show styles which available on current item and change to specified style  |
 |  add_style  |  add_style [outfit/backpack/pickaxe]  |  Show styles which available on current item and add specified style to current style<br>Example: Change to blue style using set_style, and add Stage 1 style using add_style  |

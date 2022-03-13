@@ -159,6 +159,7 @@ Valores en [] son requeridos, valores en () son opcionales
 |  random_item  |  random_item  |  Cambiar a item aleatorio  |
 |  playlist_id  |  playlist_id [ID]  |  Busca una playlist por ID y la coloca  |
 |  playlist  |  playlist [Nombre]  |  Busca una playlist y la coloca  |
+|  crowns  |  crowns [Number]  |  Cambia la cantidad de coronas  |
 |  set  |  set [Nombre]  |  Busca un item por conjunto y lo coloca  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  Muestra estilos disponibles para el cosmético actual y los coloca  |
 |  add_style  |  add_style [outfit/backpack/pickaxe]  |  Muestra estilos disponibles para el cosmético actual y agrega un estilo al actual<br>Ejemplo: Cambia al estilo azul usando set_style, y agregando Stage 1 usando add_style  |

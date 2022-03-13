@@ -160,6 +160,7 @@
 |  random_item |  random_item  |  ランダムなアイテムに変更する  |
 |  playlist_id  |  playlist_id [ID]  |  IDでプレイリストを検索し、そのプレイリストに変更する  |
 |  playlist  |  playlist [名前]  |  プレイリストを検索し、そのプレイリストに変更する  |
+|  crowns  |  crowns [数値]  |  クラウン数を設定する  |
 |  island_code  |  island_code [島コード]  |  モードをその島に変更する  |
 |  set  |  set [名前]  |  セット名でアイテムを検索し、そのアイテムに変更する  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  現在使用しているアイテムのスタイル一覧を表示し、指定したスタイルに設定する  |

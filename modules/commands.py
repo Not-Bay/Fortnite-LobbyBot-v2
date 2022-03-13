@@ -4278,6 +4278,45 @@ class DefaultCommands:
         await playlist_search('name', command, client, message)
 
     @command(
+        name='crowns',
+        usage='{name} [{client.l("number")}]'
+    )
+    async def crowns(command: Command, client: 'Client', message: MyMessage) -> None:
+
+        meta = client.party.me.meta
+        data = (meta.get_prop('Default:AthenaCosmeticLoadout_j'))['AthenaCosmeticLoadout']
+        try:
+            data['cosmeticStats'][1]['statValue'] = message.args[1]
+        except KeyError:
+            data['cosmeticStats'] = [
+                {
+                    "statName": "TotalVictoryCrowns",
+                    "statValue": 0
+                },
+                {
+                    "statName": "TotalRoyalRoyales",
+                    "statValue": message.args[1]
+                },
+                {
+                    "statName": "HasCrown",
+                    "statValue": 0
+                }
+            ]
+        final = {'AthenaCosmeticLoadout': data}
+        key = 'Default:AthenaCosmeticLoadout_j'
+        prop = {key: meta.set_prop(key, final)}
+
+        await client.party.me.patch(updated=prop)
+
+        await message.reply(
+            client.l(
+                'set_to',
+                client.bot.l('crowns'),
+                message.args[1]
+            )
+        )
+
+    @command(
         name='island_code',
         usage='{name} [{client.l("island_code")}]'
     )
