@@ -2945,6 +2945,19 @@ class Client(fortnitepy.Client):
         if ret is False:
             return
 
+    async def event_friend_presence(self, before: Optional[fortnitepy.Presence], after: fortnitepy.Presence) -> None:
+        if not self.is_ready():
+            await self.wait_until_ready()
+
+        friend = after.friend
+        before_online = getattr(before, 'available', False)
+        after_online = after.available
+        if before_online != after_online:
+            if after_online:
+                await self.exec_event('friend_online', {**locals(), **self.variables})
+            else:
+                await self.exec_event('friend_offline', {**locals(), **self.variables})
+
     async def event_party_member_join(self, member: fortnitepy.PartyMember) -> None:
         if not self.is_ready():
             await self.wait_until_ready()

@@ -444,6 +444,8 @@ class Bot:
             "['fortnite']['exec']['friend_request']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_add']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_remove']": [list, str, 'can_be_none'],
+            "['fortnite']['exec']['friend_online']": [list, str, 'can_be_none'],
+            "['fortnite']['exec']['friend_offline']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_join']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_leave']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_confirm']": [list, str, 'can_be_none'],

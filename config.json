@@ -180,6 +180,8 @@
                     "friend_request": null,
                     "friend_add": null,
                     "friend_remove": null,
+                    "friend_online": null,
+                    "friend_offline": null,
                     "party_member_join": null,
                     "party_member_leave": null,
                     "party_member_confirm": null,
