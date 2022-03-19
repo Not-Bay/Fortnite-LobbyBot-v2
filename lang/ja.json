@@ -81,7 +81,7 @@
         "update_finish": "バージョン{0}へのアップデートが完了しました",
         "updating": "アイテムデータの更新を確認中...",
         "booting": "ボットを起動中...",
-        "session_id": "https://www.epicgames.com/id/login?redirectUrl=https://www.epicgames.com/id/api/redirect&prompt=login\nを開いて '{0}' にログインし、ログイン後に出てきたテキストを貼り付けてください",
+        "session_id": "https://www.epicgames.com/id/login?redirectUrl=https://www.epicgames.com/id/api/redirect\nを開いて '{0}' にログインし、ログイン後に出てきたテキストを貼り付けてください",
         "confirm_authorization": "{0}\nを開いて '{1}' にログインし、'確認' ボタンを押してください",
         "account_incorrect": "このアカウント({0}) は '{1}' ではありません",
         "device_auth_error": "'{0}' のdevice_authが無効です。再起動して再度認証を行ってください",
