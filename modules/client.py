@@ -20,6 +20,7 @@ from .cosmetics import Searcher
 from .discord_client import DiscordClient
 from .localize import LocalizedText
 from .web import auth
+from .webhook import WebhookClient
 
 if TYPE_CHECKING:
     from .bot import Bot
@@ -479,6 +480,9 @@ class Client(fortnitepy.Client):
         self.add_event_handler('party_member_promote', self.store_leader_event)
         self.add_event_handler('party_member_confirm', self.store_join_confirmation_event)
 
+        self.webhook = WebhookClient(self, self.bot, self.loop, self.bot.http)
+        self.webhook.start()
+
         self.prev = {}
         self.select = {}
         self.party_hides = {}
@@ -815,15 +819,6 @@ class Client(fortnitepy.Client):
             if self.discord_client is not None and self.discord_client.config['discord']['token']:
                 tasks.append(self.discord_client.start(self.discord_client.config['discord']['token']))
             await asyncio.gather(*tasks)
-        except discord.errors.LoginFailure:
-            self.bot.send(
-                self.bot.l(
-                    'login_failed',
-                    'DiscordBot'
-                ),
-                color=red,
-                add_p=self.bot.time
-            )
         finally:
             self._is_booting = False
 
@@ -1921,19 +1916,19 @@ class Client(fortnitepy.Client):
         add_d = (add_d if isinstance(add_d, list) else [add_d or (lambda x: x)])
         if file == sys.stderr:
             add_d.append(self.discord_error)
-        if not self.config['no_logs'] if self.config else True:
+        if not self.config['no_logs']:
             text = content
             for func in add_p:
                 text = func(text)
             print(color(text), file=file)
 
-        if self.bot.webhook:
+        if self.webhook:
             content = discord.utils.escape_markdown(content)
             name = user_name or self.user.display_name
             text = content
             for func in add_d:
                 text = func(text)
-            self.bot.webhook.send(text, name)
+            self.webhook.send(text, name)
 
     def now(self) -> str:
         return self.bot.now()

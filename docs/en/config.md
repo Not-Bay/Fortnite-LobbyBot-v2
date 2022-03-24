@@ -229,7 +229,7 @@ Check Discord above
 |  Hide password  |  Hide password in Discord log  |
 |  Hide token  |  Hide Discord bot token in Discord log  |
 |  Hide webhook  |  Hide webhook URL in Discord log  |
-|  Hide weburl  |  Hide WebServer URL in Discord log  |
+|  Hide weburl  |  Hide web server URL in Discord log  |
 |  Disable log (no_logs)  |  Disable log  |
 |  Log level (loglevel)  |  Amount of information which will shows on log  |
 |  Show debug info (debug)  |  Show fortnitepy debug information  |

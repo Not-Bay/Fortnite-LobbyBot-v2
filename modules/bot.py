@@ -2784,15 +2784,6 @@ class Bot:
 
                 try:
                     await asyncio.gather(*tasks)
-                except discord.errors.LoginFailure:
-                    self.send(
-                        self.l(
-                            'login_failed',
-                            'DiscordBot'
-                        ),
-                        color=red,
-                        add_p=self.time
-                    )
                 except Exception as e:
                     self.print_exception(e)
         while True:
