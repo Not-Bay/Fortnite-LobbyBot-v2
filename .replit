@@ -1,2 +1,5 @@
 language = "python3"
 run = "python3 index.py"
+
+[packager]
+ignoredPackages=["fortnitepy"]
