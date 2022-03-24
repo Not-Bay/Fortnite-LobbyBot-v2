@@ -411,7 +411,7 @@ function addElement(element, prefix) {
             [label, input]  = item.children;
             if (input !== undefined) {
                 if (input.tagName == 'DIV') {
-                    while (input.firstChild) {
+                    while (input.firstChild && (input.firstChild.tagName != 'INPUT' || input.firstChild.getAttribute('type') != 'button')) {
                         input.removeChild(input.firstChild);
                     }
                 } else {
@@ -428,6 +428,10 @@ function addElement(element, prefix) {
                 }
             }
         });
+        const input = document.createElement('input');
+        input.setAttribute('type', 'hidden');
+        input.setAttribute('name', `${prefix}[${num + 1}]`)
+        parent.insertBefore(input, element);
         parent.insertBefore(newElement, element);
         parent.insertBefore(document.createElement('br'), element);
     }
