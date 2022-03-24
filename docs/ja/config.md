@@ -225,6 +225,7 @@
 |  パスワードを隠す  |  Discordログでパスワードを隠すか  |
 |  トークンを隠す  |  DiscordログでDiscordボットのトークンを隠すか  |
 |  Webhookを隠す  |  DiscordログでWebhookのURLを隠すか  |
+|  Weburlを隠す  |  DiscordログでWebサーバーのURLを隠すか  |
 |  ログを無効化 (no_logs)  |  ログを無効化するか  |
 |  ログレベル (loglevel)  |  ログにどのくらい情報を出すか  |
 |  デバッグ情報を表示 (debug)  |  fortnitepyのデバッグ情報を表示するか  |

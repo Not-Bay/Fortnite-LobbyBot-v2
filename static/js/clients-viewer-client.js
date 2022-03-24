@@ -64,6 +64,30 @@ function declineJoinRequest(user_id) {
 function sendWhisper(element) {
     const user_id = element.parentElement.parentElement.id.slice('whisper_to_'.length);
     const input = element.previousElementSibling;
+    
+    if (input.value == '') {
+
+        const res = document.getElementById('res');
+        res.style.color = '#F04747';
+        res.style.transform = 'translateX(-50%) translateY(0%)';
+        res.innerText = texts.message_null;
+
+        const shake = document.getElementById('shake');
+        shake.style.animation = 'shake 400ms';
+
+        res.ontransitionend = function () {
+            setTimeout(function () {
+                res.style.transform = 'translateX(-50%) translateY(-200px)';
+            }, 1500);
+        }
+
+        setTimeout(function () {
+            shake.style.animation = '';
+        }, 400);
+
+        return false;
+    }
+
     socket.send(JSON.stringify({
         event: 'friend_message',
         user_id: user_id,
@@ -80,6 +104,30 @@ function whisperKeyPress(key, element) {
 
 function sendPartyMessage(element) {
     const input = element.previousElementSibling;
+
+    if (input.value == '') {
+
+        const res = document.getElementById('res');
+        res.style.color = '#F04747';
+        res.style.transform = 'translateX(-50%) translateY(0%)';
+        res.innerText = texts.message_null;
+
+        const shake = document.getElementById('shake');
+        shake.style.animation = 'shake 400ms';
+
+        res.ontransitionend = function () {
+            setTimeout(function () {
+                res.style.transform = 'translateX(-50%) translateY(-200px)';
+            }, 1500);
+        }
+
+        setTimeout(function () {
+            shake.style.animation = '';
+        }, 400);
+
+        return false;
+    }
+
     socket.send(JSON.stringify({
         event: 'party_message',
         content: input.value
@@ -269,7 +317,7 @@ socket.addEventListener('message', function(ev) {
         whisper.classList.add('gray_button');
         whisper.value = texts.whisper;
         whisper.onclick = function () {
-            constructWhisper(member.id, null);
+            constructWhisper(friend.id, friend.name);
         }
         div.appendChild(whisper);
 
@@ -516,8 +564,8 @@ socket.addEventListener('message', function(ev) {
         } else {
             const whisper_to = document.createElement('div');
             whisper_to.id = `whisper_to_${to}`;
+            whisper_to.style = `display: block;`;
             whisper_to.classList.add('openable');
-
             const span = document.createElement('span');
             span.textContent = display_name;
             whisper_to.appendChild(span);

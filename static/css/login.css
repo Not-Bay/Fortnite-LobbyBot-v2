@@ -27,13 +27,14 @@ input:focus {
 }
 
 #password_input {
-    display: block;
+    display: inline;
 }
 
 #password_submit {
     color: white;
     background-color: #7289DA;
     cursor: pointer;
+    display: block;
     width: 60px;
     height: 32px;
     font-size: 14px;

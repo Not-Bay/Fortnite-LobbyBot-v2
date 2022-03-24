@@ -13,7 +13,7 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, List,
 
 import jaconv
 
-from .colors import blue, green, magenta, yellow
+from .colors import blue, green, magenta, yellow, red
 from .commands import (Command, DummyMessage, DummyUser, FindUserMatchMethod,
                        FindUserMode, MyMessage)
 from .cosmetics import Searcher

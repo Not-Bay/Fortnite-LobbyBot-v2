@@ -1372,6 +1372,20 @@ class DefaultCommands:
         await list_operation(remove_from_list, 'whitelist', command, message)
 
     @command(
+        name='add_botlist',
+        usage='{name} [{client.l("name_or_id")}]'
+    )
+    async def add_botlist(command: Command, client: 'Client', message: MyMessage) -> None:
+        await list_operation(add_to_list, 'botlist', command, message)
+
+    @command(
+        name='remove_botlist',
+        usage='{name} [{client.l("name_or_id")}]'
+    )
+    async def remove_botlist(command: Command, client: 'Client', message: MyMessage) -> None:
+        await list_operation(remove_from_list, 'botlist', command, message)
+
+    @command(
         name='discord_add_blacklist',
         usage='{name} [{client.l("name_or_id")}]',
         discord_required=True

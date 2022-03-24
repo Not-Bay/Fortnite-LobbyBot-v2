@@ -29,6 +29,8 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  remove_blacklist  |  remove_blacklist [Name/ID]  |  Remove user from blacklist  |
 |  add_whitelist  |  add_whitelist [Name/ID]  |  Add user to whitelist  |
 |  remove_whitelist  |  remove_whitelist [Name/ID]  |  Remove user from whitelist  |
+|  add_botlist  |  add_botlist [Name/ID]  |  Add user to botlist  |
+|  remove_botlist  |  remove_botlist [Name/ID]  |  Remove user from botlist  |
 |  discord_add_blacklist  |  discord_add_blacklist [ID]  |  Add user to Discord blacklist  |
 |  discord_remove_blacklist  |  discord_remove_blacklist [ID]  |  Remove user from Discord blacklist  |
 |  discord_add_whitelist  |  discord_add_whitelist [ID]  |  Add user to Discord whitelist  |
