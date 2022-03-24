@@ -47,6 +47,8 @@ function fitSize(){
         header.classList.add('pc-header-list');
         header.classList.remove('phone-header-list');
         headerButton.classList.remove('header-button');
+        header.classList.remove('header-list-open');
+        headerButton.classList.remove('header-button-open')
     }
 }
 

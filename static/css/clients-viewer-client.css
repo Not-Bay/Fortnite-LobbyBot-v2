@@ -243,3 +243,107 @@ img {
     display: inline-block;
     padding-left: 30px;
 }
+
+#res {
+    position: absolute;
+    background-color: rgba(32, 34, 37, 0.9);
+    text-align: center;
+    white-space: nowrap;
+    line-height: 40px;
+    height: 40px;
+    left: 50%;
+    padding-left: 20px;
+    padding-right: 20px;
+    top: calc(var(--header-height) + 10px);
+    z-index: 1; 
+    -webkit-transform: translateX(-50%) translateY(-200px);
+    transform: translateX(-50%) translateY(-200px);
+    -webkit-transition: 500ms cubic-bezier(0.35, 1.15, 0.6, 1.4);
+    transition: 500ms cubic-bezier(0.35, 1.15, 0.6, 1.4);
+}
+
+@keyframes shake {
+    from {
+        transform: translateX(-4px) translateY(-4px);
+    }
+
+    10% {
+        transform: translateX(4px) translateY(-4px);
+    }
+
+    15% {
+        transform: translateX(-4px) translateY(4px);
+    }
+
+    20% {
+        transform: translateX(4px) translateY(4px);
+    }
+
+    25% {
+        transform: translateX(-4px) translateY(-4px);
+    }
+
+    30% {
+        transform: translateX(-4px) translateY(4px);
+    }
+
+    35% {
+        transform: translateX(4px) translateY(-4px);
+    }
+
+    40% {
+        transform: translateX(-6px) translateY(-6px);
+    }
+
+    45% {
+        transform: translateX(6px) translateY(6px);
+    }
+
+    50% {
+        transform: translateX(6px) translateY(-6px);
+    }
+
+    55% {
+        transform: translateX(-6px) translateY(6px);
+    }
+
+    60% {
+        transform: translateX(6px) translateY(6px);
+    }
+
+    65% {
+        transform: translateX(-6px) translateY(-6px);
+    }
+
+    70% {
+        transform: translateX(-6px) translateY(6px);
+    }
+
+    75% {
+        transform: translateX(6px) translateY(-6px);
+    }
+
+    80% {
+        transform: translateX(-6px) translateY(-6px);
+    }
+
+    80% {
+        transform: translateX(6px) translateY(6px);
+    }
+
+    90% {
+        transform: translateX(6px) translateY(-6px);
+    }
+
+    90% {
+        transform: translateX(-6px) translateY(6px);
+    }
+
+    100% {
+        transform: translateX(6px) translateY(6px);
+    }
+
+    to {
+        transform: translateX(0) translateY(0);
+    }
+}

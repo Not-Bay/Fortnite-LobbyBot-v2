@@ -286,6 +286,7 @@
     "hide_password": true,
     "hide_token": true,
     "hide_webhook": true,
+    "hide_weburl": true,
     "no_logs": false,
     "loglevel": "normal",
     "debug": false
