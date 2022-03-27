@@ -560,8 +560,20 @@ function OpenReadme(lang, name, key) {
         }
     }
 
-    open('/docs/' + lang + '/config.md','readme');
+    if (location.pathname == '/config-editor') {
+        filename = 'config';
+    } else if (location.pathname == '/commands-editor')  {
+        filename = 'commands';
+    } else if (location.pathname == '/custom-commands-editor')  {
+        filename = 'custom_commands';
+    } else if (location.pathname == '/replies-editor')  {
+        filename = 'replies';
+    } else {
+        filename = 'config';
+    }
+
+    open('/docs/' + lang + '/' + filename + '.md', 'readme');
     setTimeout(function() {
-        open('/docs/' + lang + '/config.md#' + name + '-' + key, 'readme');
+        open('/docs/' + lang + '/' + filename + '.md#' + name + '-' + key, 'readme');
     }, 150);
 }
