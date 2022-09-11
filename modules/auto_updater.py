@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Optional, Tuple, Union
 from aiofiles import open as aopen
 from aiofiles.os import remove as aremove
 from aiofiles.os import rename as arename
+from packaging import version
 
 from .localize import LocalizedText
 
@@ -339,7 +340,7 @@ class Updater:
 
         var = {}
         exec(data, globals(), var)
-        if __version__ < var['__version__']:
+        if version.parse(__version__) < version.parse(var['__version__']):
             self.bot.send(
                 self.l(
                     'new_version',

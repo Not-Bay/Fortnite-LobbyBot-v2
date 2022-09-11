@@ -19,3 +19,16 @@ function send(element) {
         }
     }
 }
+
+function pass_view() {
+    const pass_view = document.getElementById("password_view");
+    const pass_input = document.getElementById("password_input");
+
+    if ( pass_input.type === 'password' ) {
+        pass_input.type = 'text';
+        pass_view.value = texts.hide;
+    } else {
+        pass_input.type = 'password';
+        pass_view.value = texts.show;
+    }
+}

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import asyncio
+import os
 import re
 from typing import Union, TYPE_CHECKING
 
@@ -55,7 +56,7 @@ class WebhookClient:
                         for m in self.messages:
                             removed.append(m)
                     if not has_avatar:
-                        message['avatar_url'] = 'https://cdn.discordapp.com/icons/718709023427526697/8353f50201fcfde80b8fcc9d806e7046.webp'
+                        message['avatar_url'] = 'https://pbs.twimg.com/media/EYiSR8cUYAAd86c.png'
                     messages = [
                         message['content'][i:i + self.text_max]
                         for i in range(0, len(message['content']), self.text_max)
@@ -120,6 +121,17 @@ class WebhookClient:
                             client.config['discord_log'],
                             len(client.config['discord_log']) * 'X'
                         )
+            if self.bot.config.get('hide_weburl'):
+                if self.bot.mode == 'glitch':
+                    url = f'https://{os.getenv("PROJECT_DOMAIN")}.glitch.me'
+                elif self.bot.mode == 'repl':
+                    url = f'https://{os.getenv("REPL_SLUG")}--{os.getenv("REPL_OWNER")}.repl.co'
+                else:
+                    url = f"http://{self.bot.config['web']['ip']}:{self.bot.config['web']['port']}"
+                content = content.replace(
+                    url,
+                    len(url) * 'X'
+                )
 
             if (len(self.messages) > 0
                     and (self.messages[-1]['username'] == user_name

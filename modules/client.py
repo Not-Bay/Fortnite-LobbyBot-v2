@@ -13,7 +13,7 @@ from typing import (TYPE_CHECKING, Any, Awaitable, Callable, Dict, List,
 
 import jaconv
 
-from .colors import blue, green, magenta, yellow
+from .colors import blue, green, magenta, yellow, red
 from .commands import (Command, DummyMessage, DummyUser, FindUserMatchMethod,
                        FindUserMode, MyMessage)
 from .cosmetics import Searcher
@@ -2944,6 +2944,19 @@ class Client(fortnitepy.Client):
         ret = await self.exec_event('friend_remove', {**locals(), **self.variables})
         if ret is False:
             return
+
+    async def event_friend_presence(self, before: Optional[fortnitepy.Presence], after: fortnitepy.Presence) -> None:
+        if not self.is_ready():
+            await self.wait_until_ready()
+
+        friend = after.friend
+        before_online = getattr(before, 'available', False)
+        after_online = after.available
+        if before_online != after_online:
+            if after_online:
+                await self.exec_event('friend_online', {**locals(), **self.variables})
+            else:
+                await self.exec_event('friend_offline', {**locals(), **self.variables})
 
     async def event_party_member_join(self, member: fortnitepy.PartyMember) -> None:
         if not self.is_ready():

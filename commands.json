@@ -195,6 +195,12 @@
         "remove_whitelist": [
             "remove_whitelist"
         ],
+        "add_botlist": [
+            "add_botlist"
+        ],
+        "remove_botlist": [
+            "remove_botlist"
+        ],
         "discord_add_blacklist": [
             "discord_add_blacklist"
         ],
@@ -590,6 +596,9 @@
         ],
         "playlist": [
             "playlist"
+        ],
+        "crowns": [
+            "crowns"
         ],
         "island_code": [
             "island_code"

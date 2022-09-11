@@ -11,6 +11,8 @@
             'ready': "{{client.l('ready')}}",
             'booting': "{{client.l('booting')}}",
             'closed': "{{client.l('closed')}}",
+            'hide': "{{client.l('pass_hide')}}",
+            'show': "{{client.l('pass_show')}}",
             '/': "{{client.l('home')}}",
             '/config-editor': "{{client.l('config_editor')}}",
             '/commands-editor': "{{client.l('commands_editor')}}",
@@ -49,6 +51,7 @@
         <form class="auth" onsubmit="return false">
             <label id="password_label" for="password">{{client.l('password')}}</label>
             <input id="password_input" type="password" name="password">
+            <input id="password_view" type="button" value="{{client.l('pass_show')}}" onclick="pass_view()">
             <input id="password_submit" type="button" value="{{client.l('submit')}}" onclick="send(this)">
         </form>
     </div>

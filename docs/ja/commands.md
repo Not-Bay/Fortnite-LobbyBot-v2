@@ -29,6 +29,8 @@
 |  remove_blacklist  |  remove_blacklist [名前/ID]  |  ユーザーをブラックリストから削除する  |
 |  add_whitelist  |  add_whitelist [名前/ID]  |  ユーザーをホワイトリストに追加する  |
 |  remove_whitelist  |  remove_whitelist [名前/ID]  |  ユーザーをホワイトリストから削除する  |
+|  add_botlist  |  add_botlist [名前/ID]  |  ユーザーをボットリストに追加する  |
+|  remove_botlist  |  remove_botlist [名前/ID]  |  ユーザーをボットリストから削除する  |
 |  discord_add_blacklist  |  discord_add_blacklist [名前/ID]  |  ユーザーをDiscordのブラックリストに追加する  |
 |  discord_remove_blacklist  |  discord_remove_blacklist [ID]  |  ユーザーをDiscordのブラックリストから削除する  |
 |  discord_add_whitelist  |  discord_add_whitelist [ID]  |  ユーザーをDiscordのホワイトリストに追加する  |
@@ -160,6 +162,7 @@
 |  random_item |  random_item  |  ランダムなアイテムに変更する  |
 |  playlist_id  |  playlist_id [ID]  |  IDでプレイリストを検索し、そのプレイリストに変更する  |
 |  playlist  |  playlist [名前]  |  プレイリストを検索し、そのプレイリストに変更する  |
+|  crowns  |  crowns [数値]  |  クラウン数を設定する  |
 |  island_code  |  island_code [島コード]  |  モードをその島に変更する  |
 |  set  |  set [名前]  |  セット名でアイテムを検索し、そのアイテムに変更する  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  現在使用しているアイテムのスタイル一覧を表示し、指定したスタイルに設定する  |

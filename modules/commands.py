@@ -1372,6 +1372,20 @@ class DefaultCommands:
         await list_operation(remove_from_list, 'whitelist', command, message)
 
     @command(
+        name='add_botlist',
+        usage='{name} [{client.l("name_or_id")}]'
+    )
+    async def add_botlist(command: Command, client: 'Client', message: MyMessage) -> None:
+        await list_operation(add_to_list, 'botlist', command, message)
+
+    @command(
+        name='remove_botlist',
+        usage='{name} [{client.l("name_or_id")}]'
+    )
+    async def remove_botlist(command: Command, client: 'Client', message: MyMessage) -> None:
+        await list_operation(remove_from_list, 'botlist', command, message)
+
+    @command(
         name='discord_add_blacklist',
         usage='{name} [{client.l("name_or_id")}]',
         discord_required=True
@@ -4276,6 +4290,45 @@ class DefaultCommands:
     )
     async def playlist(command: Command, client: 'Client', message: MyMessage) -> None:
         await playlist_search('name', command, client, message)
+
+    @command(
+        name='crowns',
+        usage='{name} [{client.l("number")}]'
+    )
+    async def crowns(command: Command, client: 'Client', message: MyMessage) -> None:
+
+        meta = client.party.me.meta
+        data = (meta.get_prop('Default:AthenaCosmeticLoadout_j'))['AthenaCosmeticLoadout']
+        try:
+            data['cosmeticStats'][1]['statValue'] = message.args[1]
+        except KeyError:
+            data['cosmeticStats'] = [
+                {
+                    "statName": "TotalVictoryCrowns",
+                    "statValue": 0
+                },
+                {
+                    "statName": "TotalRoyalRoyales",
+                    "statValue": message.args[1]
+                },
+                {
+                    "statName": "HasCrown",
+                    "statValue": 0
+                }
+            ]
+        final = {'AthenaCosmeticLoadout': data}
+        key = 'Default:AthenaCosmeticLoadout_j'
+        prop = {key: meta.set_prop(key, final)}
+
+        await client.party.me.patch(updated=prop)
+
+        await message.reply(
+            client.l(
+                'set_to',
+                client.bot.l('crowns'),
+                message.args[1]
+            )
+        )
 
     @command(
         name='island_code',

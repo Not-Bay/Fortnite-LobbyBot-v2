@@ -29,6 +29,8 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  remove_blacklist  |  remove_blacklist [Name/ID]  |  Remove user from blacklist  |
 |  add_whitelist  |  add_whitelist [Name/ID]  |  Add user to whitelist  |
 |  remove_whitelist  |  remove_whitelist [Name/ID]  |  Remove user from whitelist  |
+|  add_botlist  |  add_botlist [Name/ID]  |  Add user to botlist  |
+|  remove_botlist  |  remove_botlist [Name/ID]  |  Remove user from botlist  |
 |  discord_add_blacklist  |  discord_add_blacklist [ID]  |  Add user to Discord blacklist  |
 |  discord_remove_blacklist  |  discord_remove_blacklist [ID]  |  Remove user from Discord blacklist  |
 |  discord_add_whitelist  |  discord_add_whitelist [ID]  |  Add user to Discord whitelist  |
@@ -159,6 +161,7 @@ Actual word to run command is configurable in commands editor (commands.json)
 |  random_item  |  random_item  |  Change to random item  |
 |  playlist_id  |  playlist_id [ID]  |  Search playlist with ID and change playlist  |
 |  playlist  |  playlist [Name]  |  Search playlist and change playlist  |
+|  crowns  |  crowns [Number]  |  Set the crowns count  |
 |  set  |  set [Name]  |  Search item with set name and change item  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  Show styles which available on current item and change to specified style  |
 |  add_style  |  add_style [outfit/backpack/pickaxe]  |  Show styles which available on current item and add specified style to current style<br>Example: Change to blue style using set_style, and add Stage 1 style using add_style  |

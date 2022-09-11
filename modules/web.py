@@ -13,13 +13,14 @@ from urllib.parse import urlparse
 
 import sanic
 from jinja2 import Environment, FileSystemLoader
+from packaging import version
 from sanic import exceptions as exc
 from sanic import response as res
 from sanic.request import Request
 from sanic.response import HTTPResponse
 from websockets.exceptions import ConnectionClosedOK
 
-if sanic.__version__ >= '21.9.0':
+if version.parse(sanic.__version__) >= version.parse('21.9.0'):
     from sanic.server.websockets.connection import WebSocketConnection
 else:
     from sanic.websocket import WebSocketConnection
@@ -1284,7 +1285,7 @@ class WebMessage:
 class Web(sanic.Sanic):
     def __init__(self, bot: 'Bot', *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        if sanic.__version__ < '21.3.1':
+        if version.parse(sanic.__version__) <= version.parse('21.3.0'):
             self.ctx = SimpleNamespace()
         self.ctx.bot = bot
         self.ctx.loop = self.ctx.bot.loop

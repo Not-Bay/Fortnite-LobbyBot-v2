@@ -73,8 +73,10 @@
 
                             {% if tags[0] == dict %}
                                 <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
+                                <input style="left: {{15 * (len(keys) - 1)}}px;" class="info_button" type="button" value="{{client.l('info')}}" onclick="OpenReadme('{{ client.ctx.bot.config['lang'] }}', '{{client.l('editor_' + key_prefix  + '_'.join(keys))|lower}}', '{{''.join(keys)|lower}}')">
                             {% elif config_tag != None %}
                                 <h1 style="left: {{15 * (len(keys) - 1)}}px;">{{client.l('editor_' + key_prefix  + '_'.join(keys))}}</h1>
+                                <input style="left: {{15 * (len(keys) - 1)}}px;" class="info_button" type="button" value="{{client.l('info')}}" onclick="OpenReadme('{{ client.ctx.bot.config['lang'] }}', '{{client.l('editor_' + key_prefix  + '_'.join(keys))|lower}}', '{{''.join(keys)|lower}}')">
                                 {% if config_tag in ['ng_names_config', 'ng_words_config'] %}
                                     <div id="{{keys[-1]}}" client_num="{{prefix_keys[1]}}" class="editor_h">
                                 {% else %}

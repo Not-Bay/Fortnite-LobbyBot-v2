@@ -29,6 +29,8 @@ Valores en [] son requeridos, valores en () son opcionales
 |  remove_blacklist  |  remove_blacklist [Nombre/ID]  |  Quita un usuario de la lista negra  |
 |  add_whitelist  |  add_whitelist [Nombre/ID]  |  Agrega un usuario a la lista blanca  |
 |  remove_whitelist  |  remove_whitelist [Nombre/ID]  |  Quita un usuario de la lista blanca  |
+|  add_botlist  |  add_botlist [Nombre/ID]  |  Agrega un usuario a la lista bots  |
+|  remove_botlist  |  remove_botlist [Nombre/ID]  |  Quita un usuario de lista bots  |
 |  discord_add_blacklist  |  discord_add_blacklist [ID]  |  Agrega un usuario a la lista negra de Discord  |
 |  discord_remove_blacklist  |  discord_remove_blacklist [ID]  |  Remueve un usuario de la lista negra de Discord  |
 |  discord_add_whitelist  |  discord_add_whitelist [ID]  |  Agrega un usuario a la lista blanca de Discord  |
@@ -159,6 +161,7 @@ Valores en [] son requeridos, valores en () son opcionales
 |  random_item  |  random_item  |  Cambiar a item aleatorio  |
 |  playlist_id  |  playlist_id [ID]  |  Busca una playlist por ID y la coloca  |
 |  playlist  |  playlist [Nombre]  |  Busca una playlist y la coloca  |
+|  crowns  |  crowns [Number]  |  Cambia la cantidad de coronas  |
 |  set  |  set [Nombre]  |  Busca un item por conjunto y lo coloca  |
 |  set_style  |  set_style [outfit/backpack/pickaxe]  |  Muestra estilos disponibles para el cosmético actual y los coloca  |
 |  add_style  |  add_style [outfit/backpack/pickaxe]  |  Muestra estilos disponibles para el cosmético actual y agrega un estilo al actual<br>Ejemplo: Cambia al estilo azul usando set_style, y agregando Stage 1 usando add_style  |

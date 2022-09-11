@@ -27,7 +27,7 @@ from tzlocal import get_localzone
 from .auth import MyAdvancedAuth
 from .auto_updater import Updater
 from .client import Client, MyClientParty, MyClientPartyMember
-from .colors import cyan, green, yellow
+from .colors import cyan, green, yellow, red
 from .commands import Command, DefaultCommands, MyMessage, PartyPrivacy
 from .cosmetics import CaseInsensitiveDict, Searcher
 from .discord_client import DiscordClient
@@ -189,11 +189,18 @@ class Bot:
                 'display_value': self.l('bool_false', default='false')
             }
         ]
-        self.select_event = [
+        self.select_event_join = [
             {
                 'real_value': i,
                 'value': i,
-                'display_value': self.l(f'event_{i}', default=i)
+                'display_value': self.l(f'event_join_{i}', default=i)
+            } for i in ['me', 'user']
+        ]
+        self.select_event_leave = [
+            {
+                'real_value': i,
+                'value': i,
+                'display_value': self.l(f'event_leave_{i}', default=i)
             } for i in ['me', 'user']
         ]
         self.select_platform = [
@@ -321,6 +328,7 @@ class Bot:
             "['hide_password']": [bool, 'select_bool'],
             "['hide_token']": [bool, 'select_bool'],
             "['hide_webhook']": [bool, 'select_bool'],
+            "['hide_weburl']": [bool, 'select_bool'],
             "['no_logs']": [bool, 'select_bool'],
             "['loglevel']": [str, 'select_loglevel'],
             "['debug']": [bool, 'select_bool']
@@ -338,10 +346,10 @@ class Bot:
             "['fortnite']['ng_outfit_reply']": [str, 'can_be_none'],
             "['fortnite']['join_outfit']": [str, 'can_be_none'],
             "['fortnite']['join_outfit_style']": [list, str, 'can_be_none'],
-            "['fortnite']['join_outfit_on']": [str, 'select_event'],
+            "['fortnite']['join_outfit_on']": [str, 'select_event_join'],
             "['fortnite']['leave_outfit']": [str, 'can_be_none'],
             "['fortnite']['leave_outfit_style']": [list, str, 'can_be_none'],
-            "['fortnite']['leave_outfit_on']": [str, 'select_event'],
+            "['fortnite']['leave_outfit_on']": [str, 'select_event_leave'],
             "['fortnite']['outfit_mimic_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['outfit_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['backpack']": [str, 'can_be_none'],
@@ -352,10 +360,10 @@ class Bot:
             "['fortnite']['ng_backpack_reply']": [str, 'can_be_none'],
             "['fortnite']['join_backpack']": [str, 'can_be_none'],
             "['fortnite']['join_backpack_style']": [list, str, 'can_be_none'],
-            "['fortnite']['join_backpack_on']": [str, 'select_event'],
+            "['fortnite']['join_backpack_on']": [str, 'select_event_join'],
             "['fortnite']['leave_backpack']": [str, 'can_be_none'],
             "['fortnite']['leave_backpack_style']": [list, str, 'can_be_none'],
-            "['fortnite']['leave_backpack_on']": [str, 'select_event'],
+            "['fortnite']['leave_backpack_on']": [str, 'select_event_leave'],
             "['fortnite']['backpack_mimic_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['backpack_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['pickaxe']": [str, 'can_be_none'],
@@ -367,10 +375,10 @@ class Bot:
             "['fortnite']['ng_pickaxe_reply']": [str, 'can_be_none'],
             "['fortnite']['join_pickaxe']": [str, 'can_be_none'],
             "['fortnite']['join_pickaxe_style']": [list, str, 'can_be_none'],
-            "['fortnite']['join_pickaxe_on']": [str, 'select_event'],
+            "['fortnite']['join_pickaxe_on']": [str, 'select_event_join'],
             "['fortnite']['leave_pickaxe']": [str, 'can_be_none'],
             "['fortnite']['leave_pickaxe_style']": [list, str, 'can_be_none'],
-            "['fortnite']['leave_pickaxe_on']": [str, 'select_event'],
+            "['fortnite']['leave_pickaxe_on']": [str, 'select_event_leave'],
             "['fortnite']['pickaxe_mimic_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['pickaxe_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['emote']": [str],
@@ -382,10 +390,10 @@ class Bot:
             "['fortnite']['ng_emote_reply']": [str, 'can_be_none'],
             "['fortnite']['join_emote']": [str, 'can_be_none'],
             "['fortnite']['join_emote_section']": [int, 'can_be_none'],
-            "['fortnite']['join_emote_on']": [str, 'select_event'],
+            "['fortnite']['join_emote_on']": [str, 'select_event_join'],
             "['fortnite']['leave_emote']": [str, 'can_be_none'],
             "['fortnite']['leave_emote_section']": [int, 'can_be_none'],
-            "['fortnite']['leave_emote_on']": [str, 'select_event'],
+            "['fortnite']['leave_emote_on']": [str, 'select_event_leave'],
             "['fortnite']['emote_mimic_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['emote_lock_for']": [list, str, 'multiple_select_user_type', 'can_be_none'],
             "['fortnite']['leave_delay_for']": [float],
@@ -446,6 +454,8 @@ class Bot:
             "['fortnite']['exec']['friend_request']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_add']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['friend_remove']": [list, str, 'can_be_none'],
+            "['fortnite']['exec']['friend_online']": [list, str, 'can_be_none'],
+            "['fortnite']['exec']['friend_offline']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_join']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_leave']": [list, str, 'can_be_none'],
             "['fortnite']['exec']['party_member_confirm']": [list, str, 'can_be_none'],
@@ -2006,6 +2016,18 @@ class Bot:
 
 
     async def error_callback(self, client: Client, e: Exception):
+        if client.discord_client is not None and client.discord_client.is_error:
+            self.print_exception(e)
+            self.send(
+                self.l(
+                    'discord_login_failed',
+                    self.config['discord']['token']
+                ),
+                add_p=self.time,
+                file=sys.stderr
+            )
+            return
+
         if isinstance(e, fortnitepy.AuthException):
             if 'Invalid device auth details passed.' in e.args[0]:
                 self.debug_print_exception(e)
@@ -2500,7 +2522,7 @@ class Bot:
             logger.addHandler(handler)
 
         version = sys.version_info
-        if version.minor != 7:
+        if (version.minor != 7 and not self.mode == 'repl'):
             self.send(
                 self.l(
                     'not_recommended_version',
@@ -2787,8 +2809,23 @@ class Bot:
                         all_ready_callback=self.all_ready_callback
                     )
                 ]
+
+                async def starter():
+                    try:
+                        await self.discord_client.start(self.config['discord']['token'])
+                    except Exception as e:
+                        self.print_exception(e)
+                        self.send(
+                            self.l(
+                                'discord_login_failed',
+                                self.config['discord']['token']
+                            ),
+                            add_p=self.time,
+                            file=sys.stderr
+                        )
+
                 if self.discord_client is not None and self.config['discord']['token']:
-                    tasks.append(self.discord_client.start(self.config['discord']['token']))
+                    tasks.append(starter())
 
                 try:
                     await asyncio.gather(*tasks)
