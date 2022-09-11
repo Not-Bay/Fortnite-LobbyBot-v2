@@ -93,7 +93,8 @@ if __name__ == '__main__':
         loop=loop,
         dev='-dev' in sys.argv,
         use_device_code='-use-device-code' in sys.argv,
-        use_device_auth='-use-device-auth' in sys.argv
+        use_device_auth='-use-device-auth' in sys.argv,
+        use_authorization_code='-use-authorization-code' in sys.argv
     )
     bot.setup()
     loop.run_until_complete(bot.start())
