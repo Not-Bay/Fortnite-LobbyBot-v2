@@ -331,9 +331,9 @@ class Updater:
 
     async def check_updates(self, dev: Optional[bool] = False) -> bool:
         if dev:
-            uri = 'https://raw.githubusercontent.com/gomashio1596/Fortnite-LobbyBot-v2/dev/'
+            uri = 'https://raw.githubusercontent.com/BayGamerYT/Fortnite-LobbyBot-v2/dev/'
         else:
-            uri = 'https://raw.githubusercontent.com/gomashio1596/Fortnite-LobbyBot-v2/main/'
+            uri = 'https://raw.githubusercontent.com/BayGamerYT/Fortnite-LobbyBot-v2/main/'
 
         _, data = await self.check_update(uri, 'modules/auto_updater.py', write=False)
 
