@@ -1,8 +1,8 @@
-colorama
-discord
+colorama==0.4.5
+discord==1.7.3
 git+https://github.com/gomashio1596/fortnitepy
-jaconv
-jinja2
-pykakasi
+jaconv==0.3
+jinja2==3.1.2
+pykakasi==2.2.1
 sanic==21.6.2
-tzlocal 
+tzlocal==4.2

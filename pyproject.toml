@@ -21,6 +21,7 @@ sanic = "^21.3.0"
 tzlocal = "^2.1"
 uvloop = "^0.15.2"
 websockets = "8.1"
+markupsafe = "2.0.1"
 
 [tool.poetry.dev-dependencies]
 

@@ -134,12 +134,14 @@ class Bot:
     def __init__(self, mode: str, loop: asyncio.AbstractEventLoop,
                  dev: Optional[bool] = False,
                  use_device_code: Optional[bool] = False,
-                 use_device_auth: Optional[bool] = False) -> None:
+                 use_device_auth: Optional[bool] = False,
+                 use_authorization_code: Optional[bool] = False) -> None:
         self.mode = mode
         self.loop = loop
         self.dev = dev
         self.use_device_code = use_device_code
         self.use_device_auth = use_device_auth
+        self.use_authorization_code = use_authorization_code
 
         self.input_lock = asyncio.Lock(loop=loop)
         self.clients = []
@@ -2647,6 +2649,18 @@ class Bot:
 
                 return _session_id
 
+            def authorization_code(email):
+                async def _authorization_code():
+                    while True:
+                        text = self.l('authorization_code', email).get_text()
+                        self.web_text = text
+                        data = await ainput(f'{text}\n')
+                        match = re.search(r'[a-z0-9]{32}', data)
+                        if match is not None:
+                            return match.group()
+
+                return _authorization_code
+
             for num, config in enumerate(self.config['clients']):
                 refresh_token = refresh_tokens.get(config['fortnite']['email'].lower(), None)
                 device_auth_details = device_auths.get(config['fortnite']['email'].lower(), {})
@@ -2715,6 +2729,8 @@ class Bot:
                 auth = None
                 if self.use_device_auth and device_auth_details:
                     auth = fortnitepy.DeviceAuth(**device_auth_details)
+                elif self.use_device_auth and self.use_authorization_code:
+                    auth = fortnitepy.AuthorizationCodeAuth(authorization_code(config['fortnite']['email']))
                 if auth is None:
                     if self.use_device_code:
                         auth = MyAdvancedAuth(refresh_token)
