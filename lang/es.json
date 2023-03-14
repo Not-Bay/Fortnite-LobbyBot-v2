@@ -547,6 +547,8 @@
         "editor_config_fortnite_exec_party_update": "Ejecutar al actualizar la sala",
         "editor_config_fortnite_exec_party_member_update": "Ejecutar cuando se actualiza un miembro",
         "editor_config_fortnite_exec_party_member_disconnect": "Ejecutar cuando se desconecta un miembro",
+        "editor_config_fortnite_exec_friend_online": "Cuando se conecta un amigo",
+        "editor_config_fortnite_exec_friend_offline": "Cuando se desconecta un amigo",
         "editor_config_discord": "Discord",
         "editor_config_discord_enabled": "Iniciar bot de Discord",
         "editor_config_discord_token": "Token del bot de Discord",
