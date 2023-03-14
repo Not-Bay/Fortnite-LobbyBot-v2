@@ -604,7 +604,10 @@ class Client(fortnitepy.Client):
         }
 
         if self.config['discord']['enabled']:
-            self.discord_client = DiscordClient(self, self.config, loop=self.loop)
+            intents = discord.Intents.default()
+            intents.message_content = True
+
+            self.discord_client = DiscordClient(self, self.config, loop=self.loop, intents=intents)
         else:
             self.discord_client = None
 
