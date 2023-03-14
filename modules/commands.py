@@ -4297,10 +4297,16 @@ class DefaultCommands:
     )
     async def crowns(command: Command, client: 'Client', message: MyMessage) -> None:
 
+        try:
+            crowns_count = int(message.args[1])
+        except ValueError:
+            await client.show_help(command, message)
+            return
+
         meta = client.party.me.meta
         data = (meta.get_prop('Default:AthenaCosmeticLoadout_j'))['AthenaCosmeticLoadout']
         try:
-            data['cosmeticStats'][1]['statValue'] = message.args[1]
+            data['cosmeticStats'][1]['statValue'] = crowns_count
         except KeyError:
             data['cosmeticStats'] = [
                 {
@@ -4309,7 +4315,7 @@ class DefaultCommands:
                 },
                 {
                     "statName": "TotalRoyalRoyales",
-                    "statValue": message.args[1]
+                    "statValue": crowns_count
                 },
                 {
                     "statName": "HasCrown",
@@ -4321,6 +4327,14 @@ class DefaultCommands:
         prop = {key: meta.set_prop(key, final)}
 
         await client.party.me.patch(updated=prop)
+
+        await client.party.me.clear_emote()
+
+        await client.party.me.change_asset(
+            'AthenaDance',
+            'EID_Coronet',
+            keep=False
+        )
 
         await message.reply(
             client.l(
