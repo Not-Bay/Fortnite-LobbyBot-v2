@@ -539,6 +539,8 @@
         "editor_config_fortnite_exec_friend_request": "フレンドリクエスト時のプログラム",
         "editor_config_fortnite_exec_friend_add": "フレンド追加時のプログラム",
         "editor_config_fortnite_exec_friend_remove": "フレンド削除時のプログラム",
+        "editor_config_fortnite_exec_friend_online": "フレンドが接続したときに実行するプログラム",
+        "editor_config_fortnite_exec_friend_offline": "フレンドが切断したときに実行するプログラム",
         "editor_config_fortnite_exec_party_member_join": "メンバー参加時のプログラム",
         "editor_config_fortnite_exec_party_member_leave": "メンバー離脱時のプログラム",
         "editor_config_fortnite_exec_party_member_confirm": "メンバー承認リクエスト時のプログラム",

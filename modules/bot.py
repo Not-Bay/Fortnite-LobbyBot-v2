@@ -1601,7 +1601,11 @@ class Bot:
         self.webhook = WebhookClient(self, self, self.loop, self.http)
         self.webhook.start()
         if self.config['discord']['enabled']:
-            self.discord_client = DiscordClient(self, self.config, loop=self.loop)
+
+            intents = discord.Intents.default()
+            intents.message_content = True
+
+            self.discord_client = DiscordClient(self, self.config, loop=self.loop, intents=intents)
 
         if self.isfile(f"{self.lang_dir}/{self.config['lang']}", force_file=True):
             self.localize = self.load_localize(self.config['lang'])
