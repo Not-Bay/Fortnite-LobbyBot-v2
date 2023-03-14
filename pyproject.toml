@@ -10,7 +10,7 @@ aioconsole = "^0.3.1"
 aiofiles = "^0.7.0"
 aiohttp = "^3.7.3"
 colorama = "^0.4.4"
-"discord.py" = "^1.7.2"
+"discord.py" = "^2.2.2"
 fortnitepy = { git = "https://github.com/BayGamerYT/fortnitepy", branch = "flb" }
 jaconv = "^0.3"
 jinja2 = "^2.3.0.1"

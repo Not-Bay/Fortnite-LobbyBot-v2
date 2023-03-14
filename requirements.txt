@@ -1,5 +1,5 @@
 colorama==0.4.5
-discord==1.7.3
+discord.py==2.2.2
 git+https://github.com/BayGamerYT/fortnitepy.git@flb
 jaconv==0.3
 jinja2==3.1.2
