@@ -2526,7 +2526,7 @@ class Bot:
             logger.addHandler(handler)
 
         version = sys.version_info
-        if (version.minor != 7 and not self.mode == 'repl'):
+        if (version.minor != 9 and not self.mode == 'repl'):
             self.send(
                 self.l(
                     'not_recommended_version',

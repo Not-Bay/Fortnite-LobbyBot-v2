@@ -73,7 +73,7 @@
         "load_failed": "Failed to load. Please fix files",
         "load_failed_web": "Loading didn't finish successfully. Please fix files directly or fix from web",
         "credit": "Lobby bot: gomashio\nfortnitepy: Terbau",
-        "not_recommended_version": "You using not recommended python version\nRecommend: Python 3.7\nUsing: Python {0}",
+        "not_recommended_version": "You using not recommended python version\nRecommend: Python 3.9\nUsing: Python {0}",
         "bit_mismatch": "Bit between installed Python ({0}) and OS ({1}) doesn't match",
         "backup_failed": "Failed backup for '{0}'",
         "checking_update": "Checking update for '{0}'...",
