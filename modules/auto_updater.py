@@ -115,7 +115,9 @@ class Updater:
             'RUN.bat': []
         }
         self.repl_updates = {
-            'pyproject.toml': []
+            'pyproject.toml': [],
+            '.replit': [],
+            'replit.nix': []
         }
 
     def l(self, key: str, *args: tuple, default: Optional[str] = '', **kwargs: dict) -> LocalizedText:
