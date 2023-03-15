@@ -146,7 +146,7 @@ class Bot:
         self.input_lock = asyncio.Lock(loop=loop)
         self.clients = []
         self.updater = Updater(self)
-        self.web = Web(self, __name__)
+        self.web = Web(self, 'modules_bot')
         self.web_text = ''
         self.server = None
         self.lang_dir = 'lang'

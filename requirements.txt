@@ -1,10 +1,10 @@
-colorama==0.4.5
+colorama==0.4.6
 discord.py==2.2.2
 git+https://github.com/BayGamerYT/fortnitepy.git@flb
-jaconv==0.3
+jaconv==0.3.4
 jinja2==3.1.2
 pykakasi==2.2.1
-sanic==21.6.2
+sanic==22.12.0
 tzlocal==4.2
 pytz==2022.7.1
 packaging==23.0
