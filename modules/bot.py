@@ -1536,7 +1536,6 @@ class Bot:
     def remove_unneeded_files(self) -> None:
         pc_only = [
             'INSTALL.bat',
-            'requirements.txt',
             'RUN.bat'
         ]
         repl_only = [
