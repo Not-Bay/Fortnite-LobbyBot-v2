@@ -2595,6 +2595,7 @@ class Bot:
                 logger = getLogger('sanic.root')
                 logger.setLevel(WARNING)
             try:
+                await self.web._startup()
                 self.server = await self.web.create_server(
                     host=self.config['web']['ip'],
                     port=self.config['web']['port'],
