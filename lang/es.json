@@ -73,7 +73,7 @@
         "load_failed": "Error al cargar. Arregla los archivos",
         "load_failed_web": "No se ha cargado correctamente. Soluciona los archivos directamente o arreglalos desde la web",
         "credit": "Lobby bot: gomashio\nfortnitepy: Terbau",
-        "not_recommended_version": "Estás usando una versión de python no recomendada\nRecomendada: Python 3.7\nUsando: Python {0}",
+        "not_recommended_version": "Estás usando una versión de python no recomendada\nRecomendada: Python 3.9\nUsando: Python {0}",
         "bit_mismatch": "El bit entre el Python instalado ({0}) y el sistema operativo ({1}) no coincide",
         "backup_failed": "Copia de seguridad fallida para '{0}'",
         "checking_update": "Revisando actualización para '{0}'...",

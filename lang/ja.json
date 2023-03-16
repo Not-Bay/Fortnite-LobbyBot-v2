@@ -73,7 +73,7 @@
         "load_failed": "正常に読み込みが完了しませんでした。ファイルを修正してください",
         "load_failed_web": "正常に読み込みが完了しませんでした。ファイルを直接修正するか、Webから修正してください",
         "credit": "ロビーボット: gomashio\nfortnitepy: Terbau",
-        "not_recommended_version": "非推奨のPythonバージョンが導入されています\n推奨: Python 3.7\n使用中: Python {0}",
+        "not_recommended_version": "非推奨のPythonバージョンが導入されています\n推奨: Python 3.9\n使用中: Python {0}",
         "bit_mismatch": "インストールされているPythonのbit({0})とOSのbit{{1}}が一致しません",
         "backup_failed": "'{0}' のバックアップに失敗しました",
         "checking_update": "'{0}' のアップデートを確認中...",

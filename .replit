@@ -1,6 +1,6 @@
 language = "python3"
 run = "source $(poetry env info --path)/bin/activate && python3 index.py -use-device-auth -use-authorization-code"
-compile = "poetry install"
+compile = "poetry run pip install -r requirements.txt && poetry run pip install replit uvloop"
 
 [nix]
 channel = "stable-22_11"

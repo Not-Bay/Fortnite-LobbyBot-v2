@@ -146,7 +146,7 @@ class Bot:
         self.input_lock = asyncio.Lock(loop=loop)
         self.clients = []
         self.updater = Updater(self)
-        self.web = Web(self, __name__)
+        self.web = Web(self, 'modules_bot')
         self.web_text = ''
         self.server = None
         self.lang_dir = 'lang'
@@ -1536,7 +1536,6 @@ class Bot:
     def remove_unneeded_files(self) -> None:
         pc_only = [
             'INSTALL.bat',
-            'requirements.txt',
             'RUN.bat'
         ]
         repl_only = [
@@ -2526,7 +2525,7 @@ class Bot:
             logger.addHandler(handler)
 
         version = sys.version_info
-        if (version.minor != 7 and not self.mode == 'repl'):
+        if (version.minor != 9 and not self.mode == 'repl'):
             self.send(
                 self.l(
                     'not_recommended_version',
@@ -2595,6 +2594,7 @@ class Bot:
                 logger = getLogger('sanic.root')
                 logger.setLevel(WARNING)
             try:
+                await self.web._startup()
                 self.server = await self.web.create_server(
                     host=self.config['web']['ip'],
                     port=self.config['web']['port'],

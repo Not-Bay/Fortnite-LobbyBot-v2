@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from .bot import Bot
 
 
-__version__ = '1.5.3'
+__version__ = '1.5.3.1'
 
 
 class Updater:
@@ -115,7 +115,9 @@ class Updater:
             'RUN.bat': []
         }
         self.repl_updates = {
-            'pyproject.toml': []
+            'pyproject.toml': [],
+            '.replit': [],
+            'replit.nix': []
         }
 
     def l(self, key: str, *args: tuple, default: Optional[str] = '', **kwargs: dict) -> LocalizedText:
