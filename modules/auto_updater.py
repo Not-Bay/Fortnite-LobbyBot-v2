@@ -107,11 +107,11 @@ class Updater:
             'README.md': [],
             'README_EN.md': [],
             'README_ES.md': [],
-            'replies.json': ['diff', 'db', 'backup']
+            'replies.json': ['diff', 'db', 'backup'],
+            'requirements.txt': []
         }
         self.pc_updates = {
             'INSTALL.bat': [],
-            'requirements.txt': [],
             'RUN.bat': []
         }
         self.repl_updates = {
