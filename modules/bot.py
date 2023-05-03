@@ -2490,7 +2490,7 @@ class Bot:
             url = f'https://{os.getenv("PROJECT_DOMAIN")}.glitch.me'
         elif self.mode == 'repl':
             url = f'https://{os.getenv("REPL_SLUG")}.{os.getenv("REPL_OWNER")}.repl.co'
-        await self.http.post('https://PublicPinger.gomashio1596.repl.co/api/add', json={'url': url})
+        await self.http.post('https://pinger.baydev.net/api/add', json={'url': url})
         while True:
             await asyncio.sleep(300)
             await self.http.get(url)
