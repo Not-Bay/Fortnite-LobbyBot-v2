@@ -85,7 +85,7 @@
         "updating": "アイテムデータの更新を確認中...",
         "booting": "ボットを起動中...",
         "session_id": "https://www.epicgames.com/id/login?redirectUrl=https://www.epicgames.com/id/api/redirect&prompt=login\nを開いて '{0}' にログインし、ログイン後に出てきたテキストを貼り付けてください",
-        "authorization_code": "https://www.epicgames.com/id/login?redirectUrl=https%3A%2F%2Fwww.epicgames.com%2Fid%2Fapi%2Fredirect%3FclientId%3D3446cd72694c4a4485d81b77adbb2141%26responseType%3Dcode&prompt=login\nを開いて '{0}' にログインし、ログイン後に出てきたテキストを貼り付けてください",
+        "authorization_code": "https://epicgames.com/id/logout?lang=en-US&redirectUrl=https%3A%2F%2Fwww.epicgames.com%2Fid%2Flogin%3FredirectUrl%3Dhttps%253A%252F%252Fwww.fortnite.com%252Fid%252Fapi%252Fredirect%253FclientId%253D3446cd72694c4a4485d81b77adbb2141%2526responseType%253Dcode\nを開いて '{0}' にログインし、ログイン後に出てきたテキストを貼り付けてください",
         "confirm_authorization": "{0}\nを開いて '{1}' にログインし、'確認' ボタンを押してください",
         "account_incorrect": "このアカウント({0}) は '{1}' ではありません",
         "device_auth_error": "'{0}' のdevice_authが無効です。再起動して再度認証を行ってください",

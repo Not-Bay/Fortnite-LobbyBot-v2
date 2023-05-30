@@ -85,7 +85,7 @@
         "updating": "Revisando actualizaciones de ítems...",
         "booting": "Iniciando bot...",
         "session_id": "Abre\nhttps://www.epicgames.com/id/login?redirectUrl=https://www.epicgames.com/id/api/redirect&prompt=login\nE inicia sesión en '{0}' y copiar pegar texto",
-        "authorization_code": "Abre\nhttps://www.epicgames.com/id/login?redirectUrl=https%3A%2F%2Fwww.epicgames.com%2Fid%2Fapi%2Fredirect%3FclientId%3D3446cd72694c4a4485d81b77adbb2141%26responseType%3Dcode&prompt=login\nE inicia sesión en '{0}' y copiar pegar texto",
+        "authorization_code": "Abre\nhttps://epicgames.com/id/logout?lang=en-US&redirectUrl=https%3A%2F%2Fwww.epicgames.com%2Fid%2Flogin%3FredirectUrl%3Dhttps%253A%252F%252Fwww.fortnite.com%252Fid%252Fapi%252Fredirect%253FclientId%253D3446cd72694c4a4485d81b77adbb2141%2526responseType%253Dcode\nE inicia sesión en '{0}' y copiar pegar texto",
         "confirm_authorization": "Abre\n{0}\nE inicia sesión en '{1}' y presiona el botón 'Confirmar'",
         "account_incorrect": "Esta cuenta ({0}) no es '{1}'",
         "device_auth_error": "device_auth de '{0}' es inválida. Reinicia el bot y haz la autorización de nuevo",
